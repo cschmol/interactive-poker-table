@@ -6,43 +6,42 @@ use utf8;
 
 
 my @suits = ("S", "H", "D", "C");
-my @numbers = (1..10, "B", "D", "K");
+my @numbers = (1..13);
 my $players;	#number of players
 
 
-#use card_deck;
+my $object = card_deck->new;
+foreach (1..20) {
+	$object->draw_card;
+}
 
-my $object = new card_deck;
-#$object->print_cards();
-#$object->get_players;
+my @arr = $object->get_cards;
+
+foreach my $i (@arr) {
+	print $i . "\n";
+}
+
+exit();
 
 package card_deck;
 
 sub init_deck;
 sub draw_card;
-sub get_players;
 sub print_cards;
 
 sub new {
 	my $class = shift;
-	my $self = {
-		players => "5",
-	};
+	my $self = {@_};
 
-	reset_deck();
+	
+	my $bl = bless $self, $class;
+	reset_deck $self;
 
-	#print_cards();
-
-	#print "Class $class created" . "\n";
-}
-
-sub get_players() {
-	my ($self) = @_;
-	print "$self->{players}\n";
+	return $bl;
 }
 
 sub reset_deck() {
-	my ($self) = @_;
+	my $self = shift;
 	#initialize the card deck
 	foreach my $suit (@suits) {
 		foreach my $number (@numbers) {
@@ -52,13 +51,13 @@ sub reset_deck() {
 }
 
 sub draw_card() {
-	my ($self) = @_;
+	my $self = shift;
 	my ($suit, $number);
 
 	do {
 		$suit = $suits[int(rand(4))];
 		$number = $numbers[int(rand(13))];
-	} while($self->{cards}{$suit}{$number} == 1);
+	} while($self->{cards}{$suit}{$number} == 0);
 
 	#remove card from deck
 	$self->{cards}{$suit}{$number} = 0;
@@ -67,7 +66,7 @@ sub draw_card() {
 }
 
 sub print_cards() {
-	my ($self) = @_;
+	my $self = shift;
 
 	foreach my $suit (@suits) {
 		foreach my $number (@numbers) {
@@ -76,5 +75,15 @@ sub print_cards() {
 	}
 }
 
-
-
+sub get_cards() {
+	my $self = shift;
+	my @c;
+	foreach my $suit (@suits) {
+		foreach my $number (@numbers) {
+			if($self->{cards}{$suit}{$number} == 0) {
+				push @c, $suit . $number;
+			}
+		}
+	}
+	return @c;
+}
