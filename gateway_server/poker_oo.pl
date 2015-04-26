@@ -9,6 +9,7 @@ my @suits = ("S", "H", "D", "C");
 my @numbers = (1..13);
 my $players;	#number of players
 
+use lib '.';
 
 use card_deck;
 use poker_player;
@@ -24,6 +25,7 @@ my @players = 	(	new poker_player(name => "Christophe"),
 my $poker_game = new poker_game(players => \@players);
 
 $poker_game->player_cards();
+print $players[1]->get_chips();
 
 
 

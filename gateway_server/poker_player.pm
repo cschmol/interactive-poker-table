@@ -1,20 +1,3 @@
-#
-#===============================================================================
-#
-#         FILE: poker_player.pm
-#
-#  DESCRIPTION: 
-#
-#        FILES: ---
-#         BUGS: ---
-#        NOTES: ---
-#       AUTHOR: YOUR NAME (), 
-# ORGANIZATION: 
-#      VERSION: 1.0
-#      CREATED: 2015-04-25 22:31:31
-#     REVISION: ---
-#===============================================================================
-
 use strict;
 use warnings;
 
@@ -33,8 +16,8 @@ sub new {
 
 	my $self = {@_};
 
-	$self->{chips} = 1000 	if undef $self->{chips};
-	$self->{name} = "dummy" if undef $self->{name};
+	$self->{chips} = 1000 if !exists $self->{chips};
+	$self->{name} = "dummy" if !exists $self->{name};
 	$self->{cards} = ();
 
 	my $bl = bless $self, $class;
@@ -44,8 +27,34 @@ sub new {
 
 sub action {
 	my $self = shift;
+	my %action;
 
 	printf "Please enter action for the current player:";
+	my $action = <STDIN>;
+	chomp $action;
+	if($action eq "fold") {
+		printf "You folded\n";
+	}
+	if($action eq "check") {
+		printf "You checked\n";
+	}
+	if($action eq "call") {
+		#check if player has enough chips available
+		printf "You called\n";
+	}
+	if($action eq "raise") {
+		printf "By how much do you want to raise?";
+		my $raise = <STDIN>;
+		chomp $raise;
+		#check if player has enough chips available
+		printf "You raised by $raise\n";
+	}
+	$action{action} = $action;
+}
+
+sub print_info {
+	my $self = shift;
+	print "Name: $self->{name}, Chips: $self->{chips}\n";
 }
 
 sub get_chips {

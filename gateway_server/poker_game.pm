@@ -45,10 +45,11 @@ sub new {
 sub player_cards {
 	my $self = shift;
 	#each player gets 2 cards
-	foreach my $player ($self->{players}) {
-		foreach (1..2) {
+	foreach my $player (0..3) {
+		foreach my $c (1..2) {
 			my $card = ($self->{holdem_cards})->draw_card();
-			push $player->{cards}, $card;
+			#push $player->{cards}, $card;
+			$self->{players}[$player]->{cards}[$c] = $card;
 		}
 	}
 }

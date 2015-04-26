@@ -1,20 +1,3 @@
-#
-#===============================================================================
-#
-#         FILE: card_deck.pm
-#
-#  DESCRIPTION:
-#
-#        FILES: ---
-#         BUGS: ---
-#        NOTES: ---
-#       AUTHOR: YOUR NAME (), 
-# ORGANIZATION: 
-#      VERSION: 1.0
-#      CREATED: 2015-04-25 22:30:17
-#     REVISION: ---
-#===============================================================================
-
 use strict;
 use warnings;
  
@@ -25,19 +8,22 @@ package card_deck;
 
 sub init_deck;
 sub draw_card;
-sub print_cards;
 
+#constructor for the class
 sub new {
 	my $class = shift;
 	my $self = {@_};
 
 	
 	my $bl = bless $self, $class;
+
+	#set all cards as available
 	reset_deck $self;
 
 	return $bl;
 }
 
+#set all cards as available in the deck
 sub reset_deck() {
 	my $self = shift;
 	#initialize the card deck
@@ -48,6 +34,7 @@ sub reset_deck() {
 	}
 }
 
+#draw one card from the card deck and set that card as no longer available in the deck
 sub draw_card() {
 	my $self = shift;
 	my ($suit, $number);
@@ -63,16 +50,7 @@ sub draw_card() {
 	return $suit . $number;
 }
 
-sub print_cards() {
-	my $self = shift;
-
-	foreach my $suit (@suits) {
-		foreach my $number (@numbers) {
-			print "$suit:$number -> $self->{cards}{$suit}{$number}\n";
-		}
-	}
-}
-
+#return an array of still available cards
 sub get_cards() {
 	my $self = shift;
 	my @c;
