@@ -1,22 +1,4 @@
 #!/usr/bin/env perl 
-#===============================================================================
-#
-#         FILE: poker_game.pl
-#
-#        USAGE: ./poker_game.pl  
-#
-#  DESCRIPTION: 
-#
-#      OPTIONS: ---
-# REQUIREMENTS: ---
-#         BUGS: ---
-#        NOTES: ---
-#       AUTHOR: YOUR NAME (), 
-# ORGANIZATION: 
-#      VERSION: 1.0
-#      CREATED: 2015-04-25 22:33:13
-#     REVISION: ---
-#===============================================================================
 
 use strict;
 use warnings;
@@ -25,6 +7,9 @@ use utf8;
 my @suits = ("S", "H", "D", "C");
 my @numbers = (1..13);
 
+use lib '.';
+use card_deck;
+use poker_player;
 
 package poker_game;
 
@@ -68,3 +53,19 @@ sub turn {
 sub river {
 	my $self = shift;
 }
+
+sub list_players {
+	my $self = shift;
+
+	my $ref = $self->{players};
+	@$ref[1]->print_info;
+	foreach my $player (@$ref) {
+		$player->print_info;
+		#print $self->{players}->print_info();
+	}
+}
+
+
+
+
+
