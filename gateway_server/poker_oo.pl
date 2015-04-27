@@ -16,16 +16,37 @@ use poker_player;
 use poker_game;
 
 
-my @players = 	(	new poker_player(name => "Christophe"),
-					new poker_player(name => "Nina"), 
-					new poker_player(name => "Ekin"),
-					new poker_player(name => "Malina"),
-				);
+#create a list of players to pass on poker_game
+my @players;
 
+#set player_chips, array of players
 my $poker_game = new poker_game(players => \@players);
 
+$poker_game->start();
+
+#print stats of the game
+$poker_game->game_stats;
+
+
+#give players the 2 player_cards
 $poker_game->player_cards();
-print $players[1]->get_chips();
+#let players bet
+$poker_game->betting_round();
+
+#deal 3 community cards
+$poker_game->flop();
+#let players bet
+$poker_game->betting_round();
+
+#deal 1 community cards
+$poker_game->turn();
+#let players bet
+$poker_game->betting_round();
+
+#deal 1 community cards
+$poker_game->river();
+#let players bet
+$poker_game->betting_round();
 
 
 

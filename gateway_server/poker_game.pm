@@ -39,6 +39,17 @@ sub player_cards {
 	}
 }
 
+sub list_players {
+	my $self = shift;
+
+	my $ref = $self->{players};
+	@$ref[1]->print_info;
+	foreach my $player (@$ref) {
+		$player->print_info;
+		#print $self->{players}->print_info();
+	}
+}
+
 #deal 3 cards for common use
 sub flop {
 	my $self = shift;
@@ -54,15 +65,23 @@ sub river {
 	my $self = shift;
 }
 
-sub list_players {
+
+sub start {
+	my $self = shift;
+	#have to define dealer, small and big blind, as well as which players turn it is
+}
+
+sub betting_round {
+	my $self = shift;
+}
+
+sub game_stats {
 	my $self = shift;
 
-	my $ref = $self->{players};
-	@$ref[1]->print_info;
-	foreach my $player (@$ref) {
-		$player->print_info;
-		#print $self->{players}->print_info();
-	}
+	#show stats about the previous game
+	# -winner
+	# -in which order were the opponents eliminated
+	
 }
 
 
