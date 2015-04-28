@@ -58,10 +58,13 @@ sub list_players {
 	my $self = shift;
 
 	my $ref = $self->{players};
-	@$ref[1]->print_info;
+	#@$ref[1]->print_info;
+	print @$ref;
+	#there seem to be more elements in that array
 	foreach my $player (@$ref) {
-		$player->print_info;
-		#print $self->{players}->print_info();
+		print $player . "\n";
+		#$player->print_info();
+		#print ".";
 	}
 }
 
