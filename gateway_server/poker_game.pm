@@ -43,9 +43,19 @@ sub list_players {
 	my $self = shift;
 
 	my $ref = $self->{players};
-	@$ref[1]->print_info;
+	#@$ref[1]->print_info;
+
+	print "printing keys...\n";
+	foreach (@$ref) {
+		#print $_. " " . $self->{players} . "\n";
+		#$_->print_info;
+		print "$_ . \n";
+	}
+
+	return;
+
 	foreach my $player (@$ref) {
-		$player->print_info;
+		#$player->print_info;
 		#print $self->{players}->print_info();
 	}
 }
@@ -85,10 +95,6 @@ sub game_stats {
 }
 
 
-
-
-
-}
 
 
 

@@ -37,15 +37,11 @@ my $test = \@players;
 foreach my $i (@$test) {
 	#$i->print_info;
 }
-<STDIN>;
 
 my $poker_game = new poker_game(players => \@players);
 
 $poker_game->player_cards();
 $poker_game->list_players();
-
-print "Still running\n";
-
 
 
 
