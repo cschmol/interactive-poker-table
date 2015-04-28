@@ -15,11 +15,19 @@ package poker_game;
 
 sub new {
 	my $class = shift;
+
+	#defined here:
+	#players
 	my $self = {@_};
 
 	$self->{round} = 0;
 	#one array for the players
 	$self->{holdem_cards} = new card_deck;
+	
+	print "created new poker_game with " . scalar(@{$self->{players}}) . " players\n";
+
+	print @{$self->{players}}->print_info ;
+
 
 	my $bl = bless $self, $class;
 
