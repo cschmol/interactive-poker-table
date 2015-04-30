@@ -52,7 +52,7 @@ class Card_deck
 
 		/* ====================  MUTATORS      ======================================= */
 
-		/* ====================  OPERATORS     ======================================= */
+					/* ====================  OPERATORS     ======================================= */
 		poker_card draw_card() {
 			poker_card res = card_deck.back();  /* get the last element */
 			card_deck.pop_back();               /* delete it from the vector */
@@ -64,6 +64,15 @@ class Card_deck
 			return;
 		}
 		void reset() {
+			poker_card pc;
+			card_deck.clear();                  /* clear the vector first */
+			
+			for ( int i=0; i<52; i++) {
+				pc.suit = 0;
+				pc.number = i;
+				card_deck.push_back(pc);
+			}
+
 		}
 
 		/* ====================  DATA MEMBERS  ======================================= */
