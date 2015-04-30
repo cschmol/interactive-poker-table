@@ -17,10 +17,14 @@
  */
 
 #include	<iostream>
+#include	"card_deck.hpp"
 
 
-	int
-main ( int argc, char *argv[] )
+int main ( int argc, char *argv[] )
 {
+	poker_card pc;
+
+	Card_deck cards;
+	pc = cards.draw_card();
 	return 0;
 }				/* ----------  end of function main  ---------- */
