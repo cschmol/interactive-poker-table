@@ -1,3 +1,5 @@
+#ifndef CARD_DECK_HPP
+#define CARD_DECK_HPP
 /*
  * =====================================================================================
  *
@@ -25,11 +27,14 @@
 
 using namespace std;
 
+const char suits[] = {'D', 'H', 'S', 'C'};
+
 typedef struct card {
 	char suit;
 	int number;
 } poker_card;
 
+int myrandom (int i);
 
 /*
  * =====================================================================================
@@ -60,18 +65,22 @@ class Card_deck
 			
 		}
 		void shuffle() {
-			std::random_shuffle(card_deck.begin(), card_deck.end()); /* shuffle the deck */
+			cout << "Shuffling deck now" << endl;
+			std::random_shuffle(card_deck.begin(), card_deck.end(), myrandom); /* shuffle the deck */
 			return;
 		}
 		void reset() {
 			poker_card pc;
 			card_deck.clear();                  /* clear the vector first */
 			
-			for ( int i=0; i<52; i++) {
-				pc.suit = 0;
-				pc.number = i;
-				card_deck.push_back(pc);
+			for ( int suit=0; suit<4; suit++) {
+				for ( int number=1; number<14; number++) {
+					pc.suit = suits[suit];
+					pc.number = number;
+					card_deck.push_back(pc);
+				}
 			}
+			shuffle();
 
 		}
 
@@ -83,3 +92,4 @@ class Card_deck
 
 }; /* -----  end of class Card_deck  ----- */
 
+#endif
