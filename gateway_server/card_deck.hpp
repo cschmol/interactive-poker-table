@@ -1,22 +1,5 @@
 #ifndef CARD_DECK_HPP
 #define CARD_DECK_HPP
-/*
- * =====================================================================================
- *
- *       Filename:  card_deck.hpp
- *
- *    Description:  
- *
- *        Version:  1.0
- *        Created:  2015-04-30 09:48:38
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  Christophe Schmol (cs), christophe_schmol@yahoo.de
- *        Company:  RWTH Aachen University
- *
- * =====================================================================================
- */
 
 #include	<iostream>
 
@@ -36,16 +19,9 @@ typedef struct card {
 
 int myrandom (int i);
 
-/*
- * =====================================================================================
- *        Class:  Card_deck
- *  Description:  
- * =====================================================================================
- */
 class Card_deck
 {
 	public:
-		/* ====================  LIFECYCLE     ======================================= */
 		Card_deck () {                           /* constructor */
 			cout << "Card_deck created" << endl;
 			reset();
@@ -53,11 +29,6 @@ class Card_deck
 			return;
 		}
 
-		/* ====================  ACCESSORS     ======================================= */
-
-		/* ====================  MUTATORS      ======================================= */
-
-					/* ====================  OPERATORS     ======================================= */
 		poker_card draw_card() {
 			poker_card res = card_deck.back();  /* get the last element */
 			card_deck.pop_back();               /* delete it from the vector */
@@ -81,15 +52,17 @@ class Card_deck
 				}
 			}
 			shuffle();
-
 		}
+	
+	bool empty() {
+		return card_deck.empty();
+	}
 
-		/* ====================  DATA MEMBERS  ======================================= */
 	protected:
 
 	private:
 		std::vector<poker_card> card_deck;
 
-}; /* -----  end of class Card_deck  ----- */
+};
 
 #endif

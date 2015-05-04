@@ -1,51 +1,40 @@
 #ifndef POKER_GAME_HPP
 #define POKER_GAME_HPP
-/*
- * =====================================================================================
- *
- *       Filename:  poker_game.hpp
- *
- *    Description:  
- *
- *        Version:  1.0
- *        Created:  2015-04-30 17:29:06
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  Dr. Fritz Mehner (mn), mehner@fh-swf.de
- *        Company:  FH Südwestfalen, Iserlohn
- *
- * =====================================================================================
- */
 
 #include	"poker_player.hpp"
 #include	"card_deck.hpp"
+#include	<algorithm>
 
-/*
- * =====================================================================================
- *        Class:  Poker_game
- *  Description:  
- * =====================================================================================
- */
 class Poker_game
 {
 	public:
-		/* ====================  LIFECYCLE     ======================================= */
 		Poker_game ();                             /* constructor */
+		bool add_player(Poker_player &player);
+		void list_players();
 
-		/* ====================  ACCESSORS     ======================================= */
+		void start();                           /* players added, start game */
 
-		/* ====================  MUTATORS      ======================================= */
+		void player_cards();
+		void flop();
+		void turn();
+		void river();
 
-		/* ====================  OPERATORS     ======================================= */
+		void betting_round();
 
-		/* ====================  DATA MEMBERS  ======================================= */
 	protected:
 
 	private:
 		Card_deck deck;                         /* card deck for the game */
-		vector<Poker_player>;                   /* participating players */
+		vector<Poker_player> players;           /* participating players */
+		vector<Poker_player> round_players;
 
-}; /* -----  end of class Poker_game  ----- */
+		
+
+		//pointers to players
+		unsigned int dealer, small_blind, big_blind;
+
+		
+
+};
 
 #endif
