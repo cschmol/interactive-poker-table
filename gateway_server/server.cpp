@@ -1,6 +1,7 @@
 #include	<iostream>
 #include	"card_deck.hpp"
 #include	"poker_player.hpp"
+#include	"poker_game.hpp"
 
 
 int main ( int argc, char *argv[] )
@@ -9,10 +10,9 @@ int main ( int argc, char *argv[] )
 
 	std::srand(time(NULL));                     /* initialize random generator */
 
-	Card_deck cards;
-	while ( !cards.empty() ) {
-		pc = cards.draw_card();
-		cout << "Card: " << pc.suit << pc.number <<endl;
-	}
+	Poker_game game;
+	game.start();
+
+
 	return 0;
 }

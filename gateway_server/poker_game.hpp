@@ -8,11 +8,11 @@
 class Poker_game
 {
 	public:
-		Poker_game ();                             /* constructor */
+		Poker_game ()  {}                              /* constructor */
 		bool add_player(Poker_player &player);
 		void list_players();
 
-		void start();                           /* players added, start game */
+		void start();                                /* players added, start game */
 
 		void player_cards();
 		void flop();
@@ -24,16 +24,16 @@ class Poker_game
 	protected:
 
 	private:
-		Card_deck deck;                         /* card deck for the game */
-		vector<Poker_player> players;           /* participating players */
+		Card_deck deck;                              /* card deck for the game */
+		vector<Poker_player> players;                /* participating players */
 		vector<Poker_player> round_players;
 
-		
+
 
 		//pointers to players
 		unsigned int dealer, small_blind, big_blind;
 
-		
+
 
 };
 
