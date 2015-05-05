@@ -8,6 +8,13 @@
 using namespace std;
 
 
+
+typedef struct {
+	string action;
+	unsigned int amount;
+} Poker_action;
+
+
 class Poker_player
 {
 	public:
@@ -51,6 +58,9 @@ class Poker_player
 
 		void print_info();
 		void poker_action();                    /* player needs to chose an action */
+
+		Poker_action *get_action();
+
 
 	protected:
 
