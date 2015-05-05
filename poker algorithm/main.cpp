@@ -8,94 +8,130 @@
 #include "SevenEval.h"
 
 
-const int NSAMPLEHANDS=10;
+
+
+
+const int NSAMPLEHANDS=7;
 const int NMAXPLAYERS= 10;
 
 
-float getProbability(int nPlayers, std::array<int,10> handcards,int nCommonCards, std::array<int,5> commoncards)
+void getProbability(int nPlayers, std::array<int,10> handcards,int nCommonCards, std::array<int,5> commoncards,double *arr)
 {
-    int nFixedCards= nPlayers*2+nCommonCards;
 
+    SevenEval const* eval = new SevenEval();
 
+    std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+    std::time_t now_c = std::chrono::system_clock::to_time_t(now - std::chrono::hours(24));
+
+    auto engine = std::default_random_engine{};
+    engine.seed(now_c);
+
+    std::array<std::array<int,47>,NMAXPLAYERS> player_decks;
     std::array<std::array<int,47>,NMAXPLAYERS> spare_cards_player;
-    std::array<int,49> spare_cards_samples;
-    spare_cards_samples.fill(0);
+    //std::array<std::array<int,47>,NMAXPLAYERS> spare_cards_samples;
+
 
     for (int i= 0; i<NMAXPLAYERS; i++)
+    {
         spare_cards_player[i].fill(0);
+        //spare_cards_samples[i].fill(0);
+        player_decks[i].fill(0);
+    }
 
 
 
-    int cardindex1=0;
+
     int cardindexplayers[NMAXPLAYERS]={0,0,0,0,0,0,0,0,0,0};
 
     for (int i= 0; i<52; i++)
     {
         for (int k=0;k<nCommonCards;k++)
         {
-            if (i!=commoncards[k])
-            {
-
-                spare_cards_samples[cardindex1]=i;
-                cardindex1++;
-            }
-            else
-            {
               for(int j=0;j<nPlayers;j++)
                 {
                     if (i!=handcards[2*j] && i!=handcards[2*j+1])
+                    {
+                        player_decks[j][cardindexplayers[j]]=i;
                         spare_cards_player[j][cardindexplayers[j]]=i;
                         cardindexplayers[j]++;
+                    }
                 }
             }
-        }
     }
 
-    unsigned long handsum=0;
-    unsigned long samplesum[NSAMPLEHANDS];
 
-    switch(nCommonCards)
+    for(int j=0;j<nPlayers;j++)
+    {
+                std::shuffle(std::begin(spare_cards_player[j]), std::end(spare_cards_player[j]), engine);
+                //std::shuffle(std::begin(spare_cards_samples[j]), std::end(spare_cards_samples[j]), engine);
+    }
+
+
+    std::array<int,NMAXPLAYERS> nPlayerWins;
+
+    nPlayerWins.fill(0);
+    int playerrank,samplerank;
+
+    switch (nCommonCards)
     {
     case 3:
-        for (int i=0;i < NSAMPLEHANDS;i++)
+        for (int j=0;j<nPlayers;j++)
         {
-            handsum
-        }
+                for (int k=0;k<NSAMPLEHANDS  ;k++)
+                {
+                    playerrank=eval->GetRank(handcards[j*2], handcards[j*2+1], commoncards[0], commoncards[1], commoncards[2], spare_cards_player[j][2*k], spare_cards_player[j][2*k+1]);
+                    samplerank=eval->GetRank(commoncards[0], commoncards[1], commoncards[2], spare_cards_player[j][4*k], spare_cards_player[j][4*k+1],spare_cards_player[j][4*k+2],spare_cards_player[j][4*k+3]);
+                    if (playerrank>samplerank)
+                        nPlayerWins[j]++;
+                }
 
+
+        }
+        break;
+    case 4:
+        for (int j=0;j<nPlayers;j++)
+        {
+                for (int k=0;k<NSAMPLEHANDS  ;k++)
+                {
+                    playerrank=eval->GetRank(handcards[j*2], handcards[j*2+1], commoncards[0], commoncards[1], commoncards[2], commoncards[3], spare_cards_player[j][k]);
+                    samplerank=eval->GetRank(commoncards[0], commoncards[1], commoncards[2], commoncards[3], spare_cards_player[j][3*k],spare_cards_player[j][3*k+1],spare_cards_player[j][3*k+2]);
+                    if (playerrank>samplerank)
+                        nPlayerWins[j]++;
+
+
+                }
+
+
+        }
+        break;
+    case 5:
+        for (int j=0;j<nPlayers;j++)
+        {
+                for (int k=0;k<NSAMPLEHANDS  ;k++)
+                {
+                    playerrank=eval->GetRank(handcards[j*2], handcards[j*2+1], commoncards[0], commoncards[1], commoncards[2], commoncards[3], commoncards[4]);
+                    samplerank=eval->GetRank(commoncards[0], commoncards[1], commoncards[2], commoncards[3], commoncards[4],spare_cards_player[j][2*k],spare_cards_player[j][2*k+1]);
+                    if (playerrank>samplerank)
+                        nPlayerWins[j]++;
+                }
+
+
+        }
+        break;
     }
 
 
 
-    for (int i=0;i < NSAMPLEHANDS;i++)
+    for (int j=0;j<nPlayers;j++)
     {
-        if (nCommonCards==3)
-        {
-
-        }
-        else if(nCommonCards==4)
-        {
-
-        }
-        else if(nCommonCards ==5)
-        {
-
-        }
+        *arr=static_cast<double>(nPlayerWins[j])/static_cast<double>(NSAMPLEHANDS);
+        //std::cout<<*arr<<std::endl;
+        arr++;
     }
 
 
 
-
-
-
-
-
-
-
-    return 0;
-
     }
-
-
 
 
 
@@ -111,35 +147,20 @@ float getProbability(int nPlayers, std::array<int,10> handcards,int nCommonCards
 int main() {
 
 
-
-  SevenEval const* eval = new SevenEval();
-
-  /*Indizes für Karten
-
-  0: Pick Ass, 1: Herz Ass, 2: Karo Ass ,3: Kreuz Ass
-  4: Pick König.... */
-/*
-  std::array<int,5> foo {1,2,3,4,5};
+  std::array<int,10> handcards {1,44,3,4,5,14,0,0,0,0};
+  std::array<int,5> commoncards {33,34,35,7,0};
 
 
-  unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+  double winprops[NMAXPLAYERS];
+  getProbability(3,handcards,4,commoncards,&winprops[0]);
 
-  shuffle (foo.begin(), foo.end(), std::default_random_engine(seed));
 
-  std::cout << "shuffled elements:";
-  for (int& x: foo) std::cout << ' ' << x;
-  std::cout << '\n';
+    //for (int i=0;i<3;i++)
+    std::cout << winprops[0]<<std::endl;
+    std::cout << winprops[1]<<std::endl;
+    std::cout << winprops[2]<<std::endl;
 
-  for (int i=0;i<100;i++)
-  {
+  //std::cout << *winprops<<std::endl;
 
-    std::cout << eval->GetRank(rand()%7, rand()%7+7, rand()%7+14, rand()%7+21, rand()%7+28, rand()%7+35, rand()%7+42) << std::endl;
-  }
-
-  delete eval;
-  return 0;*/
-  std::array<int,10> foo {1,2,3,4,5,14,0,0,0,0};
-  std::array<int,5> foo2 {33,34,35,0,0};
-  getProbability(3,foo,3,foo2);
   return 0;
 }
