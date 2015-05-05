@@ -11,7 +11,10 @@ using namespace std;
 class Poker_player
 {
 	public:
-		Poker_player ();
+		Poker_player(string n, unsigned int c) {
+			name 	= n;
+			chips 	= c;
+		}
 
 		inline unsigned int
 			get_chips (  )
@@ -26,7 +29,7 @@ class Poker_player
 			}
 
 		inline void
-			set_name ( int value )
+			set_name (string value)
 			{
 				name	= value;
 				return ;
@@ -47,6 +50,7 @@ class Poker_player
 			}
 
 		void print_info();
+		void poker_action();                    /* player needs to chose an action */
 
 	protected:
 
@@ -55,7 +59,6 @@ class Poker_player
 		unsigned int chips;
 		/* array<int, 2> hand_cards; */         /* somehow that does not work */
 		vector<int> hand_cards;
-
 
 };
 

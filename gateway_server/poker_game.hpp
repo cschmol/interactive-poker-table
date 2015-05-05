@@ -4,11 +4,12 @@
 #include	"poker_player.hpp"
 #include	"card_deck.hpp"
 #include	<algorithm>
+#include	<vector>
 
 class Poker_game
 {
 	public:
-		Poker_game ();                             /* constructor */
+		Poker_game () { }                            /* constructor */
 		bool add_player(Poker_player &player);
 		void list_players();
 
@@ -27,6 +28,8 @@ class Poker_game
 		Card_deck deck;                         /* card deck for the game */
 		vector<Poker_player> players;           /* participating players */
 		vector<Poker_player> round_players;
+
+		std::vector<Poker_player>::iterator it;
 
 		
 

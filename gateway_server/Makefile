@@ -32,3 +32,6 @@ veryclean:
 	rm $(OBJ) $(NAME) tags
 	rm tags
 
+.PHONY:
+run:
+	./server

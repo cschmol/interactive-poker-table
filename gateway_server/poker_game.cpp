@@ -37,10 +37,15 @@ void Poker_game::river() {
 
 void Poker_game::betting_round () {
 
-	int current_player = (big_blind+1)%round_players.size();
-	//while all players betted the same or folded
-	while ( 1 ) {
 
+}
+
+void Poker_game::list_players() {
+	vector<Poker_player>::iterator it;
+
+	//cout << "Listing Players now" << endl;
+	for(it=players.begin(); it!=players.end(); ++it) {
+		it -> print_info();
+		cout << endl;
 	}
-
 }
