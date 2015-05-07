@@ -6,11 +6,8 @@
 
 int main ( int argc, char *argv[] )
 {
-	poker_card pc;
+	std::srand(time(NULL));                                                /* initialize random generator */
 
-	std::srand(time(NULL));                     /* initialize random generator */
-
-	Poker_player players[4];
 
 	Poker_player christophe("Christophe", 1000);
 	Poker_player nina("Nina", 1000);
@@ -24,7 +21,7 @@ int main ( int argc, char *argv[] )
 	pg.add_player(fojer);
 	pg.add_player(claire);
 
-	pg.list_players();
+	pg.start();
 
 
 	return 0;

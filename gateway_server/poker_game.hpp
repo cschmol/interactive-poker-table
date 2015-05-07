@@ -10,8 +10,9 @@ class Poker_game
 {
 	public:
 		Poker_game () { }                            /* constructor */
-		bool add_player(Poker_player &player);
 		void list_players();
+
+		bool add_player(Poker_player &player);
 
 		void start();                           /* players added, start game */
 
@@ -26,17 +27,13 @@ class Poker_game
 
 	private:
 		Card_deck deck;                         /* card deck for the game */
-		vector<Poker_player> players;           /* participating players */
-		vector<Poker_player> round_players;
+		vector<Poker_player> players;           /* all players that are still competing */
+		vector<Poker_player> round_players;     /* all players that participate in that round */
+
+		int dealer, small_blind, big_blind;
+		int rounds;                         /* how many rounds have been played */
 
 		std::vector<Poker_player>::iterator it;
-
-		
-
-		//pointers to players
-		unsigned int dealer, small_blind, big_blind;
-
-		
 
 };
 

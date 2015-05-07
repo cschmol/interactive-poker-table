@@ -5,9 +5,8 @@
 #include	<vector>
 #include	<iostream>
 
+
 using namespace std;
-
-
 
 typedef struct {
 	string action;
@@ -18,56 +17,23 @@ typedef struct {
 class Poker_player
 {
 	public:
-		Poker_player(string n, unsigned int c) {
-			name 	= n;
-			chips 	= c;
-		}
+		Poker_player(string n, unsigned int c);           /* constructor */
+		
+		string get_name ();                               /* getter method */
+		void set_name (string value);                     /* setter method */
+		unsigned int get_chips ();                        /* getter method */
+		void set_chips ( unsigned int c );                /* setter method */
+		unsigned int get_bet();                           /* getter method */
+		void set_bet ( unsigned int b );                  /* setter method */
 
-		inline unsigned int
-			get_chips (  )
-			{
-				return chips;
-			}
-
-		inline string
-			get_name (  )
-			{
-				return name;
-			}
-
-		inline void
-			set_name (string value)
-			{
-				name	= value;
-				return ;
-			}
-
-		void
-			set_chips ( unsigned int c )
-			{
-				chips = c;
-				return ;
-			}
-
-		inline void
-			set_chips ( int value )
-			{
-				chips	= value;
-				return ;
-			}
-
-		void print_info();
-		void poker_action();                    /* player needs to chose an action */
-
-		Poker_action *get_action();
-
-
-	protected:
+		void print_info();                                /* print info about player */
+		Poker_action *poker_action(); /* player needs to chose an action */
 
 	private:
 		string name;
 		unsigned int chips;
-		/* array<int, 2> hand_cards; */         /* somehow that does not work */
+		unsigned int bet;             /* how many chips has the player moved to the pot */
+	    /* array<int, 2> hand_cards; */                      /* somehow that does not work */
 		vector<int> hand_cards;
 
 };

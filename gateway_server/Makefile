@@ -34,4 +34,5 @@ veryclean:
 
 .PHONY:
 run:
+	clear
 	./server
