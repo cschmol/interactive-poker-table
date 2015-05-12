@@ -47,6 +47,7 @@ void Poker_game::start() {
 				//mark current player as the biggest better
 				//deduct chips from player
 			}
+			current_player = (current_player+1)%round_players.size();
 		}
 		//now determine a winner
 		if ( round_players.size()==1 ) {        /* only 1 player has not folded */
