@@ -2,8 +2,9 @@
 #include	"poker_player.hpp"
 
 Poker_player::Poker_player(string n, unsigned int c) {
-	name 	= n;
-	chips 	= c;
+	name 	= n;                                /* set name */
+	chips 	= c;                                /* set number of chips */
+	hand_cards[0] = hand_cards[1] = -1;         /* needs to be initalizized to -1 */
 }
 
 string Poker_player::get_name (  )
@@ -35,6 +36,10 @@ unsigned int Poker_player::get_bet() {
 void Poker_player::set_bet ( unsigned int b ) {
 	bet = b;
 	return;
+}
+
+void Poker_player::set_card (int index, int card) {
+	hand_cards[index] = card;
 }
 
 void Poker_player::print_info() {

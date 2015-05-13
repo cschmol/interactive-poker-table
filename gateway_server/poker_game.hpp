@@ -9,14 +9,15 @@
 class Poker_game
 {
 	public:
-		Poker_game () { }                            /* constructor */
-		void list_players();
+		Poker_game ();                          /* constructor */
 
 		bool add_player(Poker_player &player);
 
 		void start();                           /* players added, start game */
 
-		void player_cards();
+		void deal_common_cards(int count);
+
+		void deal_player_cards();
 		void flop();
 		void turn();
 		void river();
@@ -28,12 +29,11 @@ class Poker_game
 	private:
 		Card_deck deck;                         /* card deck for the game */
 		vector<Poker_player> players;           /* all players that are still competing */
-		vector<Poker_player> round_players;     /* all players that participate in that round */
 
-		int dealer, small_blind, big_blind;
-		int rounds;                         /* how many rounds have been played */
+		int dealer, small_blind, big_blind, current_player; /* indexes for special players */
+		int common_cards[5];
 
-		std::vector<Poker_player>::iterator it;
+		int n_common_cards;                     /* holds the number of cards currently on the table */
 
 };
 

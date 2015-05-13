@@ -25,16 +25,17 @@ class Poker_player
 		void set_chips ( unsigned int c );                /* setter method */
 		unsigned int get_bet();                           /* getter method */
 		void set_bet ( unsigned int b );                  /* setter method */
+		void set_card (int index, int card);
 
 		void print_info();                                /* print info about player */
 		Poker_action *poker_action(); /* player needs to chose an action */
 
 	private:
 		string name;
-		unsigned int chips;
-		unsigned int bet;             /* how many chips has the player moved to the pot */
-	    /* array<int, 2> hand_cards; */                      /* somehow that does not work */
-		vector<int> hand_cards;
+		unsigned int chips;                     /* current chips of the player */
+		unsigned int bet;                       /* current bet of the player */
+		bool has_folded;                        /* has the player folded yet */
+		int hand_cards[2];                      /* the players hand cards */
 
 };
 
