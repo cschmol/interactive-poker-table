@@ -17,18 +17,23 @@ bool Poker_game::add_player(Poker_player &player) {
 void Poker_game::start() {
 	rounds = 0;
 	Poker_action *action;                       /* a player_action is returned here */
+	dealer=0;
+    small_blind=1;
+    big_blind=2;
 
-	while (players.size() > 1) {                         /* until there are no more players */
-		round_players = players;                         /* all active players participate in the round */
-		int current_player= (big_blind+1)%round_players.size(); /* it's the player after BB's turn */
+    int n_players_ingame= players.size();
+
+	while (n_players_ingame > 1) {                         /* until there are no more players */
+
+		int current_player= (big_blind+1)%n_players_ingame; /* it's the player after BB's turn */
 		int highest_better=big_blind;                           /* big blind is the highest better initially */
 
 		unsigned int player_bet = 100;
 
 
 		//deal player cards
-		while ( round_players.size() > 1 || current_player == highest_better ) {   /* while there are still players */
-			action = (round_players.at(current_player)).poker_action();     /* current player needs to play */
+		while (n_players_ingame > 1 || current_player != highest_better ) {   /* while there are still players */
+			action = (players[current_player].poker_action();     /* current player needs to play */
 			if(action->action == "fold") {
 				round_players.erase(round_players.begin()+current_player); /* remove player from round */
 			}
@@ -47,10 +52,10 @@ void Poker_game::start() {
 				//mark current player as the biggest better
 				//deduct chips from player
 			}
-			current_player = (current_player+1)%round_players.size();
+			current_player = (current_player+1)%n_players_ingame;
 		}
 		//now determine a winner
-		if ( round_players.size()==1 ) {        /* only 1 player has not folded */
+		if ( n_players_ingame==1 ) {        /* only 1 player has not folded */
 		} else {
 			//determine winner by card ranks
 		}
@@ -66,7 +71,21 @@ void Poker_game::start() {
 
 
 
+void Poker_game::setup()
+{
 
+dealer=0;
+small_blind=1;
+big_blind=2;
+int rounds = 0;
+
+deck.reset();
+
+
+
+
+
+}
 
 
 

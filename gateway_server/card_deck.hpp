@@ -10,12 +10,6 @@
 
 using namespace std;
 
-const char suits[] = {'D', 'H', 'S', 'C'};
-
-typedef struct card {
-	char suit;
-	int number;
-} poker_card;
 
 int myrandom (int i);
 
@@ -33,7 +27,7 @@ class Card_deck
 			poker_card res = card_deck.back();  /* get the last element */
 			card_deck.pop_back();               /* delete it from the vector */
 			return res;                         /* and return a copy of it */
-			
+
 		}
 		void shuffle() {
 			cout << "Shuffling deck now" << endl;
@@ -41,19 +35,16 @@ class Card_deck
 			return;
 		}
 		void reset() {
-			poker_card pc;
 			card_deck.clear();                  /* clear the vector first */
-			
-			for ( int suit=0; suit<4; suit++) {
-				for ( int number=1; number<14; number++) {
-					pc.suit = suits[suit];
-					pc.number = number;
-					card_deck.push_back(pc);
-				}
+
+			for ( int i=0; i<52; i++) {
+
+					card_deck.push_back(i);
+
 			}
 			shuffle();
 		}
-	
+
 	bool empty() {
 		return card_deck.empty();
 	}
@@ -61,7 +52,7 @@ class Card_deck
 	protected:
 
 	private:
-		std::vector<poker_card> card_deck;
+		std::vector<int> card_deck;
 
 };
 
