@@ -78,16 +78,22 @@ void Poker_game::start() {
 
 
 void Poker_game::deal_player_cards() {
-	//deal 2 cards to every player
-	vector<Poker_player>::iterator it;
-	
-	for(it=players.begin(); it!=players.end(); it++) { /* iterate over all players */
-		for ( int i=0; i<2; i++) {              /* 2 cards for each player */
-			(players.at(i)).set_card(i, deck.draw_card());
-		}
-	}
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 void Poker_game::flop() {
 	//deal 3 common cards

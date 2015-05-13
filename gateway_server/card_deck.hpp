@@ -26,7 +26,7 @@ class Card_deck
 			int res = card_deck.back();  /* get the last element */
 			card_deck.pop_back();               /* delete it from the vector */
 			return res;                         /* and return a copy of it */
-			
+
 		}
 		void shuffle() {
 			cout << "Shuffling deck now" << endl;
@@ -41,7 +41,7 @@ class Card_deck
 			}
 			shuffle();
 		}
-	
+
 	bool empty() {
 		return card_deck.empty();
 	}
