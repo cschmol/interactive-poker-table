@@ -27,8 +27,14 @@ class Poker_player
 		void set_bet ( unsigned int b );                  /* setter method */
 		void set_card (int index, int card);
 
+		void reset_fold() {
+			has_folded=false;
+		}
+
+		bool folded();
+
 		void print_info();                                /* print info about player */
-		Poker_action *poker_action(); /* player needs to chose an action */
+		Poker_action *poker_action(unsigned int new_bet); /* player needs to chose an action */
 
 	private:
 		string name;

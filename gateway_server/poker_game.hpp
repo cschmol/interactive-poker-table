@@ -24,6 +24,9 @@ class Poker_game
 
 		void betting_round();
 
+		void print_info();                      /* print info about the game */
+
+
 	protected:
 
 	private:
