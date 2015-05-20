@@ -2,11 +2,13 @@
 #define CARD_DECK_HPP
 
 #include	<iostream>
-
+#include	<string>
 #include	<algorithm>
 #include	<vector>
 #include	<ctime>
 #include	<cstdlib>
+#include 	<sstream>
+#include	<fstream>
 
 using namespace std;
 
@@ -49,7 +51,7 @@ class Card_deck
 	protected:
 
 	private:
-		std::vector<bool> card_deck;             /* integer vector for the cards */
+		std::vector<int> card_deck;             /* integer vector for the cards */
 
 };
 
