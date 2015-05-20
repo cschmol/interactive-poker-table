@@ -9,7 +9,7 @@ int main ( int argc, char *argv[] )
 	std::srand(time(NULL));                                                /* initialize random generator */
 
 
-	Poker_player christophe("Christophe", 1000);
+	Poker_player christophe("Chris", 1000);
 	Poker_player nina("Nina", 1000);
 	Poker_player fojer("Fojer", 1000);
 	Poker_player claire("Claire", 1000);

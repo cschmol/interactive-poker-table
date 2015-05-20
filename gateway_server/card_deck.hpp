@@ -16,7 +16,7 @@ class Card_deck
 {
 	public:
 		Card_deck () {                           /* constructor */
-			cout << "Card_deck created" << endl;
+//			cout << "Card_deck created" << endl;
 			reset();
 			std::srand(unsigned(time(0)));
 			return;
@@ -29,7 +29,7 @@ class Card_deck
 
 		}
 		void shuffle() {
-			cout << "Shuffling deck now" << endl;
+//			cout << "Shuffling deck now" << endl;
 			std::random_shuffle(card_deck.begin(), card_deck.end(), myrandom); /* shuffle the deck */
 			return;
 		}
@@ -49,7 +49,7 @@ class Card_deck
 	protected:
 
 	private:
-		std::vector<bool> card_deck;             /* integer vector for the cards */
+		std::vector<int> card_deck;             /* integer vector for the cards */
 
 };
 

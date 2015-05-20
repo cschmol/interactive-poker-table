@@ -36,6 +36,7 @@ unsigned int Poker_player::get_bet() {
 }
 
 void Poker_player::set_bet ( unsigned int b ) {
+	cout << "Player " << name << " has bet set to " << b << endl;
 	bet = b;
 	return;
 }
@@ -46,7 +47,8 @@ void Poker_player::set_card (int index, int card) {
 
 void Poker_player::print_info() {
 	cout << "Name: " << name << "\t";
-	cout << "Chips: " << chips << endl;
+	cout << "Chips: " << chips << "\t";
+	cout << "Cards: " << hand_cards[0] << " " << hand_cards[1] << endl;
 }
 
 bool Poker_player::folded() {
@@ -58,22 +60,20 @@ Poker_action *Poker_player::poker_action(unsigned int new_bet) {
 	Poker_action *pa = new Poker_action;
 	string action;
 
-
 	bool unvalid_action = true;
 
 	do {
-//		cout << "Chips: "   << chips   << endl;
-//		cout << "new_bet: " << new_bet << endl;
-//		cout << "bet: "     << bet     << endl;
-
+		//get the action from stdin
 		cout << "Player " << name
 			 << " needs to chose an action (" 
 			 << "fold/check/call/raise) : " << endl;
-		cin >> action;
+		cout << "Chips: "   << chips   << endl;
+		cout << "new_bet: " << new_bet << endl;
+		cout << "bet: "     << bet     << endl;
+		cin >> action;                          /* read action */
 
-		//see what action the player wants
 		if(action == "fold") {
-			has_folded = true;                      /* player out of the round */
+			has_folded = true;
 			unvalid_action = false;
 
 		} else if(action== "check") {
@@ -85,31 +85,29 @@ Poker_action *Poker_player::poker_action(unsigned int new_bet) {
 
 		} else if(action == "call") {
 			if ( chips < new_bet ) {
-				cout << "You cannot bet now" << endl;
-				cout << "Therefore folding now" << endl;
-				has_folded = true;                  /* do it like this for now */
+				cout << "You cannot call now" << endl;
+				has_folded = true;              /* player folds then */
 			} else if ( new_bet == bet) {
-				cout << "no need to call now, only fold/raise/check" << endl;
+				cout << "No need to call, check'ing instead" << endl;
 			} else {
-				chips -= new_bet - bet;             /* chips are what is left when player has betted the same */
-				bet = new_bet;                      /* set the new player bet accordingly */
+				chips = chips - new_bet + bet;
+				bet = new_bet;
 			}
 			unvalid_action = false;
 
 		} else if(action == "raise") {
 			do {
-				cout << "By how much do you want to re-raise?";
-				cin >> pa->amount;
-			} while(pa->amount<=0 || pa->amount > chips);
-			chips = chips + bet -pa->amount;
-//			chips -= pa->amount - bet;
-			bet = new_bet + pa->amount;
+				cout << "What should be the new high bet?";
+				cin >> pa->new_high_bet;
+			} while(pa->new_high_bet<=new_bet || pa->new_high_bet-bet > chips);
+			int remaining = pa->new_high_bet - bet; /* what needs to be put in the middle */
+			chips -= remaining;                 /* deduct that amount */
+			bet = pa->new_high_bet;
 			unvalid_action = false;
 		}
 
 		pa->action = action;
 
-		cout << endl;
 	} while (unvalid_action);
 
 

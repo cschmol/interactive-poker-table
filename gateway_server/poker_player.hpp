@@ -10,7 +10,7 @@ using namespace std;
 
 typedef struct {
 	string action;
-	unsigned int amount;
+	unsigned int new_high_bet;
 } Poker_action;
 
 

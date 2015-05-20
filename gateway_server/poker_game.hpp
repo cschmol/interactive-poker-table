@@ -15,6 +15,8 @@ class Poker_game
 
 		void start();                           /* players added, start game */
 
+		void round();                           /* corresponds to 1 round of poker */
+
 		void deal_common_cards(int count);
 
 		void deal_player_cards();
@@ -36,7 +38,8 @@ class Poker_game
 		int dealer, small_blind, big_blind, current_player; /* indexes for special players */
 		int common_cards[5];
 
-		int n_common_cards;                     /* holds the number of cards currently on the table */
+		unsigned int n_common_cards;                     /* holds the number of cards currently on the table */
+		int high_bet;                         /* set the bet to the big blind */
 
 };
 
