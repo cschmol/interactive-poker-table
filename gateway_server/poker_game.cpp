@@ -28,6 +28,7 @@ void Poker_game::deal_common_cards(int count) {
 		common_cards[n_common_cards++ - 1] = deck.draw_card();
 	}
 }
+
 void Poker_game::round() {                          /* corresponds to 1 round of poker */
 	//this is only 1 round
 
@@ -182,3 +183,43 @@ void Poker_game::print_info (  ) {
 	return ;
 }		/* -----  end of method Poker_game::print_info  ----- */
 
+void Poker_game::setup(){
+        cout<<"Setting Poker game up"<<endl;
+        fstream fin("pokerconfig.txt");
+
+        string playerstring,valuestring;
+
+        getline(fin,playerstring);
+        getline(fin,valuestring);
+        
+
+        string buf; // Have a buffer string
+        stringstream s1(playerstring); // Insert the string into a stream
+        stringstream s2(valuestring);
+
+        vector<string> playernames; // Create vector to hold our words
+        vector<int> values;
+
+        while (s1 >> buf){
+                playernames.push_back(buf);
+        }
+        
+        while (s2 >> buf){
+                values.push_back(atoi(buf.c_str()));
+        }
+        
+        Poker_player player("",0);
+
+        for (std::vector<string>::iterator it = playernames.begin() ; it != playernames.end(); ++it){
+                player.set_name(*it);
+                player.set_chips(values.at(2));
+                add_player(player);
+                cout<<"Player "<<*it<<" added to the game"<<endl;
+        }      
+
+        n_small_blind=values.at(0);
+        n_big_blind=values.at(1);
+        cout<<"Credits: "<<player.get_chips()<<"  Small blind: "<<n_small_blind<<"  Big blind: "<<n_big_blind<<endl;
+
+        fin.close();
+}

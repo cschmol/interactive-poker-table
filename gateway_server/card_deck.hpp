@@ -2,11 +2,13 @@
 #define CARD_DECK_HPP
 
 #include	<iostream>
-
+#include	<string>
 #include	<algorithm>
 #include	<vector>
 #include	<ctime>
 #include	<cstdlib>
+#include 	<sstream>
+#include	<fstream>
 
 using namespace std;
 
