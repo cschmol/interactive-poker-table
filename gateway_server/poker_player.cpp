@@ -48,7 +48,8 @@ void Poker_player::set_card (int index, int card) {
 void Poker_player::print_info() {
 	cout << "Name: " << name << "\t";
 	cout << "Chips: " << chips << "\t";
-	cout << "Cards: " << hand_cards[0] << " " << hand_cards[1] << endl;
+	cout << "Bet: " << bet << "\t";
+	cout << "Cards: " << card2str(hand_cards[0]) << " " << card2str(hand_cards[1]) << endl;
 }
 
 bool Poker_player::folded() {
@@ -90,6 +91,7 @@ Poker_action *Poker_player::poker_action(unsigned int new_bet) {
 			} else if ( new_bet == bet) {
 				cout << "No need to call, check'ing instead" << endl;
 			} else {
+				pa->new_player_chips = new_bet - bet;
 				chips = chips - new_bet + bet;
 				bet = new_bet;
 			}
@@ -101,6 +103,7 @@ Poker_action *Poker_player::poker_action(unsigned int new_bet) {
 				cin >> pa->new_high_bet;
 			} while(pa->new_high_bet<=new_bet || pa->new_high_bet-bet > chips);
 			int remaining = pa->new_high_bet - bet; /* what needs to be put in the middle */
+			pa->new_player_chips = remaining;
 			chips -= remaining;                 /* deduct that amount */
 			bet = pa->new_high_bet;
 			unvalid_action = false;
@@ -112,4 +115,17 @@ Poker_action *Poker_player::poker_action(unsigned int new_bet) {
 
 
 	return pa;
+}
+
+
+/* deduct the amount of chips specified */
+/* if player has less chips, return the amount of chips */
+unsigned int Poker_player::deduct_chips(unsigned int c)  {
+	if(chips > c) {
+		chips -= c;
+		return c;
+	} else {
+		chips = 0;
+		return c;
+	}
 }
