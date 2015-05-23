@@ -32,6 +32,18 @@ void Poker_game::deal_common_cards(int count) {
 void Poker_game::round() {                          /* corresponds to 1 round of poker */
 	//this is only 1 round
 
+	pot = 0;
+	
+	//set the big&small blind's bets accordingly
+	(players.at(small_blind)) . deduct_chips ( 50 );
+	(players.at(big_blind)) . deduct_chips ( 100 );
+	(players.at(small_blind)) . set_bet(50);
+	(players.at(big_blind)) . set_bet(100);
+
+	pot += 50;
+	pot += 100;
+
+
 	deal_player_cards();                             /* deal player cards */
 	betting_round();
 	print_info();
@@ -56,18 +68,34 @@ void Poker_game::round() {                          /* corresponds to 1 round of
 	cin >> winner;
 
 	cout << "Player " << winner << " has won" << endl;
+	cout	<< "He wins a pot of " << pot << endl;
+	(players.at(winner)) .set_chips( (players.at(winner)) . get_chips() + pot );
+	pot = 0;
+
 
 	//blinds logic
 }
 
 void Poker_game::start() {
 	unsigned int i;
-	high_bet = 100;
+	dealer=0;
+	small_blind=1;
+	big_blind=2;
 	while(players.size() > 1) {
-		//set each players has_folded to 0, so that every player can play again
+		high_bet = 100;                         /* set the highest bet to the big blind */
+		pot = 0;
+
+		dealer = (dealer+1) % players.size();
+		small_blind = (small_blind+1) % players.size();
+		big_blind = (big_blind+1) % players.size();
+
+		current_player= (big_blind+1)%players.size();
+		highest_better=big_blind;
+
+		//set each players has_folded to 0, so that each player can play again
 		for ( i = 0; i < players.size(); i += 1 ) {
 			(players.at(i)) . reset_fold();
-			(players.at(i)) . set_bet(0);
+			(players.at(i)) . set_bet(0);       /* also set bet to 0 */
 
 			if((players.at(i)) . get_chips() <= 0) {
 				cout	<< "Player is game-over, removing him" << endl;
@@ -78,7 +106,6 @@ void Poker_game::start() {
 		cout	<< "Starting a new round of poker" << endl;
 		round();
 
-		break;
 	}
 }
 
@@ -124,20 +151,6 @@ void Poker_game::betting_round () {
 	Poker_action *action;
 
 	cout << endl << "---------------------------" << endl;
-	//some logic needed here
-	dealer=0;
-	small_blind=1;
-	big_blind=2;
-
-	//set the players
-	current_player= (big_blind+1)%players.size();
-	int highest_better=big_blind;
-
-	//set the big & small blind bets
-	(players.at(small_blind)) . set_bet(50);
-	(players.at(small_blind)) . set_chips((players.at(small_blind) . get_chips() - 50));
-	(players.at(big_blind)) . set_bet(100);
-	(players.at(big_blind)) . set_chips((players.at(big_blind) . get_chips() - 100));
 
 	int n_players = players.size();
 
@@ -150,9 +163,11 @@ void Poker_game::betting_round () {
 				n_players--;                
 			} else if ( action->action == "check" ) { 
 			} else if ( action->action == "call" ) { 
+				pot += action->new_player_chips;
 			} else if ( action->action == "raise" ) {
 				high_bet = action->new_high_bet;
 				highest_better = current_player;
+				pot += action->new_player_chips;
 			}
 
 			else {
@@ -172,7 +187,8 @@ void Poker_game::print_info (  ) {
 	cout	<< "Still " << players.size() << " players in the game" << endl;
 	cout	<< "Common cards: ";
 	for(i=0; i<n_common_cards; i++) {
-		cout	<< common_cards[i] << " ";
+//		cout	<< common_cards[i] << " ";
+		cout	<< card2str(common_cards[i]) << ",";
 	}
 	cout	<< endl;
 	for ( i = 0; i < players.size(); i += 1 ) {
@@ -214,7 +230,7 @@ void Poker_game::setup(){
                 player.set_name(*it);
                 player.set_chips(values.at(2));
                 add_player(player);
-                cout<<"Player "<<*it<<" added to the game"<<endl;
+                //cout<<"Player "<<*it<<" added to the game"<<endl;
         }      
 
         n_small_blind=values.at(0);

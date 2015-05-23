@@ -2,3 +2,50 @@
 
 
 int myrandom (int i) { return std::rand()%i;}
+
+string card2str(int c) {
+	std::stringstream buffer;
+	if(c==-1) {
+		return "undefined";
+	} else {
+		switch (c/13) {
+			case 0:
+				buffer	<< "Spade ";
+				break;
+			case 1:
+				buffer	<< "Hearts ";
+				break;
+			case 2:
+				buffer	<< "Diamonds ";
+				break;
+			case 3:
+				buffer	<< "Clubs ";
+				break;
+			default:
+				break;
+		}
+
+		switch (c%13) {
+			case 0:
+				buffer	<< "Ace";
+				break;
+			case 1:
+				buffer	<< "King";
+				break;
+			case 2:
+				buffer	<< "Queen";
+				break;
+			case 3:
+				buffer	<< "Valet";
+				break;
+			case 4:
+				buffer	<< "King";
+				break;
+			default:
+				buffer	<<  15 - (c%13);
+				break;
+		}
+	}
+	
+	return buffer.str();
+}

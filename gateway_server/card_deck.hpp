@@ -14,6 +14,11 @@ using namespace std;
 
 int myrandom (int i);
 
+// Get the rank of a hand comprising seven cards, each represented by an
+// integer from 0 (resp. Ace of Spades) to 51 (resp. Two of Clubs) inclusive.
+// The higher the rank the better the hand. Two hands of equal rank tie.
+string card2str(int c);
+
 class Card_deck
 {
 	public:

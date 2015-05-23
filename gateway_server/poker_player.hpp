@@ -5,12 +5,14 @@
 #include	<vector>
 #include	<iostream>
 #include	<fstream>
+#include	"card_deck.hpp"
 
 using namespace std;
 
 typedef struct {
 	string action;
 	unsigned int new_high_bet;
+	unsigned int new_player_chips;
 } Poker_action;
 
 
@@ -26,6 +28,9 @@ class Poker_player
 		unsigned int get_bet();                           /* getter method */
 		void set_bet ( unsigned int b );                  /* setter method */
 		void set_card (int index, int card);
+
+		unsigned int deduct_chips(unsigned int c); /* deduct the amount of chips specified */
+                                                /* if player has less chips, return the amount of chips */
 
 		void reset_fold() {
 			has_folded=false;
