@@ -35,18 +35,19 @@ void Poker_game::round() {                          /* corresponds to 1 round of
 	pot = 0;
 	
 	//set the big&small blind's bets accordingly
-	(players.at(small_blind)) . deduct_chips ( 50 );
-	(players.at(big_blind)) . deduct_chips ( 100 );
-	(players.at(small_blind)) . set_bet(50);
-	(players.at(big_blind)) . set_bet(100);
+	(players.at(small_blind)) . deduct_chips ( n_small_blind );
+	(players.at(big_blind)) . deduct_chips ( n_big_blind );
+	(players.at(small_blind)) . set_bet(n_small_blind);
+	(players.at(big_blind)) . set_bet(n_big_blind);
 
-	pot += 50;
-	pot += 100;
+	pot += n_small_blind;
+	pot += n_big_blind;
 
 
 	deal_player_cards();                             /* deal player cards */
 	betting_round();
 	print_info();
+	current_player = (big_blind + 1) % players.size();
 
 	flop();                                     /* deal the flop */
 	betting_round();
@@ -62,10 +63,12 @@ void Poker_game::round() {                          /* corresponds to 1 round of
 
 
 	//determine a winner
-	int winner;                                 /* do that by hand now */
+	unsigned int winner;                                 /* do that by hand now */
 	print_info();
-	cout << "Please determine a winner by hand: ";
-	cin >> winner;
+	do {
+		cout << "Please determine a winner by hand: ";
+		cin >> winner;
+	} while (winner > players.size());
 
 	cout << "Player " << winner << " has won" << endl;
 	cout	<< "He wins a pot of " << pot << endl;
@@ -77,14 +80,16 @@ void Poker_game::round() {                          /* corresponds to 1 round of
 }
 
 void Poker_game::start() {
+//	cout	<< "Starting the poker game now" << endl;
 	unsigned int i;
 	dealer=0;
 	small_blind=1;
 	big_blind=2;
 	while(players.size() > 1) {
-		high_bet = 100;                         /* set the highest bet to the big blind */
+		high_bet = n_big_blind;                         /* set the highest bet to the big blind */
 		pot = 0;
 
+		//advance special functions
 		dealer = (dealer+1) % players.size();
 		small_blind = (small_blind+1) % players.size();
 		big_blind = (big_blind+1) % players.size();
@@ -103,7 +108,7 @@ void Poker_game::start() {
 			}
 		}
 
-		cout	<< "Starting a new round of poker" << endl;
+//		cout	<< "Starting a new round of poker" << endl;
 		round();
 
 	}
@@ -150,8 +155,6 @@ void Poker_game::river() {
 void Poker_game::betting_round () {
 	Poker_action *action;
 
-	cout << endl << "---------------------------" << endl;
-
 	int n_players = players.size();
 
 	while ( n_players > 1 && current_player != highest_better ) {         /* while there are still players */
@@ -177,14 +180,15 @@ void Poker_game::betting_round () {
 		current_player = (current_player+1)%players.size();
 	}
 
-	cout << endl << "---------------------------" << endl;
 	return;
 }
 
 void Poker_game::print_info (  ) {
 	unsigned int i;
-	cout	<< "Info about the game" << endl;
-	cout	<< "Still " << players.size() << " players in the game" << endl;
+//	cout	<< "Info about the game" << endl;
+//	cout	<< "Still " << players.size() << " players in the game" << endl;
+	cout	<< "+++++++++++++++++" << endl;
+	cout	<< "Pot: " << pot << endl;
 	cout	<< "Common cards: ";
 	for(i=0; i<n_common_cards; i++) {
 //		cout	<< common_cards[i] << " ";
@@ -200,8 +204,7 @@ void Poker_game::print_info (  ) {
 }		/* -----  end of method Poker_game::print_info  ----- */
 
 void Poker_game::setup(){
-        cout<<"Setting Poker game up"<<endl;
-        fstream fin("pokerconfig.txt");
+        fstream fin("gameconfig");
 
         string playerstring,valuestring;
 
@@ -235,7 +238,7 @@ void Poker_game::setup(){
 
         n_small_blind=values.at(0);
         n_big_blind=values.at(1);
-        cout<<"Credits: "<<player.get_chips()<<"  Small blind: "<<n_small_blind<<"  Big blind: "<<n_big_blind<<endl;
+//        cout<<"Credits: "<<player.get_chips()<<"  Small blind: "<<n_small_blind<<"  Big blind: "<<n_big_blind<<endl;
 
         fin.close();
 }

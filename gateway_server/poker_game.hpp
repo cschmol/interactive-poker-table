@@ -40,7 +40,7 @@ class Poker_game
 
 		int dealer, small_blind, big_blind, current_player; /* indexes for special players */
 		int common_cards[5];
-		int n_small_blind, n_big_blind;
+		int n_small_blind, n_big_blind;         /* worth of small and big blind */
 
 		unsigned int n_common_cards;                        /* holds the number of cards currently on the table */
 		int high_bet;                                       /* set the bet to the big blind */

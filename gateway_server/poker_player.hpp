@@ -19,34 +19,40 @@ typedef struct {
 class Poker_player
 {
 	public:
-		Poker_player(string n, unsigned int c);           /* constructor */
-		
-		string get_name ();                               /* getter method */
-		void set_name (string value);                     /* setter method */
-		unsigned int get_chips ();                        /* getter method */
-		void set_chips ( unsigned int c );                /* setter method */
-		unsigned int get_bet();                           /* getter method */
-		void set_bet ( unsigned int b );                  /* setter method */
-		void set_card (int index, int card);
+		Poker_player(string n, unsigned int c);
 
-		unsigned int deduct_chips(unsigned int c); /* deduct the amount of chips specified */
-                                                /* if player has less chips, return the amount of chips */
+		//name accessors
+		string get_name ();
+		void set_name (string value);
 
-		void reset_fold() {
-			has_folded=false;
-		}
+		//chips accessors
+		unsigned int get_chips ();
+		void set_chips ( unsigned int c );
+		unsigned int deduct_chips(unsigned int c);          /* deduct the amount of chips specified */
+                                                            /* if player has less chips, return the amount of chips */
+		//bet accessors
+		unsigned int get_bet();
+		void set_bet ( unsigned int b );
 
-		bool folded();
+		//fold accessors
+		void reset_fold();                                  /* set has_folded to false */
+		bool folded();                                      /* return has_folded */
 
-		void print_info();                                /* print info about player */
-		Poker_action *poker_action(unsigned int new_bet); /* player needs to chose an action */
+		//card accessors
+		void set_card (int index, int card);                /* set the players poker cards */
+		int get_card (int index);                           /* get the players poker cards */
+
+		bool make_bet(unsigned int c);
+
+		void print_info();                                  /* print info about player */
+		Poker_action *poker_action(unsigned int new_bet);   /* player needs to chose an action */
 
 	private:
 		string name;
-		unsigned int chips;                     /* current chips of the player */
-		unsigned int bet;                       /* current bet of the player */
-		bool has_folded;                        /* has the player folded yet */
-		int hand_cards[2];                      /* the players hand cards */
+		unsigned int chips;
+		unsigned int bet;
+		bool has_folded;
+		int hand_cards[2];
 
 };
 
