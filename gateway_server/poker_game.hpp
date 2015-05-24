@@ -38,14 +38,18 @@ class Poker_game
 		Card_deck deck;                                     /* card deck for the game */
 		vector<Poker_player> players;                       /* all players that are still competing */
 
-		int dealer, small_blind, big_blind, current_player; /* indexes for special players */
-		int common_cards[5];
-		int n_small_blind, n_big_blind;         /* worth of small and big blind */
+//		int dealer, small_blind, big_blind, current_player; /* indexes for special players */
+//		int highest_better;
 
-		unsigned int n_common_cards;                        /* holds the number of cards currently on the table */
-		int high_bet;                                       /* set the bet to the big blind */
-		int highest_better;
-		unsigned int pot;                                   /* amount of chips in the pot */
+		int common_cards[5];
+		unsigned int n_small_blind, n_big_blind;            /* worth of small and big blind */
+
+		std::vector<Poker_player>::iterator dealer, small_blind, big_blind, current_player; /* indexes for special players */
+		std::vector<Poker_player>::iterator highest_better;
+
+		unsigned int n_common_cards; /* holds the number of cards currently on the table */
+		unsigned int high_bet;       /* set the bet to the big blind */
+		unsigned int pot;            /* amount of chips in the pot */
 
 };
 

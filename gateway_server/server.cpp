@@ -23,8 +23,10 @@ int main ( int argc, char *argv[] )
 
 	pg.start();
 	*/
+
 	Poker_game pg;
 	pg.setup();
+	cout	<< "starting game now" << endl;
 	pg.start();
 
 	return 0;

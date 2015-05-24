@@ -89,7 +89,7 @@ Poker_action *Poker_player::poker_action(unsigned int new_bet) {
 
 		} else if(action == "call") {
 			pa->new_player_chips = new_bet - bet;
-			if(make_bet(new_bet)) {
+			if(make_bet(pa->new_player_chips)) {
 			} else {
 				cout	<< "You don't have enough chips to call" << endl;
 				has_folded = true;
@@ -100,14 +100,8 @@ Poker_action *Poker_player::poker_action(unsigned int new_bet) {
 			do {
 				cout << "What should be the new high bet?";
 				cin >> pa->new_high_bet;
-			} while (pa->new_high_bet <= new_bet || make_bet(pa->new_high_bet - bet) - bet > chips ); /* works because of short-circuit || */
+			} while (pa->new_high_bet <= new_bet || !make_bet(pa->new_high_bet - bet)); /* works because of short-circuit || */
 
-//			} while(pa->new_high_bet<=new_bet || pa->new_high_bet-bet > chips);
-
-//			int remaining = pa->new_high_bet - bet; /* what needs to be put in the middle */
-//			pa->new_player_chips = remaining;
-//			chips -= remaining;                 /* deduct that amount */
-//			bet = pa->new_high_bet;
 			unvalid_action = false;
 		}
 
@@ -150,4 +144,8 @@ bool Poker_player::make_bet(unsigned int c) {
 		bet += c;                               /* increase bet by bet */
 		return true;
 	}
+}
+
+void Poker_player::fold() {
+	has_folded = true;
 }

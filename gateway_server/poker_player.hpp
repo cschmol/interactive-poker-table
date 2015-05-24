@@ -37,6 +37,7 @@ class Poker_player
 		//fold accessors
 		void reset_fold();                                  /* set has_folded to false */
 		bool folded();                                      /* return has_folded */
+		void fold();
 
 		//card accessors
 		void set_card (int index, int card);                /* set the players poker cards */
