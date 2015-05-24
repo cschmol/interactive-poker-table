@@ -45,6 +45,9 @@ void Poker_player::set_card (int index, int card) {
 }
 
 void Poker_player::print_info() {
+	if(has_folded) {
+		cout	<< "!!!";
+	}
 	cout << "Name: " << name << "\t";
 	cout << "Chips: " << chips << "\t";
 	cout << "Bet: " << bet << "\t\t";

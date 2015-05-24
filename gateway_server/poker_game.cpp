@@ -48,6 +48,7 @@ void Poker_game::round() {                          /* corresponds to 1 round of
 	deal_player_cards();                             /* deal player cards */
 	betting_round();
 	print_info();
+	current_player = big_blind;
 	if(++current_player == players.end()) {
 		current_player = players.begin();
 	}
@@ -55,6 +56,7 @@ void Poker_game::round() {                          /* corresponds to 1 round of
 	flop();                                     /* deal the flop */
 	betting_round();
 	print_info();
+	current_player = big_blind;
 	if(++current_player == players.end()) {
 		current_player = players.begin();
 	}
@@ -62,6 +64,7 @@ void Poker_game::round() {                          /* corresponds to 1 round of
 	turn();                                     /* deal the turn */
 	betting_round();
 	print_info();
+	current_player = big_blind;
 	if(++current_player == players.end()) {
 		current_player = players.begin();
 	}
@@ -69,6 +72,10 @@ void Poker_game::round() {                          /* corresponds to 1 round of
 	river();                                    /* deal the river */
 	betting_round();
 	print_info();
+	current_player = big_blind;
+	if(++current_player == players.end()) {
+		current_player = players.begin();
+	}
 
 
 	//determine a winner
@@ -91,25 +98,35 @@ void Poker_game::round() {                          /* corresponds to 1 round of
 void Poker_game::start() {
 	std::vector<Poker_player>::iterator it;
 //	cout	<< "Starting the poker game now" << endl;
+
 	dealer=players.begin();
-	small_blind = dealer+1;
-	big_blind = small_blind+1;
-	current_player = big_blind+1;
+
+	small_blind = dealer;
+	if(++small_blind == players.end()) {
+		small_blind = players.begin();
+	}
+	big_blind = small_blind;
+	if(++big_blind == players.end()) {
+		big_blind = players.begin();
+	}
+	current_player = big_blind;
+	if(++current_player == players.end()) {
+		current_player = players.begin();
+	}
+
+	cout 	<< "Dealer: ";
+	dealer->print_info();
+	cout 	<< "small_blind";
+	small_blind->print_info();
+	cout 	<< "big_blind";
+	big_blind->print_info();
+//	cout 	<< "current_player";
+//	current_player->print_info();
 
 	while(players.size() > 1) {
 		high_bet = n_big_blind;                         /* set the highest bet to the big blind */
 		pot = 0;
 
-		//advance special functions
-		if(++small_blind == players.end()) {
-			small_blind = players.begin();
-		}
-		if(++big_blind == players.end()) {
-			big_blind = players.begin();
-		}
-		if(++current_player == players.end()) {
-			current_player = players.begin();
-		}
 
 		highest_better=big_blind;
 
@@ -119,17 +136,28 @@ void Poker_game::start() {
 			it -> set_bet(0);
 
 			if ( it->get_chips() <= 0 ) {
-				cout	<< "Player is game-over, removing him" << endl;
+				cout	<< "Player " << it->get_name() << " is game-over, removing him" << endl;
 				players.erase(it);
 			}
 		}
 
 //		cout	<< "Starting a new round of poker" << endl;
 		round();
-		break;
+//		break;
 
 		if(++dealer == players.end()) {
 			dealer = players.begin();
+		}
+		
+		//advance special functions
+		if(++small_blind == players.end()) {
+			small_blind = players.begin();
+		}
+		if(++big_blind == players.end()) {
+			big_blind = players.begin();
+		}
+		if(++current_player == players.end()) {
+			current_player = players.begin();
 		}
 	}
 }

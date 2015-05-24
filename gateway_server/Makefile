@@ -10,7 +10,7 @@ SRC		= $(OBJ:%o=%cpp) $(OBJ:%o=%hpp)
 $(NAME): $(OBJ)
 	$(CC) $(CGLAGS) -o $(NAME) $(OBJ) $(LDFLAGS)
 
-%.o: %.cpp %.cpp
+%.o: %.cpp %.hpp
 	g++ -Wall -g -c $<
 
 dep: $(SRC)
@@ -25,14 +25,14 @@ ctags:
 	
 .PHONY:
 clean:
-	rm $(OBJ) $(NAME)
+	rm $(OBJ) $(NAME) 2>/dev/null
 
 .PHONY:
 veryclean:
-	rm $(OBJ) $(NAME) tags
-	rm tags
+	rm $(OBJ) $(NAME) tags 2>/dev/null
+	rm tags 2>/dev/null
 
-.PHONY:
-run:
+#.PHONY:
+run: server
 	clear
 	./server
