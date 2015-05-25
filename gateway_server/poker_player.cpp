@@ -9,6 +9,15 @@ Poker_player::Poker_player(string n, unsigned int c) {
 	has_folded = false;
 }
 
+Poker_player::Poker_player(string n, unsigned int c, int sock) {
+	name 	= n;                                /* set name */
+	chips 	= c;                                /* set number of chips */
+	bet		= 0;
+	hand_cards[0] = hand_cards[1] = -1;         /* needs to be initalizized to -1 */
+	has_folded = false;
+	cli_socket = sock;
+}
+
 string Poker_player::get_name (  )
 {
 	return name;

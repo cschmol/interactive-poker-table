@@ -6,14 +6,24 @@
 #include	<algorithm>
 #include	<vector>
 
+/*-----------------------------------------------------------------------------
+ *  headers for sockets
+ *-----------------------------------------------------------------------------*/
+#include	<unistd.h>
+#include	<errno.h>
+#include	<sys/types.h>
+#include	<sys/socket.h>
+#include	<netinet/in.h>
+#include	<arpa/inet.h>
+#include	<netdb.h>
 
-
-
+#include	<strings.h>
 
 class Poker_game
 {
 	public:
 		Poker_game ();                          /* constructor */
+		~Poker_game ();
 
 		bool add_player(Poker_player &player);
 
@@ -51,6 +61,14 @@ class Poker_game
 		unsigned int high_bet;       /* set the bet to the big blind */
 		unsigned int pot;            /* amount of chips in the pot */
 
+
+		/*-----------------------------------------------------------------------------
+		 *  socket variables
+		 *-----------------------------------------------------------------------------*/
+		int serv_sock;
+		struct sockaddr_in serv_addr, cli_addr;
+		socklen_t clilen = sizeof(cli_addr);
+		char buffer[2048];
 };
 
 #endif

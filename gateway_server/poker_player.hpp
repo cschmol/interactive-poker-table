@@ -20,6 +20,7 @@ class Poker_player
 {
 	public:
 		Poker_player(string n, unsigned int c);
+		Poker_player(string n, unsigned int c, int sock);
 
 		//name accessors
 		string get_name ();
@@ -54,6 +55,12 @@ class Poker_player
 		unsigned int bet;
 		bool has_folded;
 		int hand_cards[2];
+
+		/*-----------------------------------------------------------------------------
+		 *  socket variables
+		 *-----------------------------------------------------------------------------*/
+
+		int cli_socket;                         /* socket of the new connection */
 
 };
 

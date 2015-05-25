@@ -11,7 +11,48 @@ Poker_game::Poker_game () {                            /* constructor */
 	}
 	//deck.shuffle();                     /* shuffle the deck */
 	n_common_cards = 0;                         /* no common cards have been dealt */
+
+
+	/*-----------------------------------------------------------------------------
+	 *  Setup listening socket
+	 *-----------------------------------------------------------------------------*/
+	serv_sock = socket(AF_INET, SOCK_STREAM, 0);
+	if(serv_sock<0) {
+		perror("error: ");
+		exit(1);
+	}
+
+	int optval = 1;
+
+	setsockopt(serv_sock, SOL_SOCKET, SO_REUSEADDR,
+				&optval, sizeof(optval));
+
+	bzero(&serv_addr, sizeof(serv_addr));       /* zero that structure */
+
+	serv_addr.sin_family = AF_INET;
+	serv_addr.sin_port = htons(8888);
+	serv_addr.sin_addr.s_addr = INADDR_ANY;
+
+	int status = bind(serv_sock, (struct sockaddr *) &serv_addr, sizeof(serv_addr));
+	if(status<0) {
+		perror("error: ");
+		exit(1);
+	}
+
+	status = listen(serv_sock, 10);
+	if(status<0) {
+		perror("error: ");
+		exit(1);
+	}
+
+	//now ready to accept connections
 }
+
+Poker_game::~Poker_game (  )
+{
+	close(serv_sock);                          /* close the socket */
+}
+
 
 bool Poker_game::add_player(Poker_player &player) {
 	if(players.size()<MAX_PLAYERS) {
@@ -206,15 +247,10 @@ void Poker_game::betting_round () {
 	Poker_action *action;
 
 // _________________________________________
-///  might need to go some other place here \
-//| it does not work correctly when players |
-//\ fold in a previous round                /
+//  might need to go some other place here 
+//  it does not work correctly when players 
+//  fold in a previous round                
 // -----------------------------------------
-//        \   ^__^
-//         \  (oo)\_______
-//            (__)\       )\/\
-//                ||----w |
-//                ||     ||
 	int n_players = players.size();             /* might need to be some other place */
 
 	while ( n_players > 1 && current_player != highest_better ) {         /* while there are still players */
@@ -289,14 +325,22 @@ void Poker_game::setup(){
         while (s2 >> buf){
                 values.push_back(atoi(buf.c_str()));
         }
+
+		//accept the connection here
+		int s = accept(serv_sock, (struct sockaddr *) &cli_addr, &clilen);
+		if(s < 0) {
+			perror("error: ");
+			exit(1);
+		}
+		cout	<< "Accpted a new conncetion" << endl;
         
-        Poker_player player("",0);
+        Poker_player player("",0,s);
 
         for (std::vector<string>::iterator it = playernames.begin() ; it != playernames.end(); ++it){
                 player.set_name(*it);
                 player.set_chips(values.at(2));
                 add_player(player);
-                //cout<<"Player "<<*it<<" added to the game"<<endl;
+				cout<<"Player "<<*it<<" added to the game"<<endl;
         }      
 
         n_small_blind=values.at(0);
