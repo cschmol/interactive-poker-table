@@ -1,17 +1,17 @@
 #Variablen die gebraucht werden
 CC		= g++
 CCFLAGS	= -Wall -g
-LDGLAGS	=
+LDFLAGS	= -g
 OBJ = card_deck.o server.o poker_player.o poker_game.o	
 NAME = server
 dependfile = .depend
 SRC		= $(OBJ:%o=%cpp) $(OBJ:%o=%hpp)
 
 $(NAME): $(OBJ)
-	$(CC) $(CGLAGS) -o $(NAME) $(OBJ) $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(LDFLAGS)
 
 %.o: %.cpp %.hpp
-	g++ -Wall -g -c $<
+	$(CC) $(CFLAGS) -c $<
 
 dep: $(SRC)
 	$(CC) -MM $(SRC) > $(DEPENDFILE)

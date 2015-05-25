@@ -24,8 +24,10 @@ Poker_game::Poker_game () {                            /* constructor */
 
 	int optval = 1;
 
-	setsockopt(serv_sock, SOL_SOCKET, SO_REUSEADDR,
-				&optval, sizeof(optval));
+	if(setsockopt(serv_sock, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval))<0) {
+		perror("setsockopt:");
+		exit(1);
+	}
 
 	bzero(&serv_addr, sizeof(serv_addr));       /* zero that structure */
 
@@ -327,20 +329,20 @@ void Poker_game::setup(){
         }
 
 		//accept the connection here
-		int s = accept(serv_sock, (struct sockaddr *) &cli_addr, &clilen);
-		if(s < 0) {
-			perror("error: ");
-			exit(1);
-		}
-		cout	<< "Accpted a new conncetion" << endl;
-        
-        Poker_player player("",0,s);
+		int s;
 
         for (std::vector<string>::iterator it = playernames.begin() ; it != playernames.end(); ++it){
-                player.set_name(*it);
-                player.set_chips(values.at(2));
-                add_player(player);
-				cout<<"Player "<<*it<<" added to the game"<<endl;
+			s = accept(serv_sock, (struct sockaddr *) &cli_addr, &clilen);
+			if(s < 0) {
+				perror("error: ");
+				exit(1);
+			}
+			Poker_player player("",0,s);        /* Allocate space for the player */
+
+			player.set_name(*it);
+			player.set_chips(values.at(2));
+			add_player(player);
+			cout<<"Player "<<*it<<" added to the game"<<endl;
         }      
 
         n_small_blind=values.at(0);

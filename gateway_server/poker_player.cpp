@@ -72,6 +72,12 @@ Poker_action *Poker_player::poker_action(unsigned int new_bet) {
 	Poker_action *pa = new Poker_action;
 	string action;
 
+	char buffer[512];
+
+#define SEND(x) memset(buffer, 0, sizeof(buffer));\
+				strcpy(buffer, x);\
+				send(cli_socket, buffer, strlen(buffer)+1, 0);
+
 	bool unvalid_action = true;
 
 	do {
@@ -84,9 +90,15 @@ Poker_action *Poker_player::poker_action(unsigned int new_bet) {
 //		cout << "bet: "     << bet     << endl;
 //		cin >> action;                          /* read action */
 
-		cout << "ch:" << chips << ",nb:" << new_bet << ",b:" << bet;
-		cout << "(" << name << ")" << "$ ";
-		cin >> action;                          /* read action */
+//		cout << "ch:" << chips << ",nb:" << new_bet << ",b:" << bet;
+//		cout << "(" << name << ")" << "$ ";
+//		cin >> action;                          /* read action */
+
+		sprintf(buffer, "ch:%d,nb:%d,b:%d(%s)$", chips, new_bet, bet, name.c_str());
+		send(cli_socket, buffer, strlen(buffer)+1, 0);
+		recv(cli_socket, buffer, sizeof(buffer), 1);
+		sscanf(buffer, "%s", buffer);
+		action = buffer;
 
 		if(action == "fold") {
 			has_folded = true;
@@ -94,7 +106,8 @@ Poker_action *Poker_player::poker_action(unsigned int new_bet) {
 
 		} else if(action== "check") {
 			if ( new_bet > bet ) {
-				cout << "You cannot check now" << endl;
+//				cout << "You cannot check now" << endl;
+				SEND("You cannot check now");
 				continue;
 			}
 			unvalid_action = false;
@@ -103,14 +116,16 @@ Poker_action *Poker_player::poker_action(unsigned int new_bet) {
 			pa->new_player_chips = new_bet - bet;
 			if(make_bet(pa->new_player_chips)) {
 			} else {
-				cout	<< "You don't have enough chips to call" << endl;
+//				cout	<< "You don't have enough chips to call" << endl;
+				SEND("You don't have enough chips to call");
 				has_folded = true;
 			}
 			unvalid_action = false;
 
 		} else if(action == "raise") {
 			do {
-				cout << "What should be the new high bet?";
+//				cout << "What should be the new high bet?";
+				SEND("What should be the new high bet?");
 				cin >> pa->new_high_bet;
 			} while (pa->new_high_bet <= new_bet || !make_bet(pa->new_high_bet - bet)); /* works because of short-circuit || */
 

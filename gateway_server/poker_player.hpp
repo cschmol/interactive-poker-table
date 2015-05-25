@@ -6,6 +6,9 @@
 #include	<iostream>
 #include	<fstream>
 #include	"card_deck.hpp"
+#include	<sys/types.h>
+#include	<sys/socket.h>
+#include	<string.h>
 
 using namespace std;
 
