@@ -55,3 +55,30 @@ Socket::Socket(int s) {
 int Socket::get_sock() {
 	return sock;
 }
+
+bool Socket::send(string s) {
+	memset(buffer, 0, sizeof(buffer));
+	strcpy(buffer, s.c_str());
+	if(::send(sock, buffer, s.length()+1, 0)<0) {
+		return false;
+	} else {
+		return true;
+	}
+}
+
+string Socket::recv() {
+	memset(buffer, 0, sizeof(buffer));
+	if(::recv(sock, buffer, sizeof(buffer), 0)<0) {
+		return "";
+	} else {
+		return buffer;
+	}
+}
+
+
+
+
+
+
+
+

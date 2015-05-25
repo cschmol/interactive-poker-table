@@ -29,7 +29,7 @@ class Poker_player
 	public:
 		Poker_player(string n, unsigned int c);
 		Poker_player(string n, unsigned int c, int sock);
-		Poker_player(string n, unsigned int c, Socket sock);
+//		Poker_player(string n, unsigned int c, Socket sock);
 		
 		~Poker_player();
 

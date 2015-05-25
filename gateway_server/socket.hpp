@@ -6,6 +6,7 @@
 #include	"card_deck.hpp"
 #include	<algorithm>
 #include	<vector>
+#include	<string>
 
 /*-----------------------------------------------------------------------------
  *  headers for sockets
@@ -29,8 +30,12 @@ class Socket
 
 		int get_sock();
 
-		int sock;                               /* socket variable */
+		bool send(string s);
+		string recv();
+
+
 	private:
+		int sock;                               /* socket variable */
 		struct sockaddr_in serv_addr;
 		socklen_t serv_len;
 

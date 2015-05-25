@@ -18,17 +18,18 @@ Poker_player::Poker_player(string n, unsigned int c, int s) {
 	cli_socket = s;
 
 	sock = new Socket(s);
+	sock->send("Welcome to the game");
 }
 
-Poker_player::Poker_player(string n, unsigned int c, Socket s) {
-	name 	= n;                                /* set name */
-	chips 	= c;                                /* set number of chips */
-	bet		= 0;
-	hand_cards[0] = hand_cards[1] = -1;         /* needs to be initalizized to -1 */
-	has_folded = false;
-
-	sock = new Socket(s);
-}
+//Poker_player::Poker_player(string n, unsigned int c, Socket s) {
+//	name 	= n;                                /* set name */
+//	chips 	= c;                                /* set number of chips */
+//	bet		= 0;
+//	hand_cards[0] = hand_cards[1] = -1;         /* needs to be initalizized to -1 */
+//	has_folded = false;
+//
+//	sock = new Socket(s);
+//}
 
 Poker_player::~Poker_player() {
 	cout	<< "Poker_player " << name << " destroyed now" << endl;
@@ -87,34 +88,16 @@ bool Poker_player::folded() {
 Poker_action *Poker_player::poker_action(unsigned int new_bet) {
 	Poker_action *pa = new Poker_action;
 	string action;
-
+	string amount;
 	char buffer[512];
-
-#define SEND(x) memset(buffer, 0, sizeof(buffer));\
-				strcpy(buffer, x);\
-				send(cli_socket, buffer, strlen(buffer)+1, 0);
 
 	bool unvalid_action = true;
 
 	do {
-		//get the action from stdin
-//		cout << "Player " << name
-//			 << " needs to chose an action (" 
-//			 << "fold/check/call/raise) : " << endl;
-//		cout << "Chips: "   << chips   << endl;
-//		cout << "new_bet: " << new_bet << endl;
-//		cout << "bet: "     << bet     << endl;
-//		cin >> action;                          /* read action */
-
-//		cout << "ch:" << chips << ",nb:" << new_bet << ",b:" << bet;
-//		cout << "(" << name << ")" << "$ ";
-//		cin >> action;                          /* read action */
-
 		sprintf(buffer, "ch:%d,nb:%d,b:%d(%s)$", chips, new_bet, bet, name.c_str());
-		send(cli_socket, buffer, strlen(buffer)+1, 0);
-		recv(cli_socket, buffer, sizeof(buffer), 1);
-		sscanf(buffer, "%s", buffer);
-		action = buffer;
+		sock->send(buffer);
+		action = sock->recv();
+		action.erase(action.length() - 1);
 
 		if(action == "fold") {
 			has_folded = true;
@@ -122,8 +105,7 @@ Poker_action *Poker_player::poker_action(unsigned int new_bet) {
 
 		} else if(action== "check") {
 			if ( new_bet > bet ) {
-//				cout << "You cannot check now" << endl;
-				SEND("You cannot check now");
+				sock->send("You cannot check now");
 				continue;
 			}
 			unvalid_action = false;
@@ -132,17 +114,17 @@ Poker_action *Poker_player::poker_action(unsigned int new_bet) {
 			pa->new_player_chips = new_bet - bet;
 			if(make_bet(pa->new_player_chips)) {
 			} else {
-//				cout	<< "You don't have enough chips to call" << endl;
-				SEND("You don't have enough chips to call");
+				sock->send("You don't have enough chips to call");
 				has_folded = true;
 			}
 			unvalid_action = false;
 
 		} else if(action == "raise") {
 			do {
-//				cout << "What should be the new high bet?";
-				SEND("What should be the new high bet?");
-				cin >> pa->new_high_bet;
+				sock->send("What should be the new high bet?");
+				amount = sock->recv();
+				amount.erase(action.length() - 1);
+				istringstream ( amount ) >> pa->new_high_bet; /* convert string to integer */
 			} while (pa->new_high_bet <= new_bet || !make_bet(pa->new_high_bet - bet)); /* works because of short-circuit || */
 
 			unvalid_action = false;

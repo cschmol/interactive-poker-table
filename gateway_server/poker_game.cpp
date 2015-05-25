@@ -213,6 +213,7 @@ void Poker_game::river() {
 
 void Poker_game::betting_round () {
 	Poker_action *action;
+	cout	<< "Beginning betting round" << endl;
 
 // _________________________________________
 //  might need to go some other place here 
@@ -294,9 +295,9 @@ void Poker_game::setup(){
                 values.push_back(atoi(buf.c_str()));
         }
 
-		Poker_player *player = new Poker_player("", 0, sock.get_sock());
         for (std::vector<string>::iterator it = playernames.begin() ; it != playernames.end(); ++it){
 
+			Poker_player *player = new Poker_player("", 0, sock.get_sock());
 
 			player->set_name(*it);
 			player->set_chips(values.at(2));
