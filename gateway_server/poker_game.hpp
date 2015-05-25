@@ -5,6 +5,7 @@
 #include	"card_deck.hpp"
 #include	<algorithm>
 #include	<vector>
+#include	"socket.hpp"
 
 /*-----------------------------------------------------------------------------
  *  headers for sockets
@@ -25,7 +26,7 @@ class Poker_game
 		Poker_game ();                          /* constructor */
 		~Poker_game ();
 
-		bool add_player(Poker_player &player);
+		bool add_player(Poker_player *player);
 
 		void start();                           /* players added, start game */
 		void round();                           /* corresponds to 1 round of poker */
@@ -67,8 +68,10 @@ class Poker_game
 		 *-----------------------------------------------------------------------------*/
 		int serv_sock;
 		struct sockaddr_in serv_addr, cli_addr;
-		socklen_t clilen = sizeof(cli_addr);
+		socklen_t clilen;
 		char buffer[2048];
+
+		Socket sock;
 };
 
 #endif

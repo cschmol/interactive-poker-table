@@ -5,10 +5,13 @@
 #include	<vector>
 #include	<iostream>
 #include	<fstream>
-#include	"card_deck.hpp"
+
 #include	<sys/types.h>
 #include	<sys/socket.h>
 #include	<string.h>
+
+#include	"card_deck.hpp"
+#include	"socket.hpp"
 
 using namespace std;
 
@@ -18,12 +21,17 @@ typedef struct {
 	unsigned int new_player_chips;
 } Poker_action;
 
+class Socket;
+
 
 class Poker_player
 {
 	public:
 		Poker_player(string n, unsigned int c);
 		Poker_player(string n, unsigned int c, int sock);
+		Poker_player(string n, unsigned int c, Socket sock);
+		
+		~Poker_player();
 
 		//name accessors
 		string get_name ();
@@ -64,6 +72,7 @@ class Poker_player
 		 *-----------------------------------------------------------------------------*/
 
 		int cli_socket;                         /* socket of the new connection */
+		Socket *sock;
 
 };
 

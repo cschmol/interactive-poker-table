@@ -2,7 +2,7 @@
 CC		= g++
 CCFLAGS	= -Wall -g
 LDFLAGS	= -g
-OBJ = card_deck.o server.o poker_player.o poker_game.o	
+OBJ = card_deck.o server.o poker_player.o poker_game.o socket.o
 NAME = server
 dependfile = .depend
 SRC		= $(OBJ:%o=%cpp) $(OBJ:%o=%hpp)
