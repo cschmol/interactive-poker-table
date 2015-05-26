@@ -15,6 +15,9 @@
 #include	"card_deck.hpp"
 #include	"socket.hpp"
 
+#include	"SevenEval.h"
+#include	"FiveEval.h"
+
 using namespace std;
 
 typedef struct {
@@ -61,10 +64,13 @@ class Poker_player
 
 		bool make_bet(unsigned int c);
 
-		void print_info(int line);                                  /* print info about player */
+		void print_info(int line, int n_cards, int *comm_cards);
+//		void print_info(int line);                                  /* print info about player */
 		Poker_action *poker_action(unsigned int new_bet);   /* player needs to chose an action */
 
 		void print_hello();
+
+		double winning_odds(int rounds, int n_common_cards, int *common_cards);
 
 	private:
 		string name;
@@ -86,6 +92,10 @@ class Poker_player
 		 *-----------------------------------------------------------------------------*/
 		WINDOW *wnd;
 
+		/*-----------------------------------------------------------------------------
+		 *  Hands evaluator
+		 *-----------------------------------------------------------------------------*/
+		SevenEval evaluator;
 
 };
 

@@ -59,12 +59,15 @@ void Poker_player::set_card (int index, int card) {
 	hand_cards[index] = card;
 }
 
-void Poker_player::print_info(int line) {
+//10, 2, cards
+void Poker_player::print_info(int line, int n_cards, int *comm_cards) {
 	mvprintw(line, 0, "Name: %s, Chips: %d, Bet: %d, Cards: %s | %s",
 			  name.c_str(), chips, bet, card2str(hand_cards[0]).c_str(),
 			  card2str(hand_cards[1]).c_str());
+	printw("Odds: %f", winning_odds(5, n_cards, comm_cards));
 	refresh();
 }
+//double Poker_player::winning_odds(int rounds, int n_common_cards, int *common_cards) { /* only when player cards are already dealt */
 
 bool Poker_player::folded() {
 	return has_folded;
@@ -181,3 +184,52 @@ void Poker_player::print_hello() {
 //	wprintw(wnd, "Hello World");
 //	wrefresh(wnd);
 }
+
+double Poker_player::winning_odds(int rounds, int n_common_cards, int *common_cards) { /* only when player cards are already dealt */
+	int i;
+	int own_cards[7], opponent_cards[7];
+	own_cards[0] = hand_cards[0];
+	own_cards[1] = hand_cards[1];
+	int own_rank, opponent_rank;
+
+	int wins = 0, losses = 0;
+
+
+	while(rounds--) {                     /* as many rounds as needed */
+		Card_deck cd;                           /* generate a new card deck for every round */
+		opponent_cards[0] = cd.draw_card();
+		opponent_cards[1] = cd.draw_card();
+
+		for(i=2+n_common_cards; i<6; i++) { /* simulate common cards */
+			own_cards[i] = cd.draw_card();
+			opponent_cards[i] = own_cards[i];
+		}
+
+		for(i=2; i<2+n_common_cards; i++) {
+			own_cards[i] = opponent_cards[i] = common_cards[i-2];
+		}
+
+		//calculate ranks
+		own_rank = evaluator.GetRank(own_cards[0], own_cards[1], own_cards[2], own_cards[3], own_cards[4], own_cards[5], own_cards[6]); 
+		opponent_rank = evaluator.GetRank(opponent_cards[0], opponent_cards[1], opponent_cards[2], opponent_cards[3], opponent_cards[4], opponent_cards[5], opponent_cards[6]); 
+
+		if(own_rank < opponent_rank) {
+			losses++;
+		} else {
+			wins++;
+		}
+	}
+	return (double) wins / ( (double) wins + (double) losses );
+}
+
+
+
+
+
+
+
+
+
+
+
+

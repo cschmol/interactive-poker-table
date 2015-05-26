@@ -1,23 +1,25 @@
 #Variablen die gebraucht werden
-CC		= g++
-CCFLAGS	= -Wall -g
+CXX		= g++
+CFLAGS	= -Wall -g
 LDFLAGS	= -g -lncurses
-OBJ = card_deck.o server.o poker_player.o poker_game.o socket.o
+OBJ = card_deck.o server.o poker_player.o poker_game.o socket.o FiveEval.o SevenEval.o
 NAME = server
 dependfile = .depend
 SRC		= $(OBJ:%o=%cpp) $(OBJ:%o=%hpp)
 
 $(NAME): $(OBJ)
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(LDFLAGS)
+	$(CXX) $(CFLAGS) -o $(NAME) $(OBJ) $(LDFLAGS)
+
+server.o: server.cpp
+	$(CXX) $(CFLAGS) -c $<
 
 %.o: %.cpp %.hpp
-	$(CC) $(CFLAGS) -c $<
+	$(CXX) $(CFLAGS) -c $<
 
 dep: $(SRC)
-	$(CC) -MM $(SRC) > $(DEPENDFILE)
+	$(CXX) -MM $(SRC) > $(DEPENDFILE)
 
 -include $(DEPENDFILE)
-
 
 .PHONY:
 ctags:

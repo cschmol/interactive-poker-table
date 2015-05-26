@@ -268,6 +268,7 @@ void Poker_game::betting_round () {
 	return;
 }
 
+//void print_info(int line, int n_cards, int *comm_cards) {
 void Poker_game::print_info (  ) {
 	unsigned int i;
 	std::vector<Poker_player>::iterator it;
@@ -283,7 +284,7 @@ void Poker_game::print_info (  ) {
 //	cout	<< endl;
 	int line = 10;
 	for ( it=players.begin(); it!=players.end(); it++) {     /* iterate over all players */
-		it -> print_info(line++);
+		it -> print_info(line++, n_common_cards, common_cards);
 		clrtoeol();
 		if(it == big_blind) {
 			printw("\tBB");
