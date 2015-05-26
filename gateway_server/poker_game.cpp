@@ -9,11 +9,7 @@ Poker_game::Poker_game () {                            /* constructor */
 	for(int i=0; i<5; i++) {
 		common_cards[i] = -1;           /* initalize the cards with -1 */
 	}
-	//deck.shuffle();                     /* shuffle the deck */
 	n_common_cards = 0;                         /* no common cards have been dealt */
-
-	//sock = new Socket();
-
 }
 
 Poker_game::~Poker_game (  )
@@ -91,15 +87,14 @@ void Poker_game::round() {                          /* corresponds to 1 round of
 	unsigned int winner;                                 /* do that by hand now */
 	print_info();
 	do {
-		cout << "Please determine a winner by hand: ";
-		cin >> winner;
+		mvwprintw(wGameInfo, 0, 0, "Please determine a winner by hand: ");
+		winner = getch();
 	} while (winner > players.size());
 
-	cout << "Player " << winner << " has won" << endl;
-	cout	<< "He wins a pot of " << pot << endl;
+	mvwprintw(wGameInfo, 1, 0, "Player %d has won", winner);
+	mvwprintw(wGameInfo, 2, 0, "He wins a pot of %d", pot);
 	(players.at(winner)) .set_chips( (players.at(winner)) . get_chips() + pot );
 	pot = 0;
-
 
 	//blinds logic
 }
@@ -107,6 +102,8 @@ void Poker_game::round() {                          /* corresponds to 1 round of
 void Poker_game::start() {
 	std::vector<Poker_player>::iterator it;
 //	cout	<< "Starting the poker game now" << endl;
+
+	mvwprintw(wGameInfo, 3, 0, "Starting the poker game now");
 
 	dealer=players.begin();
 
@@ -123,12 +120,12 @@ void Poker_game::start() {
 		current_player = players.begin();
 	}
 
-	cout 	<< "Dealer: ";
-	dealer->print_info();
-	cout 	<< "small_blind";
-	small_blind->print_info();
-	cout 	<< "big_blind";
-	big_blind->print_info();
+//	cout 	<< "Dealer: ";
+//	dealer->print_info();
+//	cout 	<< "small_blind";
+//	small_blind->print_info();
+//	cout 	<< "big_blind";
+//	big_blind->print_info();
 //	cout 	<< "current_player";
 //	current_player->print_info();
 
@@ -145,7 +142,7 @@ void Poker_game::start() {
 			it -> set_bet(0);
 
 			if ( it->get_chips() <= 0 ) {
-				cout	<< "Player " << it->get_name() << " is game-over, removing him" << endl;
+//				cout	<< "Player " << it->get_name() << " is game-over, removing him" << endl;
 				players.erase(it);
 			}
 		}
@@ -174,8 +171,8 @@ void Poker_game::start() {
 void Poker_game::deal_player_cards() {
 	std::vector<Poker_player>::iterator it;
 
-	cout << "Dealing player cards" << endl;
-	cout << "--------------------" << endl;
+//	cout << "Dealing player cards" << endl;
+//	cout << "--------------------" << endl;
 	unsigned int j;
 	for ( it=players.begin(); it!=players.end(); it++) {     /* iterate over all players */
 		for(j=0; j<2; j++) {                                 /* draw 2 cards */
@@ -185,8 +182,8 @@ void Poker_game::deal_player_cards() {
 }
 
 void Poker_game::flop() {
-	cout << "Dealing flop" << endl;
-	cout << "------------" << endl;
+//	cout << "Dealing flop" << endl;
+//	cout << "------------" << endl;
 	unsigned int j;
 	//deal 3 common cards
 	for(j=0; j<3; j++) {                    /* draw 3 cards */
@@ -196,8 +193,8 @@ void Poker_game::flop() {
 }
 
 void Poker_game::turn() {
-	cout << "Dealing turn" << endl;
-	cout << "------------" << endl;
+//	cout << "Dealing turn" << endl;
+//	cout << "------------" << endl;
 	//deal 1 card
 	common_cards[3] = deck.draw_card();
 	n_common_cards = 4;
@@ -205,15 +202,15 @@ void Poker_game::turn() {
 
 void Poker_game::river() {
 	//deal 1 card
-	cout << "Dealing river" << endl;
-	cout << "-------------" << endl;
+//	cout << "Dealing river" << endl;
+//	cout << "-------------" << endl;
 	common_cards[4] = deck.draw_card();
 	n_common_cards = 5;
 }
 
 void Poker_game::betting_round () {
 	Poker_action *action;
-	cout	<< "Beginning betting round" << endl;
+//	cout	<< "Beginning betting round" << endl;
 
 // _________________________________________
 //  might need to go some other place here 
@@ -256,14 +253,14 @@ void Poker_game::print_info (  ) {
 	std::vector<Poker_player>::iterator it;
 //	cout	<< "Info about the game" << endl;
 //	cout	<< "Still " << players.size() << " players in the game" << endl;
-	cout	<< "+++++++++++++++++" << endl;
-	cout	<< "Pot: " << pot << endl;
-	cout	<< "Common cards: ";
+//	cout	<< "+++++++++++++++++" << endl;
+//	cout	<< "Pot: " << pot << endl;
+//	cout	<< "Common cards: ";
 	for(i=0; i<n_common_cards; i++) {
 //		cout	<< common_cards[i] << " ";
-		cout	<< card2str(common_cards[i]) << ",";
+//		cout	<< card2str(common_cards[i]) << ",";
 	}
-	cout	<< endl;
+//	cout	<< endl;
 	for ( it=players.begin(); it!=players.end(); it++) {     /* iterate over all players */
 		it -> print_info();
 	}
@@ -295,40 +292,26 @@ void Poker_game::setup(){
                 values.push_back(atoi(buf.c_str()));
         }
 
+		wGameInfo = newwin(LINES, COLS, 0, 0);  /* create the game window */
+		wrefresh(wGameInfo);
+
         for (std::vector<string>::iterator it = playernames.begin() ; it != playernames.end(); ++it){
+			mvwprintw(wGameInfo, 20, 0, "Waiting for player %s to connect", it->c_str());
+			wrefresh(wGameInfo);
 
 			Poker_player *player = new Poker_player("", 0, sock.get_sock());
+
 
 			player->set_name(*it);
 			player->set_chips(values.at(2));
 			add_player(player);
-			mvprintw(1, 0, "Player %s added to the game", it->c_str());
-//			cout<<"Player "<<*it<<" added to the game"<<endl;
+			mvwprintw(wGameInfo, 21, 0, "Player %s added to the game", it->c_str());
+			wrefresh(wGameInfo);
         }      
 
         n_small_blind=values.at(0);
         n_big_blind=values.at(1);
-//        cout<<"Credits: "<<player.get_chips()<<"  Small blind: "<<n_small_blind<<"  Big blind: "<<n_big_blind<<endl;
 
-		int i, num_players=players.size();
-		WINDOW *tmp;
-		for(std::vector<Poker_player>::iterator it = players.begin(); it != players.end(); it++) {
-			tmp = newwin((LINES-10)/5, COLS, 11, 0);
-			box(tmp, 0, 0);
-//			wnoutrefresh(tmp);
-			it->set_wnd(tmp);
-			wrefresh(tmp);
-		}
-		wGameInfo = newwin(10, COLS, 0, 0);
-		box(wGameInfo, 0, 0);
-		doupdate();
-
-		getch();
-
-//		refresh();
-//		wrefresh(wGameInfo);
-
-		getch();
 
         fin.close();
 }

@@ -60,15 +60,15 @@ void Poker_player::set_card (int index, int card) {
 }
 
 void Poker_player::print_info() {
-	if(has_folded) {
-		cout	<< "!!!";
-	}
-	cout << "Name: " << name << "\t";
-	cout << "Chips: " << chips << "\t";
-	cout << "Bet: " << bet << "\t\t";
-	cout << "Cards: " << card2str(hand_cards[0]) << " " << card2str(hand_cards[1]) << endl;
-
-//	mvprintw(10, 0, "Name: %s, Chips: %d, Bet: %d, Cards: %d | %d", name.c_str(), chips, bet, card2str(hand_cards[0]).c_str(), card2str(hand_cards[1]).c_str());
+//	if(has_folded) {
+//		cout	<< "!!!";
+//	}
+//	cout << "Name: " << name << "\t";
+//	cout << "Chips: " << chips << "\t";
+//	cout << "Bet: " << bet << "\t\t";
+//	cout << "Cards: " << card2str(hand_cards[0]) << " " << card2str(hand_cards[1]) << endl;
+//
+//	mvwprintw(wnd, 3, 0, "Name: %s, Chips: %d, Bet: %d, Cards: %d | %d", name.c_str(), chips, bet, card2str(hand_cards[0]).c_str(), card2str(hand_cards[1]).c_str());
 }
 
 bool Poker_player::folded() {
@@ -84,9 +84,14 @@ Poker_action *Poker_player::poker_action(unsigned int new_bet) {
 
 	bool unvalid_action = true;
 
+//	wbkgd(wnd, COLOR_PAIR(1));
+//	wrefresh(wnd);
+
 	do {
 		sprintf(buffer, "ch:%d,nb:%d,b:%d(%s)$", chips, new_bet, bet, name.c_str());
 		sock->send(buffer);
+//		mvwprintw(wnd, 0, 0, "ch:%d,nb:%d,b:%d(%s)$", chips, new_bet, bet, name.c_str());
+//		wrefresh(wnd);
 		action = sock->recv();
 		action.erase(action.length() - 1);
 
@@ -126,6 +131,8 @@ Poker_action *Poker_player::poker_action(unsigned int new_bet) {
 	} while (unvalid_action);
 
 
+//	wbkgd(wnd, COLOR_PAIR(2));
+//	wrefresh(wnd);
 	return pa;
 }
 
@@ -173,4 +180,9 @@ WINDOW *Poker_player::get_wnd() {
 
 void *Poker_player::set_wnd(WINDOW *w) {
 	wnd = w;
+}
+
+void Poker_player::print_hello() {
+//	wprintw(wnd, "Hello World");
+//	wrefresh(wnd);
 }

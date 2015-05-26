@@ -64,6 +64,8 @@ class Poker_player
 		void print_info();                                  /* print info about player */
 		Poker_action *poker_action(unsigned int new_bet);   /* player needs to chose an action */
 
+		void print_hello();
+
 	private:
 		string name;
 		unsigned int chips;
