@@ -2,32 +2,47 @@
 #include	"card_deck.hpp"
 #include	"poker_player.hpp"
 #include	"poker_game.hpp"
+#include	<ncurses.h>
 
 
 int main ( int argc, char *argv[] )
 {
 	std::srand(time(NULL));                                                /* initialize random generator */
 
+	int i;
 
-	/*Poker_player christophe("Chris", 1000);
-	Poker_player nina("Nina", 1000);
-	Poker_player fojer("Fojer", 1000);
-	Poker_player claire("Claire", 1000);
-
+    initscr();
+    clear();
+    noecho();
+    curs_set(0);
+    cbreak();
+//    keypad(stdscr, 1);
+	box(stdscr, 0, 0);
+	
+	//Start the poker game here
 	Poker_game pg;
+	mvwprintw(stdscr, 0, 0, "Starting the setup now");
 
-	pg.add_player(christophe);
-	pg.add_player(nina);
-	pg.add_player(fojer);
-	pg.add_player(claire);
+	getch();
+	mvwprintw(stdscr, 0, 0, "asdfasdf");
+	refresh();
 
-	pg.start();
-	*/
+	refresh();
+//	WINDOW *w[4];
+//	for(i=0; i<4; i++) {
+//		w[i] = newwin(10, COLS, 10+i*LINES/4, 0);
+//		box(w[i], 0, 0);
+//		wrefresh(w[i]);
+//	}
+//	getch();
+//
+//	delwin(stdscr);
+//	refresh();
 
-	Poker_game pg;
 	pg.setup();
-	cout	<< "starting game now" << endl;
 	pg.start();
-
-	return 0;
+  
+	endwin();
+    return(0);
 }
+

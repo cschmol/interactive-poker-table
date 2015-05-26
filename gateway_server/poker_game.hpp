@@ -19,6 +19,7 @@
 #include	<netdb.h>
 
 #include	<strings.h>
+#include	<ncurses.h>
 
 class Poker_game
 {
@@ -72,6 +73,12 @@ class Poker_game
 		char buffer[2048];
 
 		Socket sock;
+
+		
+		/*-----------------------------------------------------------------------------
+		 *  Ncurses variables
+		 *-----------------------------------------------------------------------------*/
+		WINDOW *wGameInfo;
 };
 
 #endif

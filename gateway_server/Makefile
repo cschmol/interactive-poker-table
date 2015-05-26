@@ -1,7 +1,7 @@
 #Variablen die gebraucht werden
 CC		= g++
 CCFLAGS	= -Wall -g
-LDFLAGS	= -g
+LDFLAGS	= -g -lncurses
 OBJ = card_deck.o server.o poker_player.o poker_game.o socket.o
 NAME = server
 dependfile = .depend

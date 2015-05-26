@@ -1,4 +1,3 @@
-
 #include	"poker_player.hpp"
 
 Poker_player::Poker_player(string n, unsigned int c) {
@@ -21,18 +20,8 @@ Poker_player::Poker_player(string n, unsigned int c, int s) {
 	sock->send("Welcome to the game");
 }
 
-//Poker_player::Poker_player(string n, unsigned int c, Socket s) {
-//	name 	= n;                                /* set name */
-//	chips 	= c;                                /* set number of chips */
-//	bet		= 0;
-//	hand_cards[0] = hand_cards[1] = -1;         /* needs to be initalizized to -1 */
-//	has_folded = false;
-//
-//	sock = new Socket(s);
-//}
-
 Poker_player::~Poker_player() {
-	cout	<< "Poker_player " << name << " destroyed now" << endl;
+//	cout	<< "Poker_player " << name << " destroyed now" << endl;
 }
 
 string Poker_player::get_name (  )
@@ -78,6 +67,8 @@ void Poker_player::print_info() {
 	cout << "Chips: " << chips << "\t";
 	cout << "Bet: " << bet << "\t\t";
 	cout << "Cards: " << card2str(hand_cards[0]) << " " << card2str(hand_cards[1]) << endl;
+
+//	mvprintw(10, 0, "Name: %s, Chips: %d, Bet: %d, Cards: %d | %d", name.c_str(), chips, bet, card2str(hand_cards[0]).c_str(), card2str(hand_cards[1]).c_str());
 }
 
 bool Poker_player::folded() {
@@ -173,4 +164,13 @@ bool Poker_player::make_bet(unsigned int c) {
 
 void Poker_player::fold() {
 	has_folded = true;
+}
+
+
+WINDOW *Poker_player::get_wnd() {
+	return wnd;
+}
+
+void *Poker_player::set_wnd(WINDOW *w) {
+	wnd = w;
 }

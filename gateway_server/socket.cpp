@@ -8,7 +8,7 @@ Socket::Socket() {
 
 
 	}
-	cout	<< "Socket created with success: " << sock << endl;
+//	cout	<< "Socket created with success: " << sock << endl;
 
 	int optval = 1;
 
@@ -33,21 +33,21 @@ Socket::Socket() {
 		perror("listen()");
 		exit(1);
 	}	
-	cout	<< "Listening on socket" << endl;
+//	cout	<< "Listening on socket" << endl;
 }
 
 Socket::Socket(int s) {
 	struct sockaddr cli_addr;
 	socklen_t clilen = sizeof(cli_addr);
 
-	cout << "supplied socket: " << s << endl;
+//	cout << "supplied socket: " << s << endl;
 
 	sock = accept(s, NULL, NULL);
 	if(sock<0) {
 		perror("accept");
 		exit(1);
 	} else {
-		cout	<< "Accepted a client successfully" << endl;
+//		cout	<< "Accepted a client successfully" << endl;
 	}
 
 }

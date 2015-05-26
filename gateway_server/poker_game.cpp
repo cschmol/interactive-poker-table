@@ -302,12 +302,33 @@ void Poker_game::setup(){
 			player->set_name(*it);
 			player->set_chips(values.at(2));
 			add_player(player);
-			cout<<"Player "<<*it<<" added to the game"<<endl;
+			mvprintw(1, 0, "Player %s added to the game", it->c_str());
+//			cout<<"Player "<<*it<<" added to the game"<<endl;
         }      
 
         n_small_blind=values.at(0);
         n_big_blind=values.at(1);
 //        cout<<"Credits: "<<player.get_chips()<<"  Small blind: "<<n_small_blind<<"  Big blind: "<<n_big_blind<<endl;
+
+		int i, num_players=players.size();
+		WINDOW *tmp;
+		for(std::vector<Poker_player>::iterator it = players.begin(); it != players.end(); it++) {
+			tmp = newwin((LINES-10)/5, COLS, 11, 0);
+			box(tmp, 0, 0);
+//			wnoutrefresh(tmp);
+			it->set_wnd(tmp);
+			wrefresh(tmp);
+		}
+		wGameInfo = newwin(10, COLS, 0, 0);
+		box(wGameInfo, 0, 0);
+		doupdate();
+
+		getch();
+
+//		refresh();
+//		wrefresh(wGameInfo);
+
+		getch();
 
         fin.close();
 }

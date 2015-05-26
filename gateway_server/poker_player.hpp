@@ -10,6 +10,8 @@
 #include	<sys/socket.h>
 #include	<string.h>
 
+#include	<ncurses.h>
+
 #include	"card_deck.hpp"
 #include	"socket.hpp"
 
@@ -29,7 +31,6 @@ class Poker_player
 	public:
 		Poker_player(string n, unsigned int c);
 		Poker_player(string n, unsigned int c, int sock);
-//		Poker_player(string n, unsigned int c, Socket sock);
 		
 		~Poker_player();
 
@@ -55,6 +56,9 @@ class Poker_player
 		void set_card (int index, int card);                /* set the players poker cards */
 		int get_card (int index);                           /* get the players poker cards */
 
+		WINDOW *get_wnd();
+		void *set_wnd(WINDOW *w);
+
 		bool make_bet(unsigned int c);
 
 		void print_info();                                  /* print info about player */
@@ -73,6 +77,13 @@ class Poker_player
 
 		int cli_socket;                         /* socket of the new connection */
 		Socket *sock;
+
+
+		/*-----------------------------------------------------------------------------
+		 *  ncurses varialbes
+		 *-----------------------------------------------------------------------------*/
+		WINDOW *wnd;
+
 
 };
 
