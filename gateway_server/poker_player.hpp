@@ -61,7 +61,7 @@ class Poker_player
 
 		bool make_bet(unsigned int c);
 
-		void print_info();                                  /* print info about player */
+		void print_info(int line);                                  /* print info about player */
 		Poker_action *poker_action(unsigned int new_bet);   /* player needs to chose an action */
 
 		void print_hello();

@@ -5,7 +5,7 @@ int myrandom (int i) { return std::rand()%i;}
 
 string card2str(int c) {
 	std::stringstream buffer;
-	if(c==-1) {
+	if(c<0) {
 		return "undefined";
 	} else {
 		switch (c/13) {

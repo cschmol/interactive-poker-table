@@ -50,34 +50,50 @@ void Poker_game::round() {                          /* corresponds to 1 round of
 	pot += n_small_blind;
 	pot += n_big_blind;
 
+	mvprintw(16, 0, "Pre-flop");
+	clrtoeol();
+	refresh();
 	deal_player_cards();                             /* deal player cards */
 	betting_round();
 	print_info();
 	current_player = big_blind;
+	highest_better = big_blind;
 	if(++current_player == players.end()) {
 		current_player = players.begin();
 	}
 
+	mvprintw(16, 0, "Flop");
+	clrtoeol();
+	refresh();
 	flop();                                     /* deal the flop */
 	betting_round();
 	print_info();
 	current_player = big_blind;
+	highest_better = big_blind;
 	if(++current_player == players.end()) {
 		current_player = players.begin();
 	}
 
+	mvprintw(16, 0, "Turn");
+	clrtoeol();
+	refresh();
 	turn();                                     /* deal the turn */
 	betting_round();
 	print_info();
 	current_player = big_blind;
+	highest_better = big_blind;
 	if(++current_player == players.end()) {
 		current_player = players.begin();
 	}
 
+	mvprintw(16, 0, "River");
+	clrtoeol();
+	refresh();
 	river();                                    /* deal the river */
 	betting_round();
 	print_info();
 	current_player = big_blind;
+	highest_better = big_blind;
 	if(++current_player == players.end()) {
 		current_player = players.begin();
 	}
@@ -87,12 +103,12 @@ void Poker_game::round() {                          /* corresponds to 1 round of
 	unsigned int winner;                                 /* do that by hand now */
 	print_info();
 	do {
-		mvwprintw(wGameInfo, 0, 0, "Please determine a winner by hand: ");
+		mvprintw(0, 0, "Please determine a winner by hand: ");
 		winner = getch();
 	} while (winner > players.size());
 
-	mvwprintw(wGameInfo, 1, 0, "Player %d has won", winner);
-	mvwprintw(wGameInfo, 2, 0, "He wins a pot of %d", pot);
+	mvprintw(1, 0, "Player %d has won", winner);
+	mvprintw(2, 0, "He wins a pot of %d", pot);
 	(players.at(winner)) .set_chips( (players.at(winner)) . get_chips() + pot );
 	pot = 0;
 
@@ -103,7 +119,7 @@ void Poker_game::start() {
 	std::vector<Poker_player>::iterator it;
 //	cout	<< "Starting the poker game now" << endl;
 
-	mvwprintw(wGameInfo, 3, 0, "Starting the poker game now");
+	mvprintw(3, 0, "Starting the poker game now");
 
 	dealer=players.begin();
 
@@ -210,6 +226,7 @@ void Poker_game::river() {
 
 void Poker_game::betting_round () {
 	Poker_action *action;
+	bool big_blind_played = false;
 //	cout	<< "Beginning betting round" << endl;
 
 // _________________________________________
@@ -219,7 +236,7 @@ void Poker_game::betting_round () {
 // -----------------------------------------
 	int n_players = players.size();             /* might need to be some other place */
 
-	while ( n_players > 1 && current_player != highest_better ) {         /* while there are still players */
+	while ( (n_players > 1 && current_player != highest_better) || (current_player==highest_better && current_player==big_blind) ) {         /* while there are still players */
 		print_info();
 		if(!current_player -> folded()) {       /* only when player has not folded yet */
 			action = current_player -> poker_action(high_bet); /* current player needs to play */
@@ -239,6 +256,9 @@ void Poker_game::betting_round () {
 			else {
 				continue;
 			}
+		}
+		if(current_player==big_blind && current_player==highest_better) {       /* Assure that big blind can also play */
+			break;
 		}
 		if(++current_player == players.end()) {
 			current_player = players.begin();
@@ -261,8 +281,26 @@ void Poker_game::print_info (  ) {
 //		cout	<< card2str(common_cards[i]) << ",";
 	}
 //	cout	<< endl;
+	int line = 10;
 	for ( it=players.begin(); it!=players.end(); it++) {     /* iterate over all players */
-		it -> print_info();
+		it -> print_info(line++);
+		clrtoeol();
+		if(it == big_blind) {
+			printw("\tBB");
+		}
+		if(it == small_blind) {
+			printw("\tSB");
+		}
+		if(it == dealer) {
+			printw("\tD");
+		}
+		if(it == highest_better) {
+			printw("\tHIGH");
+		}
+		if(it == current_player) {
+			printw("\t\t<----");
+		}
+		refresh();
 	}
 
 	return ;
@@ -292,21 +330,24 @@ void Poker_game::setup(){
                 values.push_back(atoi(buf.c_str()));
         }
 
-		wGameInfo = newwin(LINES, COLS, 0, 0);  /* create the game window */
-		wrefresh(wGameInfo);
+		mvprintw(0, COLS/3, "Interactive Poker Table");
+		refresh();
 
         for (std::vector<string>::iterator it = playernames.begin() ; it != playernames.end(); ++it){
-			mvwprintw(wGameInfo, 20, 0, "Waiting for player %s to connect", it->c_str());
-			wrefresh(wGameInfo);
+			mvprintw(LINES-2, 0, "Waiting for player %s to connect", it->c_str());
+			clrtoeol();
+			refresh();
 
 			Poker_player *player = new Poker_player("", 0, sock.get_sock());
 
 
 			player->set_name(*it);
 			player->set_chips(values.at(2));
+			player->set_wnd(stdscr);
 			add_player(player);
-			mvwprintw(wGameInfo, 21, 0, "Player %s added to the game", it->c_str());
-			wrefresh(wGameInfo);
+			mvprintw(LINES-1, 0, "Player %s added to the game", it->c_str());
+			clrtoeol();
+			refresh();
         }      
 
         n_small_blind=values.at(0);

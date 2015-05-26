@@ -59,16 +59,11 @@ void Poker_player::set_card (int index, int card) {
 	hand_cards[index] = card;
 }
 
-void Poker_player::print_info() {
-//	if(has_folded) {
-//		cout	<< "!!!";
-//	}
-//	cout << "Name: " << name << "\t";
-//	cout << "Chips: " << chips << "\t";
-//	cout << "Bet: " << bet << "\t\t";
-//	cout << "Cards: " << card2str(hand_cards[0]) << " " << card2str(hand_cards[1]) << endl;
-//
-//	mvwprintw(wnd, 3, 0, "Name: %s, Chips: %d, Bet: %d, Cards: %d | %d", name.c_str(), chips, bet, card2str(hand_cards[0]).c_str(), card2str(hand_cards[1]).c_str());
+void Poker_player::print_info(int line) {
+	mvprintw(line, 0, "Name: %s, Chips: %d, Bet: %d, Cards: %s | %s",
+			  name.c_str(), chips, bet, card2str(hand_cards[0]).c_str(),
+			  card2str(hand_cards[1]).c_str());
+	refresh();
 }
 
 bool Poker_player::folded() {
