@@ -47,10 +47,11 @@ class Poker_game
 		void flop();
 		void turn();
 		void river();
-		void getProbability(int nPlayers, std::array<int,10> handcards,int nCommonCards, std::array<int,5> commoncards,double *arr);
+		void getProbability(int nPlayers, std::array<int,2*NMAXPLAYERS> handcards,int nCommonCards, int commoncards[5],double *arr);
 		void betting_round();
 
 		void print_info();                      /* print info about the game */
+		void update_probs();
 
 
 	protected:
@@ -72,7 +73,7 @@ class Poker_game
 		unsigned int high_bet;       /* set the bet to the big blind */
 		unsigned int pot;            /* amount of chips in the pot */
 
-		double winprops[NMAXPLAYERS];
+		double winprobs[NMAXPLAYERS];
 
 
 		/*-----------------------------------------------------------------------------

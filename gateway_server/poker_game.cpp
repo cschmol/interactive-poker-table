@@ -16,7 +16,7 @@ Poker_game::Poker_game () {                            /* constructor */
 	n_common_cards = 0;                         /* no common cards have been dealt */
 
 	for(int i=0; i<NMAXPLAYERS; i++) {
-		winprops[i] = 0;           /* initalize the cards with -1 */
+		winprobs[i] = 0;           /* initalize the cards with -1 */
 	}
 
 }
@@ -75,7 +75,6 @@ void Poker_game::round() {                          /* corresponds to 1 round of
 	clrtoeol();
 	
 	flop();                                     /* deal the flop */
-	mvprintw(17, 0, "Common cards: %s %s %s",card2str(common_cards[0]).c_str(),card2str(common_cards[1]).c_str(),card2str(common_cards[2]).c_str());
 	refresh();
 	betting_round();
 	print_info();
@@ -217,6 +216,18 @@ void Poker_game::flop() {
 		common_cards[j] = deck.draw_card();
 	}
 	n_common_cards = 3;
+
+	std::array<int,2*NMAXPLAYERS> handcards;
+
+	for (int i=0; i<players.size(); i++)
+	{
+		handcards[2*i]=players.at(i).get_card(0);   
+		handcards[2*i+1]=players.at(i).get_card(1); 
+	}	
+
+	getProbability(static_cast<int>(players.size()),handcards,n_common_cards,common_cards,&winprobs[0]);
+	
+	update_probs();
 }
 
 void Poker_game::turn() {
@@ -225,6 +236,19 @@ void Poker_game::turn() {
 	//deal 1 card
 	common_cards[3] = deck.draw_card();
 	n_common_cards = 4;
+
+
+	std::array<int,2*NMAXPLAYERS> handcards;
+
+	for (int i=0; i<players.size(); i++)
+	{
+		handcards[2*i]=players.at(i).get_card(0);   
+		handcards[2*i+1]=players.at(i).get_card(1); 
+	}
+
+	getProbability(static_cast<int>(players.size()),handcards,n_common_cards,common_cards,&winprobs[0]);
+
+	update_probs();
 }
 
 void Poker_game::river() {
@@ -233,6 +257,18 @@ void Poker_game::river() {
 //	cout << "-------------" << endl;
 	common_cards[4] = deck.draw_card();
 	n_common_cards = 5;
+
+	std::array<int,2*NMAXPLAYERS> handcards;
+
+	for (int i=0; i<players.size(); i++)
+	{
+		handcards[2*i]=players.at(i).get_card(0);   
+		handcards[2*i+1]=players.at(i).get_card(1); 
+	}
+
+	getProbability(static_cast<int>(players.size()),handcards,n_common_cards,common_cards,&winprobs[0]);
+
+	update_probs();
 }
 
 void Poker_game::betting_round () {
@@ -288,9 +324,16 @@ void Poker_game::print_info (  ) {
 //	cout	<< "+++++++++++++++++" << endl;
 //	cout	<< "Pot: " << pot << endl;
 //	cout	<< "Common cards: ";
-	for(i=0; i<n_common_cards; i++) {
-//		cout	<< common_cards[i] << " ";
-//		cout	<< card2str(common_cards[i]) << ",";
+	
+
+	if (n_common_cards!=0)
+	{
+		string text = "Common Cards: ";
+		
+		for(i=0; i<n_common_cards; i++) {
+			text = text +" "+ card2str(common_cards[i]);
+		}
+		mvprintw(17, 0, "%s",text.c_str());
 	}
 //	cout	<< endl;
 	int line = 10;
@@ -370,7 +413,7 @@ void Poker_game::setup(){
 }
 
 
-void Poker_game::getProbability(int nPlayers, std::array<int,10> handcards,int nCommonCards, std::array<int,5> commoncards,double *arr)
+void Poker_game::getProbability(int nPlayers, std::array<int,2*NMAXPLAYERS> handcards,int nCommonCards, int commoncards[5],double *arr)
 {
 
     SevenEval const* eval = new SevenEval();
@@ -395,33 +438,38 @@ void Poker_game::getProbability(int nPlayers, std::array<int,10> handcards,int n
 
 
 
-
-    int cardindexplayers[NMAXPLAYERS]={0,0,0,0,0,0,0,0,0,0};
+    bool exist= false;
+    int cardindexplayers[NMAXPLAYERS]={0,0,0,0,0,0,0,0};
 
     for (int i= 0; i<52; i++)
     {
+        exist= false;
         for (int k=0;k<nCommonCards;k++)
         {
+        if (i==commoncards[k])
+            exist= true;
+        }
+
+        if (exist==true)
+            continue;
+
+
               for(int j=0;j<nPlayers;j++)
                 {
                     if (i!=handcards[2*j] && i!=handcards[2*j+1])
                     {
+
                         player_decks[j][cardindexplayers[j]]=i;
-                        spare_cards_player[j][cardindexplayers[j]]=i;
                         cardindexplayers[j]++;
+
                     }
-                }
+
             }
     }
 
-    /*if (nCommonCards==5)
-    {
 
-    }
-    else
-    {
 
-    }*/
+
     for(int j=0;j<nPlayers;j++)
     {
             for(int i=0;i<NSHUFFLEDDECKS;i++)
@@ -511,4 +559,18 @@ void Poker_game::getProbability(int nPlayers, std::array<int,10> handcards,int n
 
 
 }
+
+void Poker_game::update_probs()
+{
+
+	for (int i=0; i<players.size(); i++)
+	{
+		players.at(i).set_prob(winprobs[i]); 
+	}
+
+
+}
+
+
+
 

@@ -59,6 +59,11 @@ class Poker_player
 		void set_card (int index, int card);                /* set the players poker cards */
 		int get_card (int index);                           /* get the players poker cards */
 
+		//prop accessors
+		void set_prob(double prob);
+		double get_prob();
+
+
 		WINDOW *get_wnd();
 		void *set_wnd(WINDOW *w);
 
@@ -77,6 +82,7 @@ class Poker_player
 		unsigned int bet;
 		bool has_folded;
 		int hand_cards[2];
+		double winprob;
 
 		/*-----------------------------------------------------------------------------
 		 *  socket variables

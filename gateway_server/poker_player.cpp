@@ -6,6 +6,7 @@ Poker_player::Poker_player(string n, unsigned int c) {
 	bet		= 0;
 	hand_cards[0] = hand_cards[1] = -1;         /* needs to be initalizized to -1 */
 	has_folded = false;
+	winprob= 0;
 
 }
 
@@ -37,6 +38,7 @@ void Poker_player::set_name (string value)
 	return ;
 }
 
+
 unsigned int Poker_player::get_chips (  )
 {
 	return chips;
@@ -59,6 +61,15 @@ void Poker_player::set_bet ( unsigned int b ) {
 
 void Poker_player::set_card (int index, int card) {
 	hand_cards[index] = card;
+}
+
+
+void Poker_player::set_prob(double prob) {
+	winprob=prob;
+}
+
+double Poker_player::get_prob() {
+	return winprob;
 }
 
 //10, 2, cards
@@ -95,7 +106,7 @@ Poker_action *Poker_player::poker_action(unsigned int new_bet) {
 //	wrefresh(wnd);
 
 	do {
-		sprintf(buffer, "\nch:%d,nb:%d,b:%d(%s)$", chips, new_bet, bet, name.c_str());
+		sprintf(buffer, "ch:%d,nb:%d,b:%d(%s),p:%f$ ", chips, new_bet, bet, name.c_str(),winprob);
 		sock->send(buffer);
 //		mvwprintw(wnd, 0, 0, "ch:%d,nb:%d,b:%d(%s)$", chips, new_bet, bet, name.c_str());
 //		wrefresh(wnd);
