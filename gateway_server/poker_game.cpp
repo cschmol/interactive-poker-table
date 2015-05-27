@@ -30,7 +30,7 @@ bool Poker_game::add_player(Poker_player *player) {
 
 void Poker_game::deal_common_cards(int count) {
 	for(int i=0; i<count; i++) {                /* deal as many cards as specified */
-		common_cards[n_common_cards++ - 1] = deck.draw_card();
+		common_cards[n_common_cards++] = deck.draw_card();
 	}
 }
 

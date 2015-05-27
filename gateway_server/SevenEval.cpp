@@ -1,6 +1,10 @@
 #include "SevenEval.h"
 #include "FiveEval.h"
 
+#include <iostream>
+
+using namespace std;
+
 SevenEval::SevenEval() {
   int const face[13] = {ACE, KING, QUEEN, JACK, TEN, NINE, EIGHT, SEVEN, SIX,
       FIVE, FOUR, THREE, TWO};
@@ -194,6 +198,7 @@ SevenEval::~SevenEval() {}
 
 short unsigned SevenEval::GetRank(int const i, int const j, int const k,
     int const l, int const m, int const n, int const p) const {
+//	cout	<< "Starting evaluator" << endl;
   // Create a 7-card hand key by adding up each of the card keys.
   long unsigned key = mDeckcardsKey[i] + mDeckcardsKey[j] + mDeckcardsKey[k] +
       mDeckcardsKey[l] + mDeckcardsKey[m] + mDeckcardsKey[n] + mDeckcardsKey[p];

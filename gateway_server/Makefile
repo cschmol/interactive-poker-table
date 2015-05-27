@@ -38,3 +38,6 @@ veryclean:
 run: server
 	clear
 	./server
+
+client:
+	netcat localhost 8888
