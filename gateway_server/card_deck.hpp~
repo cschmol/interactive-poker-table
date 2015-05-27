@@ -10,8 +10,6 @@
 #include	<cstdlib>
 #include 	<sstream>
 #include	<fstream>
-#include	"SevenEval.h"
-#include	"FiveEval.h"
 
 using namespace std;
 

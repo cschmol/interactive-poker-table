@@ -72,8 +72,8 @@ void Poker_player::print_info(int line, int n_cards, int *comm_cards) {
 //	}
 //	cout <<	"Winning_odds:" << winning_odds(5, n_cards, comm_cards) << endl;
 
-	//mvprintw(LINES - 4, 0, "%f", odds);
-	//mvprintw(line, COLS - 30, "\tOdds: %f", odds);
+	mvprintw(LINES - 4, 0, "%f", odds);
+	mvprintw(line, COLS - 30, "\tOdds: %f", odds);
 	refresh();
 	getch();
 }

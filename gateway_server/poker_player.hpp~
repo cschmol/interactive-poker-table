@@ -70,6 +70,7 @@ class Poker_player
 
 		void print_hello();
 
+		double winning_odds(int rounds, int n_common_cards, int *common_cards);
 
 	private:
 		string name;
@@ -94,7 +95,7 @@ class Poker_player
 		/*-----------------------------------------------------------------------------
 		 *  Hands evaluator
 		 *-----------------------------------------------------------------------------*/
-
+		SevenEval *evaluator;
 
 };
 
