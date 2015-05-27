@@ -65,7 +65,7 @@ class Poker_player
 
 
 		WINDOW *get_wnd();
-		void *set_wnd(WINDOW *w);
+		void set_wnd(WINDOW *w);
 
 		bool make_bet(unsigned int c);
 

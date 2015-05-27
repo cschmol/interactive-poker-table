@@ -37,8 +37,8 @@ Socket::Socket() {
 }
 
 Socket::Socket(int s) {
-	struct sockaddr cli_addr;
-	socklen_t clilen = sizeof(cli_addr);
+	//struct sockaddr cli_addr;
+	//socklen_t clilen = sizeof(cli_addr);
 
 //	cout << "supplied socket: " << s << endl;
 

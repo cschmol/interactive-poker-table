@@ -208,18 +208,17 @@ void Poker_game::deal_player_cards() {
 }
 
 void Poker_game::flop() {
-//	cout << "Dealing flop" << endl;
-//	cout << "------------" << endl;
-	unsigned int j;
+
+
 	//deal 3 common cards
-	for(j=0; j<3; j++) {                    /* draw 3 cards */
+	for(int j=0; j<3; j++) {                    /* draw 3 cards */
 		common_cards[j] = deck.draw_card();
 	}
 	n_common_cards = 3;
 
 	std::array<int,2*NMAXPLAYERS> handcards;
 
-	for (int i=0; i<players.size(); i++)
+	for (unsigned int i=0; i<players.size(); i++)
 	{
 		handcards[2*i]=players.at(i).get_card(0);   
 		handcards[2*i+1]=players.at(i).get_card(1); 
@@ -240,7 +239,7 @@ void Poker_game::turn() {
 
 	std::array<int,2*NMAXPLAYERS> handcards;
 
-	for (int i=0; i<players.size(); i++)
+	for (unsigned int i=0; i<players.size(); i++)
 	{
 		handcards[2*i]=players.at(i).get_card(0);   
 		handcards[2*i+1]=players.at(i).get_card(1); 
@@ -260,7 +259,7 @@ void Poker_game::river() {
 
 	std::array<int,2*NMAXPLAYERS> handcards;
 
-	for (int i=0; i<players.size(); i++)
+	for (unsigned int i=0; i<players.size(); i++)
 	{
 		handcards[2*i]=players.at(i).get_card(0);   
 		handcards[2*i+1]=players.at(i).get_card(1); 
@@ -273,7 +272,7 @@ void Poker_game::river() {
 
 void Poker_game::betting_round () {
 	Poker_action *action;
-	bool big_blind_played = false;
+	//bool big_blind_played = false;
 //	cout	<< "Beginning betting round" << endl;
 
 // _________________________________________
@@ -563,7 +562,7 @@ void Poker_game::getProbability(int nPlayers, std::array<int,2*NMAXPLAYERS> hand
 void Poker_game::update_probs()
 {
 
-	for (int i=0; i<players.size(); i++)
+	for (unsigned int i=0; i<players.size(); i++)
 	{
 		players.at(i).set_prob(winprobs[i]); 
 	}

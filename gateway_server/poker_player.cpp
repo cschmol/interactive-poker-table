@@ -77,16 +77,10 @@ void Poker_player::print_info(int line, int n_cards, int *comm_cards) {
 	mvprintw(line, 0, "Name: %s, Chips: %d, Bet: %d, Cards: %s | %s",
 			  name.c_str(), chips, bet, card2str(hand_cards[0]).c_str(),
 			  card2str(hand_cards[1]).c_str());
-	int i;
-//	for(i=0; i<n_cards; i++) {
-//		cout << i << ": " << comm_cards[i] << " ";
-//	}
-//	cout <<	"Winning_odds:" << winning_odds(5, n_cards, comm_cards) << endl;
 
-	//mvprintw(LINES - 4, 0, "%f", odds);
-	//mvprintw(line, COLS - 30, "\tOdds: %f", odds);
+
 	refresh();
-	//getch();
+
 }
 
 bool Poker_player::folded() {
@@ -197,13 +191,15 @@ WINDOW *Poker_player::get_wnd() {
 	return wnd;
 }
 
-void *Poker_player::set_wnd(WINDOW *w) {
+void Poker_player::set_wnd(WINDOW *w) {
 	wnd = w;
+	return;
 }
 
 void Poker_player::print_hello() {
 //	wprintw(wnd, "Hello World");
 //	wrefresh(wnd);
+	return;
 }
 
 
