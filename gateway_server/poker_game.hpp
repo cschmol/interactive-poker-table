@@ -72,6 +72,8 @@ class Poker_game
 		unsigned int high_bet;       /* set the bet to the big blind */
 		unsigned int pot;            /* amount of chips in the pot */
 
+		double winprops[NMAXPLAYERS];
+
 
 		/*-----------------------------------------------------------------------------
 		 *  socket variables

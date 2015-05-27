@@ -3,147 +3,6 @@
 
 #define MAX_PLAYERS 8
 
-void Poker_game::getProbability(int nPlayers, std::array<int,10> handcards,int nCommonCards, std::array<int,5> commoncards,double *arr)
-{
-
-    SevenEval const* eval = new SevenEval();
-
-    std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
-    std::time_t now_c = std::chrono::system_clock::to_time_t(now - std::chrono::hours(24));
-
-    auto engine = std::default_random_engine{};
-    engine.seed(now_c);
-
-    std::array<std::array<int,47>,NMAXPLAYERS> player_decks;
-    std::array<std::array<int,4400>,NMAXPLAYERS> spare_cards_player;
-    //std::array<std::array<int,47>,NMAXPLAYERS> spare_cards_samples;
-
-
-    for (int i= 0; i<NMAXPLAYERS; i++)
-    {
-        spare_cards_player[i].fill(0);
-        //spare_cards_samples[i].fill(0);
-        player_decks[i].fill(0);
-    }
-
-
-
-
-    int cardindexplayers[NMAXPLAYERS]={0,0,0,0,0,0,0,0,0,0};
-
-    for (int i= 0; i<52; i++)
-    {
-        for (int k=0;k<nCommonCards;k++)
-        {
-              for(int j=0;j<nPlayers;j++)
-                {
-                    if (i!=handcards[2*j] && i!=handcards[2*j+1])
-                    {
-                        player_decks[j][cardindexplayers[j]]=i;
-                        spare_cards_player[j][cardindexplayers[j]]=i;
-                        cardindexplayers[j]++;
-                    }
-                }
-            }
-    }
-
-    /*if (nCommonCards==5)
-    {
-
-    }
-    else
-    {
-
-    }*/
-    for(int j=0;j<nPlayers;j++)
-    {
-            for(int i=0;i<NSHUFFLEDDECKS;i++)
-            {
-                std::shuffle(std::begin(player_decks[j]), std::end(player_decks[j]), engine);
-
-                for(int k=0;k<44;k++)
-                {
-                    spare_cards_player[j][i*44+k]=player_decks[j][k];
-                }
-
-            }
-    }
-
-
-
-    for(int j=0;j<nPlayers;j++)
-    {
-                std::shuffle(std::begin(spare_cards_player[j]), std::end(spare_cards_player[j]), engine);
-                //std::shuffle(std::begin(spare_cards_samples[j]), std::end(spare_cards_samples[j]), engine);
-    }
-
-
-    std::array<int,NMAXPLAYERS> nPlayerWins;
-
-    nPlayerWins.fill(0);
-    int playerrank,samplerank;
-
-    switch (nCommonCards)
-    {
-    case 3:
-        for (int j=0;j<nPlayers;j++)
-        {
-                for (int k=0;k<NSAMPLEHANDS  ;k++)
-                {
-                    playerrank=eval->GetRank(handcards[j*2], handcards[j*2+1], commoncards[0], commoncards[1], commoncards[2], spare_cards_player[j][2*k], spare_cards_player[j][2*k+1]);
-                    samplerank=eval->GetRank(commoncards[0], commoncards[1], commoncards[2], spare_cards_player[j][4*k], spare_cards_player[j][4*k+1],spare_cards_player[j][4*k+2],spare_cards_player[j][4*k+3]);
-                    if (playerrank>samplerank)
-                        nPlayerWins[j]++;
-                }
-
-
-        }
-        break;
-    case 4:
-        for (int j=0;j<nPlayers;j++)
-        {
-                for (int k=0;k<NSAMPLEHANDS  ;k++)
-                {
-                    playerrank=eval->GetRank(handcards[j*2], handcards[j*2+1], commoncards[0], commoncards[1], commoncards[2], commoncards[3], spare_cards_player[j][k]);
-                    samplerank=eval->GetRank(commoncards[0], commoncards[1], commoncards[2], commoncards[3], spare_cards_player[j][4*k],spare_cards_player[j][4*k+1],spare_cards_player[j][4*k+2]);
-                    if (playerrank>samplerank)
-                        nPlayerWins[j]++;
-
-
-                }
-
-
-        }
-        break;
-    case 5:
-        for (int j=0;j<nPlayers;j++)
-        {
-                for (int k=0;k<NSAMPLEHANDS  ;k++)
-                {
-                    playerrank=eval->GetRank(handcards[j*2], handcards[j*2+1], commoncards[0], commoncards[1], commoncards[2], commoncards[3], commoncards[4]);
-                    samplerank=eval->GetRank(commoncards[0], commoncards[1], commoncards[2], commoncards[3], commoncards[4],spare_cards_player[j][2*k],spare_cards_player[j][2*k+1]);
-                    if (playerrank>samplerank)
-                        nPlayerWins[j]++;
-                }
-
-
-        }
-        break;
-    }
-
-
-
-    for (int j=0;j<nPlayers;j++)
-    {
-
-        *arr=static_cast<double>(nPlayerWins[j])/static_cast<double>(NSAMPLEHANDS);
-        //std::cout<<*arr<<std::endl;
-        arr++;
-    }
-
-
-
-    }
 
 
 
@@ -155,6 +14,11 @@ Poker_game::Poker_game () {                            /* constructor */
 		common_cards[i] = -1;           /* initalize the cards with -1 */
 	}
 	n_common_cards = 0;                         /* no common cards have been dealt */
+
+	for(int i=0; i<NMAXPLAYERS; i++) {
+		winprops[i] = 0;           /* initalize the cards with -1 */
+	}
+
 }
 
 Poker_game::~Poker_game (  )
@@ -209,8 +73,10 @@ void Poker_game::round() {                          /* corresponds to 1 round of
 
 	mvprintw(16, 0, "Flop");
 	clrtoeol();
-	refresh();
+	
 	flop();                                     /* deal the flop */
+	mvprintw(17, 0, "Common cards: %s %s %s",card2str(common_cards[0]).c_str(),card2str(common_cards[1]).c_str(),card2str(common_cards[2]).c_str());
+	refresh();
 	betting_round();
 	print_info();
 	current_player = big_blind;
@@ -502,3 +368,147 @@ void Poker_game::setup(){
 
         fin.close();
 }
+
+
+void Poker_game::getProbability(int nPlayers, std::array<int,10> handcards,int nCommonCards, std::array<int,5> commoncards,double *arr)
+{
+
+    SevenEval const* eval = new SevenEval();
+
+    std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+    std::time_t now_c = std::chrono::system_clock::to_time_t(now - std::chrono::hours(24));
+
+    auto engine = std::default_random_engine{};
+    engine.seed(now_c);
+
+    std::array<std::array<int,47>,NMAXPLAYERS> player_decks;
+    std::array<std::array<int,4400>,NMAXPLAYERS> spare_cards_player;
+    //std::array<std::array<int,47>,NMAXPLAYERS> spare_cards_samples;
+
+
+    for (int i= 0; i<NMAXPLAYERS; i++)
+    {
+        spare_cards_player[i].fill(0);
+        //spare_cards_samples[i].fill(0);
+        player_decks[i].fill(0);
+    }
+
+
+
+
+    int cardindexplayers[NMAXPLAYERS]={0,0,0,0,0,0,0,0,0,0};
+
+    for (int i= 0; i<52; i++)
+    {
+        for (int k=0;k<nCommonCards;k++)
+        {
+              for(int j=0;j<nPlayers;j++)
+                {
+                    if (i!=handcards[2*j] && i!=handcards[2*j+1])
+                    {
+                        player_decks[j][cardindexplayers[j]]=i;
+                        spare_cards_player[j][cardindexplayers[j]]=i;
+                        cardindexplayers[j]++;
+                    }
+                }
+            }
+    }
+
+    /*if (nCommonCards==5)
+    {
+
+    }
+    else
+    {
+
+    }*/
+    for(int j=0;j<nPlayers;j++)
+    {
+            for(int i=0;i<NSHUFFLEDDECKS;i++)
+            {
+                std::shuffle(std::begin(player_decks[j]), std::end(player_decks[j]), engine);
+
+                for(int k=0;k<44;k++)
+                {
+                    spare_cards_player[j][i*44+k]=player_decks[j][k];
+                }
+
+            }
+    }
+
+
+
+    for(int j=0;j<nPlayers;j++)
+    {
+                std::shuffle(std::begin(spare_cards_player[j]), std::end(spare_cards_player[j]), engine);
+                //std::shuffle(std::begin(spare_cards_samples[j]), std::end(spare_cards_samples[j]), engine);
+    }
+
+
+    std::array<int,NMAXPLAYERS> nPlayerWins;
+
+    nPlayerWins.fill(0);
+    int playerrank,samplerank;
+
+    switch (nCommonCards)
+    {
+    case 3:
+        for (int j=0;j<nPlayers;j++)
+        {
+                for (int k=0;k<NSAMPLEHANDS  ;k++)
+                {
+                    playerrank=eval->GetRank(handcards[j*2], handcards[j*2+1], commoncards[0], commoncards[1], commoncards[2], spare_cards_player[j][2*k], spare_cards_player[j][2*k+1]);
+                    samplerank=eval->GetRank(commoncards[0], commoncards[1], commoncards[2], spare_cards_player[j][4*k], spare_cards_player[j][4*k+1],spare_cards_player[j][4*k+2],spare_cards_player[j][4*k+3]);
+                    if (playerrank>samplerank)
+                        nPlayerWins[j]++;
+                }
+
+
+        }
+        break;
+    case 4:
+        for (int j=0;j<nPlayers;j++)
+        {
+                for (int k=0;k<NSAMPLEHANDS  ;k++)
+                {
+                    playerrank=eval->GetRank(handcards[j*2], handcards[j*2+1], commoncards[0], commoncards[1], commoncards[2], commoncards[3], spare_cards_player[j][k]);
+                    samplerank=eval->GetRank(commoncards[0], commoncards[1], commoncards[2], commoncards[3], spare_cards_player[j][4*k],spare_cards_player[j][4*k+1],spare_cards_player[j][4*k+2]);
+                    if (playerrank>samplerank)
+                        nPlayerWins[j]++;
+
+
+                }
+
+
+        }
+        break;
+    case 5:
+        for (int j=0;j<nPlayers;j++)
+        {
+                for (int k=0;k<NSAMPLEHANDS  ;k++)
+                {
+                    playerrank=eval->GetRank(handcards[j*2], handcards[j*2+1], commoncards[0], commoncards[1], commoncards[2], commoncards[3], commoncards[4]);
+                    samplerank=eval->GetRank(commoncards[0], commoncards[1], commoncards[2], commoncards[3], commoncards[4],spare_cards_player[j][2*k],spare_cards_player[j][2*k+1]);
+                    if (playerrank>samplerank)
+                        nPlayerWins[j]++;
+                }
+
+
+        }
+        break;
+    }
+
+
+
+    for (int j=0;j<nPlayers;j++)
+    {
+
+        *arr=static_cast<double>(nPlayerWins[j])/static_cast<double>(NSAMPLEHANDS);
+        //std::cout<<*arr<<std::endl;
+        arr++;
+    }
+
+
+
+}
+

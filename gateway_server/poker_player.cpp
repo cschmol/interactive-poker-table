@@ -75,7 +75,7 @@ void Poker_player::print_info(int line, int n_cards, int *comm_cards) {
 	//mvprintw(LINES - 4, 0, "%f", odds);
 	//mvprintw(line, COLS - 30, "\tOdds: %f", odds);
 	refresh();
-	getch();
+	//getch();
 }
 
 bool Poker_player::folded() {
@@ -95,12 +95,13 @@ Poker_action *Poker_player::poker_action(unsigned int new_bet) {
 //	wrefresh(wnd);
 
 	do {
-		sprintf(buffer, "ch:%d,nb:%d,b:%d(%s)$", chips, new_bet, bet, name.c_str());
+		sprintf(buffer, "\nch:%d,nb:%d,b:%d(%s)$", chips, new_bet, bet, name.c_str());
 		sock->send(buffer);
 //		mvwprintw(wnd, 0, 0, "ch:%d,nb:%d,b:%d(%s)$", chips, new_bet, bet, name.c_str());
 //		wrefresh(wnd);
 		action = sock->recv();
 		action.erase(action.length() - 1);
+		//sock->send(action);
 
 		if(action == "fold") {
 			has_folded = true;
@@ -126,7 +127,7 @@ Poker_action *Poker_player::poker_action(unsigned int new_bet) {
 			do {
 				sock->send("What should be the new high bet?");
 				amount = sock->recv();
-				amount.erase(action.length() - 1);
+				amount.erase(amount.length() - 1);
 				istringstream ( amount ) >> pa->new_high_bet; /* convert string to integer */
 			} while (pa->new_high_bet <= new_bet || !make_bet(pa->new_high_bet - bet)); /* works because of short-circuit || */
 
