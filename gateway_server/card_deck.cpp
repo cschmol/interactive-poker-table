@@ -8,7 +8,7 @@ string card2str(int c) {
 	if(c<0) {
 		return "undefined";
 	} else {
-		switch (c/13) {
+		switch (c%4) {
 			case 0:
 				buffer	<< "Spade ";
 				break;
@@ -25,7 +25,7 @@ string card2str(int c) {
 				break;
 		}
 
-		switch (c%13) {
+		switch (c/4) {
 			case 0:
 				buffer	<< "Ace";
 				break;
@@ -42,7 +42,7 @@ string card2str(int c) {
 				buffer	<< "King";
 				break;
 			default:
-				buffer	<<  15 - (c%13);
+				buffer	<<  15 - (c/4);
 				break;
 		}
 	}

@@ -19,6 +19,8 @@ Poker_game::Poker_game () {                            /* constructor */
 		winprobs[i] = 0;           /* initalize the cards with -1 */
 	}
 
+	eval = new SevenEval();
+
 }
 
 Poker_game::~Poker_game (  )
@@ -112,16 +114,61 @@ void Poker_game::round() {                          /* corresponds to 1 round of
 	//determine a winner
 	unsigned int winner;                                 /* do that by hand now */
 	print_info();
-	do {
-		mvprintw(0, 0, "Please determine a winner by hand: ");
-		winner = getch();
-	} while (winner > players.size());
+	
+	std::vector<int> player_ranks;
 
-	mvprintw(1, 0, "Player %d has won", winner);
-	mvprintw(2, 0, "He wins a pot of %d", pot);
-	(players.at(winner)) .set_chips( (players.at(winner)) . get_chips() + pot );
+	for (std::vector<Poker_player>::iterator it=players.begin(); it!=players.end(); it++ ) //create list with ranks of all players
+	{
+		if (!it->folded())
+			player_ranks.push_back(eval->GetRank(it->get_card(0),it->get_card(1),common_cards[0],common_cards[1],common_cards[2],common_cards[3],common_cards[4]));
+		else
+			player_ranks.push_back(-1);
+						
+	}
+
+	std::vector<int>::iterator it_rank= std::max_element(player_ranks.begin(),player_ranks.end()); 
+
+	bool splitpot=false;
+	std::vector<int> splitpot_index;
+
+	for (std::vector<int>::iterator it=player_ranks.begin(); it!=player_ranks.end(); it++ ) //checking for splitpot
+	{
+		if ( (*it)==(*it_rank) && it!=it_rank )
+		{
+			splitpot = true;
+			splitpot_index.push_back(std::distance( player_ranks.begin(), it )); 	
+		}					
+	}
+
+
+	if (splitpot)
+	{
+		string text="";
+		splitpot_index.push_back(std::distance( player_ranks.begin(), it_rank ));
+		
+
+		for (std::vector<int>::iterator it=splitpot_index.begin(); it!=splitpot_index.end(); it++ )
+		{
+			(players.at(*it)) .set_chips( (players.at(*it)).get_chips() + pot/splitpot_index.size() );
+			text= text +" "+ players.at(*it).get_name();	
+		}
+
+		mvprintw(1, 0, "Splitpot: %s won this round", text.c_str());
+
+	}
+	else
+	{
+		winner = std::distance( player_ranks.begin(), it_rank ); //index of winner
+	
+
+		mvprintw(1, 0, "%s has won this round", players.at(winner).get_name().c_str());
+		mvprintw(2, 0, "He/she wins a pot of %d", pot);
+		(players.at(winner)) .set_chips( (players.at(winner)) . get_chips() + pot );
+
+	}
+
 	pot = 0;
-
+	
 	//blinds logic
 }
 
@@ -415,7 +462,7 @@ void Poker_game::setup(){
 void Poker_game::getProbability(int nPlayers, std::array<int,2*NMAXPLAYERS> handcards,int nCommonCards, int commoncards[5],double *arr)
 {
 
-    SevenEval const* eval = new SevenEval();
+
 
     std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
     std::time_t now_c = std::chrono::system_clock::to_time_t(now - std::chrono::hours(24));

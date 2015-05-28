@@ -74,6 +74,7 @@ class Poker_game
 		unsigned int pot;            /* amount of chips in the pot */
 
 		double winprobs[NMAXPLAYERS];
+		SevenEval const* eval;
 
 
 		/*-----------------------------------------------------------------------------
