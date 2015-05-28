@@ -22,6 +22,11 @@
 
 using namespace std;
 
+class Socket;
+
+Socket &operator<<(Socket& x, string str);
+Socket &operator>>(Socket &x, string &str);
+
 class Socket
 {
 	public:

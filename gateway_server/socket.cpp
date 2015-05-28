@@ -77,7 +77,15 @@ string Socket::recv() {
 
 
 
+Socket &operator<<(Socket& x, string str) {
+	x.send(str);
+	return x;
+}
 
+Socket &operator>>(Socket &x, string &str) {
+	str = x.recv();
+	return x;
+}
 
 
 

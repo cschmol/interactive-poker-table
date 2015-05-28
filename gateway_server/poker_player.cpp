@@ -20,6 +20,10 @@ Poker_player::Poker_player(string n, unsigned int c, int s) {
 
 	sock = new Socket(s);
 	sock->send("Welcome to the game");
+	*sock << "\nhello" << " my friend\n";
+	string x;
+	*sock >> x;
+	*sock << x;
 
 }
 

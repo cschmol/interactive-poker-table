@@ -25,7 +25,6 @@ Poker_game::Poker_game () {                            /* constructor */
 
 Poker_game::~Poker_game (  )
 {
-	//close(serv_sock);                          /* close the socket */
 }
 
 

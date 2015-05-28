@@ -47,32 +47,40 @@ class Poker_game
 		void flop();
 		void turn();
 		void river();
+
+		/*-----------------------------------------------------------------------------
+		 *  to be seen
+		 *-----------------------------------------------------------------------------*/
 		void getProbability(int nPlayers, std::array<int,2*NMAXPLAYERS> handcards,int nCommonCards, int commoncards[5],double *arr);
 		void betting_round();
 
 		void print_info();                      /* print info about the game */
+
+		/*-----------------------------------------------------------------------------
+		 *  to be seen
+		 *-----------------------------------------------------------------------------*/
 		void update_probs();
 
 
 	protected:
 
 	private:
-		Card_deck deck;                                     /* card deck for the game */
-		vector<Poker_player> players;                       /* all players that are still competing */
+		Card_deck deck;                                                                                     /* card deck for the game */
+		vector<Poker_player> players;                                                                       /* all players that are still competing */
 
-//		int dealer, small_blind, big_blind, current_player; /* indexes for special players */
-//		int highest_better;
+		int common_cards[5];                                                                                /* Cards in the middle */
+		unsigned int n_small_blind, n_big_blind;                                                            /* worth of small and big blind */
 
-		int common_cards[5];
-		unsigned int n_small_blind, n_big_blind;            /* worth of small and big blind */
+		std::vector<Poker_player>::iterator dealer, small_blind, big_blind, current_player, highest_better; /* indexes for special players */
 
-		std::vector<Poker_player>::iterator dealer, small_blind, big_blind, current_player; /* indexes for special players */
-		std::vector<Poker_player>::iterator highest_better;
+		unsigned int 	n_common_cards,                                                                     /* holds the number of cards currently on the table */
+						high_bet,                                                                           /* set the bet to the big blind */
+						pot;                                                                                /* amount of chips in the pot */
 
-		unsigned int n_common_cards; /* holds the number of cards currently on the table */
-		unsigned int high_bet;       /* set the bet to the big blind */
-		unsigned int pot;            /* amount of chips in the pot */
 
+		/*-----------------------------------------------------------------------------
+		 *  probability calculation
+		 *-----------------------------------------------------------------------------*/
 		double winprobs[NMAXPLAYERS];
 		SevenEval const* eval;
 
@@ -80,18 +88,8 @@ class Poker_game
 		/*-----------------------------------------------------------------------------
 		 *  socket variables
 		 *-----------------------------------------------------------------------------*/
-		int serv_sock;
-		struct sockaddr_in serv_addr, cli_addr;
-		socklen_t clilen;
-		char buffer[2048];
-
 		Socket sock;
 
-		
-		/*-----------------------------------------------------------------------------
-		 *  Ncurses variables
-		 *-----------------------------------------------------------------------------*/
-		WINDOW *wGameInfo;
 };
 
 #endif
