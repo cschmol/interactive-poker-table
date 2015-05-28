@@ -61,10 +61,25 @@ void Poker_game::round() {                          /* corresponds to 1 round of
 	pot += n_small_blind;
 	pot += n_big_blind;
 
-	mvprintw(16, 0, "Pre-flop");
+	mvprintw(18, 0, "Pre-flop");
 	clrtoeol();
 	refresh();
 	deal_player_cards();                             /* deal player cards */
+
+	//Preflop odds
+
+	std::array<int,2*NMAXPLAYERS> handcards;
+
+	for (unsigned int i=0; i<players.size(); i++)
+	{
+		handcards[2*i]=players.at(i).get_card(0);   
+		handcards[2*i+1]=players.at(i).get_card(1); 
+	}	
+
+	getProbability(static_cast<int>(players.size()),handcards,n_common_cards,common_cards,&winprobs[0]);
+	
+	update_probs();
+
 	betting_round();
 	print_info();
 	current_player = big_blind;
@@ -73,7 +88,7 @@ void Poker_game::round() {                          /* corresponds to 1 round of
 		current_player = players.begin();
 	}
 
-	mvprintw(16, 0, "Flop");
+	mvprintw(18, 0, "Flop");
 	clrtoeol();
 	
 	flop();                                     /* deal the flop */
@@ -86,7 +101,7 @@ void Poker_game::round() {                          /* corresponds to 1 round of
 		current_player = players.begin();
 	}
 
-	mvprintw(16, 0, "Turn");
+	mvprintw(18, 0, "Turn");
 	clrtoeol();
 	refresh();
 	turn();                                     /* deal the turn */
@@ -98,7 +113,7 @@ void Poker_game::round() {                          /* corresponds to 1 round of
 		current_player = players.begin();
 	}
 
-	mvprintw(16, 0, "River");
+	mvprintw(18, 0, "River");
 	clrtoeol();
 	refresh();
 	river();                                    /* deal the river */
@@ -115,6 +130,13 @@ void Poker_game::round() {                          /* corresponds to 1 round of
 	unsigned int winner;                                 /* do that by hand now */
 	print_info();
 	
+	mvprintw(LINES-1, 0, "Press ENTER to show the winner");
+	getch();
+	move(LINES-1,0);
+	clrtoeol();
+	refresh();
+	
+
 	std::vector<int> player_ranks;
 
 	for (std::vector<Poker_player>::iterator it=players.begin(); it!=players.end(); it++ ) //create list with ranks of all players
@@ -153,7 +175,11 @@ void Poker_game::round() {                          /* corresponds to 1 round of
 			text= text +" "+ players.at(*it).get_name();	
 		}
 
-		mvprintw(1, 0, "Splitpot: %s won this round", text.c_str());
+		mvprintw(2, 0, "Splitpot: %s won this round", text.c_str());
+		clrtoeol();
+		mvprintw(3, 0, "They wins a pot of %d", pot);
+		clrtoeol();
+		refresh();
 
 	}
 	else
@@ -161,8 +187,11 @@ void Poker_game::round() {                          /* corresponds to 1 round of
 		winner = std::distance( player_ranks.begin(), it_rank ); //index of winner
 	
 
-		mvprintw(1, 0, "%s has won this round", players.at(winner).get_name().c_str());
-		mvprintw(2, 0, "He/she wins a pot of %d", pot);
+		mvprintw(2, 0, "%s has won this round", players.at(winner).get_name().c_str());
+		clrtoeol();
+		mvprintw(3, 0, "He/she wins a pot of %d", pot);
+		clrtoeol();
+		refresh();
 		(players.at(winner)) .set_chips( (players.at(winner)) . get_chips() + pot );
 
 	}
@@ -375,31 +404,44 @@ void Poker_game::print_info (  ) {
 	if (n_common_cards!=0)
 	{
 		string text = "Common Cards: ";
+
+		move(19, 0);          // move to begining of line
+		clrtoeol();          // clear line
 		
 		for(i=0; i<n_common_cards; i++) {
 			text = text +" "+ card2str(common_cards[i]);
 		}
-		mvprintw(17, 0, "%s",text.c_str());
+		mvprintw(19, 0, "%s",text.c_str());
 	}
+
+	move(16, 0);          // move to begining of line
+	clrtoeol();          // clear line
+	mvprintw(16, 0, "Current pot: %d",pot);
+
 //	cout	<< endl;
-	int line = 10;
+	int line = 9;
 	for ( it=players.begin(); it!=players.end(); it++) {     /* iterate over all players */
-		it -> print_info(line++, n_common_cards, common_cards);
+		it -> print_info(++line, n_common_cards, common_cards);
 		clrtoeol();
 		if(it == big_blind) {
-			printw("\tBB");
+			//printw("\tBB");
+			mvprintw(line, 70, "BB");
 		}
 		if(it == small_blind) {
-			printw("\tSB");
+			//printw("\tSB");
+			mvprintw(line, 70, "SB");
 		}
 		if(it == dealer) {
-			printw("\tD");
+			//printw("\tD");
+			mvprintw(line, 70, "D");
 		}
 		if(it == highest_better) {
-			printw("\tHIGH");
+			//printw("\tHIGH");
+			mvprintw(line, 74, "HIGH");
 		}
 		if(it == current_player) {
-			printw("\t\t<----");
+			//printw("\t\t<----");
+			mvprintw(line, 67, "<-");
 		}
 		refresh();
 	}
@@ -450,6 +492,12 @@ void Poker_game::setup(){
 			clrtoeol();
 			refresh();
         }      
+	
+	move(LINES-2, 0);          // move to begining of line
+	clrtoeol();          // clear line
+	move(LINES-1, 0);          // move to begining of line
+	clrtoeol();          // clear line
+	refresh();
 
         n_small_blind=values.at(0);
         n_big_blind=values.at(1);
@@ -535,7 +583,6 @@ void Poker_game::getProbability(int nPlayers, std::array<int,2*NMAXPLAYERS> hand
     for(int j=0;j<nPlayers;j++)
     {
                 std::shuffle(std::begin(spare_cards_player[j]), std::end(spare_cards_player[j]), engine);
-                //std::shuffle(std::begin(spare_cards_samples[j]), std::end(spare_cards_samples[j]), engine);
     }
 
 
@@ -546,6 +593,20 @@ void Poker_game::getProbability(int nPlayers, std::array<int,2*NMAXPLAYERS> hand
 
     switch (nCommonCards)
     {
+	case 0:
+        for (int j=0;j<nPlayers;j++)
+        {
+                for (int k=0;k<NSAMPLEHANDS  ;k++)
+                {
+                    playerrank=eval->GetRank(handcards[j*2], handcards[j*2+1], spare_cards_player[j][4*k], spare_cards_player[j][4*k+1], spare_cards_player[j][4*k+2], spare_cards_player[j][4*k+3], spare_cards_player[j][4*k+4]);
+                    samplerank=eval->GetRank(spare_cards_player[j][4*k+5], spare_cards_player[j][4*k+6], spare_cards_player[j][4*k], spare_cards_player[j][4*k+1], spare_cards_player[j][4*k+2], spare_cards_player[j][4*k+3], spare_cards_player[j][4*k+4]);
+                    if (playerrank>samplerank)
+                        nPlayerWins[j]++;
+                }
+
+
+        }
+        break;
     case 3:
         for (int j=0;j<nPlayers;j++)
         {
