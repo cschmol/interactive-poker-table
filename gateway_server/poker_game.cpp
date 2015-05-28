@@ -442,6 +442,7 @@ void Poker_game::print_info (  ) {
 			//printw("\t\t<----");
 			mvprintw(line, 67, "<-");
 		}
+//		printw("\todds: %f", current_player->winning_odds(100, n_common_cards, common_cards));
 		refresh();
 	}
 

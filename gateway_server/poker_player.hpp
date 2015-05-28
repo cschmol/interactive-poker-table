@@ -63,6 +63,7 @@ class Poker_player
 		void set_prob(double prob);
 		double get_prob();
 
+		double winning_odds(int rounds, int n_common_cards, int *common_cards); /* only when player cards are already dealt */
 
 		WINDOW *get_wnd();
 		void set_wnd(WINDOW *w);
@@ -100,6 +101,7 @@ class Poker_player
 		/*-----------------------------------------------------------------------------
 		 *  Hands evaluator
 		 *-----------------------------------------------------------------------------*/
+		SevenEval evaluator;
 
 
 };

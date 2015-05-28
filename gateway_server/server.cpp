@@ -23,7 +23,14 @@ int main ( int argc, char *argv[] )
 	init_pair(1, COLOR_YELLOW, COLOR_BLACK);
 	init_pair(2, COLOR_BLACK, COLOR_WHITE);
 
+	double test = 0;
+	test++;
+	printw("test: %f" , test);
+	refresh();
+	getch();
 
+	clear();
+	curs_set(0);
 
 	//Start the poker game here
 	Poker_game pg;
