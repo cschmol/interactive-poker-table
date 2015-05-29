@@ -208,54 +208,59 @@ double Poker_player::winning_odds(int rounds, int n_common_cards, int *common_ca
 	own_cards[0] = hand_cards[0];
 	own_cards[1] = hand_cards[1];
 	int own_rank, opponent_rank;
+	bool sim_hand_cards = (own_cards[0]==-1 || own_cards[1]==-1);
 
 	double wins = 0, losses = 0;
 
-	rounds = 100;
-
-	while(rounds--) {                     /* as many rounds as needed */
-		Card_deck cd;                           /* generate a new card deck for every round */
+	Card_deck cd;                         /* generate a new card deck for every round */
+	SevenEval *e1, *e2;
+	e1 = new SevenEval();
+	e2 = new SevenEval();
+	while(rounds--) {                         /* as many rounds as needed */
+		cd.reset();
 		cd.shuffle();
-		if(own_cards[0] == -1 || own_cards[1] == -1) {
-			own_cards[0] == cd.draw_card();
-			own_cards[1] == cd.draw_card();
+//		for(i=0; i<rounds; i++)
+//			cd.shuffle();
+		if(sim_hand_cards) {                  /* set player's hand cards */
+			own_cards[0] = cd.draw_card();
+			own_cards[1] = cd.draw_card();
 		} else {
 			own_cards[0] = hand_cards[0];
+		Card_deck cd;                         /* generate a new card deck for every round */
 			own_cards[1] = hand_cards[1];
 		}
 
-		opponent_cards[0] = cd.draw_card();
+		opponent_cards[0] = cd.draw_card();   /* set opponent's hand cards */
 		opponent_cards[1] = cd.draw_card();
 
-		for(i=2; i<2+n_common_cards; i++) {
+		for(i=2; i<2+n_common_cards; i++) {   /* set common_cards to those supplied */
+//			cout	<< "Setting own|opponent_cards[" << i << "]=common_cards[i-2]" << endl;
 			own_cards[i] = common_cards[i-2];
 			opponent_cards[i] = own_cards[i];
 		}
 
-		for(i=2+n_common_cards; i<7; i++) { /* simulate common cards */
+		for(i=2+n_common_cards; i<7; i++) {   /* generate remaining common cards */
+//			cout	<< "Setting own|opponent_cards[" << i << "]=cd.draw_card to";
 			own_cards[i] = cd.draw_card();
 			opponent_cards[i] = own_cards[i];
+//			cout	<< opponent_cards[i] << endl;
 		}
 
-		own_rank = evaluator.GetRank(own_cards[0], own_cards[1], own_cards[2], own_cards[3], own_cards[4], own_cards[5], own_cards[6]); 
-		opponent_rank = evaluator.GetRank(opponent_cards[0], opponent_cards[1], opponent_cards[2], opponent_cards[3], opponent_cards[4], opponent_cards[5], opponent_cards[6]);
+		own_rank = e1->GetRank(own_cards[0], own_cards[1], own_cards[2], own_cards[3], own_cards[4], own_cards[5], own_cards[6]); 
+		opponent_rank = e2->GetRank(opponent_cards[0], opponent_cards[1], opponent_cards[2], opponent_cards[3], opponent_cards[4], opponent_cards[5], opponent_cards[6]);
 
 		if(own_rank < opponent_rank) {
 			losses++;
 		} else {
 			wins++;
 		}
-		if(rounds % 10 == 0) {
-			mvprintw(15, 0, "roundstogo: %d, wins: %f, losses: %f, ratio: %f", rounds,  (double) wins, (double) losses, (double) wins / ((double) wins + (double) losses));
-			clrtoeol();
-			refresh();
-			getch();
-		}
 	}
+	delete e1;
+	delete e2;
 
 	double odds = wins / (wins+losses);
-	mvprintw(LINES - 5, 0, "Calculated odds: %f", odds);
-	refresh();
+//	mvprintw(LINES - 5, 0, "Calculated odds: %f", odds);
+//	refresh();
 	return odds;
 //	mvprintw(LINES - 5, 0, "from alg: %f", odds);
 //	return (wins / (wins + losses));

@@ -29,7 +29,6 @@ const int NSAMPLEHANDS=1000;
 const int NSHUFFLEDDECKS=100;
 const int NMAXPLAYERS= 10;
 
-
 class Poker_game
 {
 	public:

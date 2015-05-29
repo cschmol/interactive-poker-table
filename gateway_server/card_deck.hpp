@@ -29,7 +29,7 @@ class Card_deck
 		Card_deck () {                           /* constructor */
 //			cout << "Card_deck created" << endl;
 			reset();
-			std::srand(unsigned(time(0)));
+//			std::srand(unsigned(time(0)));
 			return;
 		}
 
