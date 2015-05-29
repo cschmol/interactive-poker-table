@@ -16,7 +16,6 @@ Poker_player::Poker_player(string n, unsigned int c, int s) {
 	bet		= 0;
 	hand_cards[0] = hand_cards[1] = -1;         /* needs to be initalizized to -1 */
 	has_folded = false;
-	cli_socket = s;
 
 	sock = new Socket(s);
 	*sock << "Interactive Poker Table\n";
@@ -76,7 +75,7 @@ void Poker_player::print_info(int line, int n_cards, int *comm_cards) {
 	mvprintw(line, 0, "Name: %s, Chips: %d, Bet: %d, Cards: %s | %s",
 			  name.c_str(), chips, bet, card2str(hand_cards[0]).c_str(),
 			  card2str(hand_cards[1]).c_str());
-	printw("\todds: %f", winning_odds(100, n_cards, comm_cards));
+	printw("\t\todds: %f", winning_odds(100, n_cards, comm_cards));
 
 
 	refresh();
@@ -186,22 +185,6 @@ void Poker_player::fold() {
 	has_folded = true;
 }
 
-
-WINDOW *Poker_player::get_wnd() {
-	return wnd;
-}
-
-void Poker_player::set_wnd(WINDOW *w) {
-	wnd = w;
-	return;
-}
-
-void Poker_player::print_hello() {
-//	wprintw(wnd, "Hello World");
-//	wrefresh(wnd);
-	return;
-}
-
 double Poker_player::winning_odds(int rounds, int n_common_cards, int *common_cards) { /* only when player cards are already dealt */
 	int i;
 	int own_cards[7], opponent_cards[7];
@@ -226,7 +209,7 @@ double Poker_player::winning_odds(int rounds, int n_common_cards, int *common_ca
 			own_cards[1] = cd.draw_card();
 		} else {
 			own_cards[0] = hand_cards[0];
-		Card_deck cd;                         /* generate a new card deck for every round */
+			Card_deck cd;                         /* generate a new card deck for every round */
 			own_cards[1] = hand_cards[1];
 		}
 

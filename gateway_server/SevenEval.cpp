@@ -7,7 +7,6 @@
 using namespace std;
 
 SevenEval::SevenEval() {
-//	cout	<< "SevenEval constructor called" << endl;
   int const face[13] = {ACE, KING, QUEEN, JACK, TEN, NINE, EIGHT, SEVEN, SIX,
       FIVE, FOUR, THREE, TWO};
   int const face_flush[13] = {ACE_FLUSH, KING_FLUSH, QUEEN_FLUSH, JACK_FLUSH,
@@ -200,11 +199,7 @@ SevenEval::~SevenEval() {}
 
 short unsigned SevenEval::GetRank(int const i, int const j, int const k,
     int const l, int const m, int const n, int const p) const {
-//	cout	<< "Starting evaluator" << endl;
   // Create a 7-card hand key by adding up each of the card keys.
-
-//	mvprintw(LINES - 7, 0, "GetRank called with %d,%d,%d,%d,%d,%d,%d", i,j,k,l,m,n,p);
-//	cout << "GetRank called with: " << i << "|" << j << "|" << k << "|" << l << "|" << m << "|" << n << "|" << p << endl;
 
   long unsigned key = mDeckcardsKey[i] + mDeckcardsKey[j] + mDeckcardsKey[k] +
       mDeckcardsKey[l] + mDeckcardsKey[m] + mDeckcardsKey[n] + mDeckcardsKey[p];
@@ -230,10 +225,3 @@ short unsigned SevenEval::GetRank(int const i, int const j, int const k,
   return mFlushRankArray[flush_key];
 }
 
-
-
-void SevenEval::clear() {
-  for (int i = 0; i < CIRCUMFERENCE_SEVEN + 1; i++) {
-    mRankArray[i] = 0;
-  }
-}

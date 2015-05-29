@@ -71,7 +71,6 @@ class Poker_player
 		bool make_bet(unsigned int c);
 
 		void print_info(int line, int n_cards, int *comm_cards);
-//		void print_info(int line);                                  /* print info about player */
 		Poker_action *poker_action(unsigned int new_bet);   /* player needs to chose an action */
 
 		void print_hello();
@@ -85,18 +84,7 @@ class Poker_player
 		int hand_cards[2];
 		double winprob;
 
-		/*-----------------------------------------------------------------------------
-		 *  socket variables
-		 *-----------------------------------------------------------------------------*/
-
-		int cli_socket;                         /* socket of the new connection */
 		Socket *sock;
-
-
-		/*-----------------------------------------------------------------------------
-		 *  ncurses varialbes
-		 *-----------------------------------------------------------------------------*/
-		WINDOW *wnd;
 
 		/*-----------------------------------------------------------------------------
 		 *  Hands evaluator

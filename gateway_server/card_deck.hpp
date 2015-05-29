@@ -27,20 +27,17 @@ class Card_deck
 {
 	public:
 		Card_deck () {                           /* constructor */
-//			cout << "Card_deck created" << endl;
 			reset();
-//			std::srand(unsigned(time(0)));
 			return;
 		}
 
 		int draw_card() {
-			int res = card_deck.back();  /* get the last element */
-			card_deck.pop_back();               /* delete it from the vector */
-			return res;                         /* and return a copy of it */
+			int res = card_deck.back(); /* get the last element */
+			card_deck.pop_back();       /* delete it from the vector */
+			return res;                 /* and return a copy of it */
 
 		}
 		void shuffle() {
-//			cout << "Shuffling deck now" << endl;
 			std::random_shuffle(card_deck.begin(), card_deck.end(), myrandom); /* shuffle the deck */
 			return;
 		}

@@ -31,7 +31,6 @@ public:
  // The higher the rank the better the hand. Two hands of equal rank tie.
  short unsigned GetRank(int const, int const, int const, int const, int const,
          int const, int const) const;
- void clear();
 
 private:
  short unsigned mRankArray[CIRCUMFERENCE_SEVEN];

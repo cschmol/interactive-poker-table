@@ -25,6 +25,8 @@
 #include	<strings.h>
 #include	<ncurses.h>
 
+#define MAX_PLAYERS 8
+
 const int NSAMPLEHANDS=1000;
 const int NSHUFFLEDDECKS=100;
 const int NMAXPLAYERS= 10;
@@ -42,28 +44,23 @@ class Poker_game
 		void setup();
 		void deal_common_cards(int count);
 
-		void deal_player_cards();
-		void flop();
-		void turn();
-		void river();
+		void deal_player_cards(int n);
+		void deal_common_cards(unsigned int n);
 
 		/*-----------------------------------------------------------------------------
 		 *  to be seen
 		 *-----------------------------------------------------------------------------*/
-		void getProbability(int nPlayers, std::array<int,2*NMAXPLAYERS> handcards,int nCommonCards, int commoncards[5],double *arr);
+//		void getProbability(int nPlayers, std::array<int,2*NMAXPLAYERS> handcards,int nCommonCards, int commoncards[5],double *arr);
 		void betting_round();
 
 		void print_info();                      /* print info about the game */
-
-		/*-----------------------------------------------------------------------------
-		 *  to be seen
-		 *-----------------------------------------------------------------------------*/
-		void update_probs();
 
 
 	protected:
 
 	private:
+		void reset_iterators();
+
 		Card_deck deck;                                                                                     /* card deck for the game */
 		vector<Poker_player> players;                                                                       /* all players that are still competing */
 
@@ -77,17 +74,9 @@ class Poker_game
 						pot;                                                                                /* amount of chips in the pot */
 
 
-		/*-----------------------------------------------------------------------------
-		 *  probability calculation
-		 *-----------------------------------------------------------------------------*/
-		double winprobs[NMAXPLAYERS];
-		SevenEval const* eval;
+		Socket sock;                            /* Socket object for communication with clients */
 
-
-		/*-----------------------------------------------------------------------------
-		 *  socket variables
-		 *-----------------------------------------------------------------------------*/
-		Socket sock;
+		SevenEval evaluator;
 
 };
 
