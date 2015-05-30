@@ -11,9 +11,14 @@
 int main ( int argc, char *argv[] )
 {
 //	std::srand(time(NULL));                                                /* initialize random generator */
-	SevenEval se;
 
-	return 0;
+	SevenEval *se;                              /* rank evaluator */
+	se = new SevenEval;
+
+	if(se==NULL) {
+		cout << "se=NULL" << endl;
+		exit(1);
+	}
 
 	int opt;
 	bool flag_help=false,
@@ -21,11 +26,8 @@ int main ( int argc, char *argv[] )
 		 flag_demo=false;
 
 	cout << "pid: " << getpid() << endl;
-	string interrupt;
-	cin >> interrupt;
 
-//	while ((opt = getopt(argc, argv, "dhs")) != -1) {
-	while (1) {
+	while ((opt = getopt(argc, argv, "dhs")) != -1) {
 		switch (opt) {
 			case 'h':
 				cout << "flag_help" << endl;
@@ -40,6 +42,7 @@ int main ( int argc, char *argv[] )
 				flag_demo = true;
 				break;
 			default:
+				flag_help=true;
 				break;
 		}
 	}
@@ -55,6 +58,7 @@ int main ( int argc, char *argv[] )
 	if(flag_demo) {
 		cout << "demo" << endl;
 		Poker_player *pl1 = new Poker_player("Christophe", 1000);
+		pl1->set_evaluator(se);
 		int rounds = 200;
 		int common_cards[5] = {};
 		int n_common_cards = 3;
@@ -87,7 +91,7 @@ int main ( int argc, char *argv[] )
 //		init_pair(2, COLOR_BLACK, COLOR_WHITE);
 
 
-		Poker_game pg(&se);
+		Poker_game pg(se);
 		pg.setup();                             /* start the setup here */
 		pg.start();                             /* start the game */
 	  

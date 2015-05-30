@@ -339,6 +339,7 @@ void Poker_game::setup(){
 			refresh();
 
 			Poker_player *player = new Poker_player("", 0, sock.get_sock());
+			player->set_evaluator(evaluator);
 
 
 			player->set_name(*it);
