@@ -31,10 +31,12 @@ const int NSAMPLEHANDS=1000;
 const int NSHUFFLEDDECKS=100;
 const int NMAXPLAYERS= 10;
 
+
 class Poker_game
 {
 	public:
 		Poker_game ();                          /* constructor */
+		Poker_game (SevenEval *se);                          /* constructor */
 		~Poker_game ();
 
 		bool add_player(Poker_player *player);
@@ -76,7 +78,7 @@ class Poker_game
 
 		Socket sock;                            /* Socket object for communication with clients */
 
-		SevenEval evaluator;
+		SevenEval *evaluator;
 
 };
 

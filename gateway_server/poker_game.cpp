@@ -11,6 +11,15 @@ Poker_game::Poker_game () {
 	n_common_cards = 0;
 }
 
+Poker_game::Poker_game (SevenEval *se) {                         /* constructor */
+	n_common_cards=0;
+	for(int i=0; i<5; i++) {
+		common_cards[i] = -1;           /* initalize the cards with -1 */
+	}
+	n_common_cards = 0;
+	evaluator = se;
+}
+
 Poker_game::~Poker_game (  ) {
 }
 
@@ -78,7 +87,8 @@ void Poker_game::round() {                          /* corresponds to 1 round of
 	unsigned int max_rank = 0, rank;
 
 	for(it=players.begin(); it!=players.end(); it++) { /* iterate over all players */
-		rank = evaluator.GetRank(it->get_card(0), it->get_card(1), common_cards[0], common_cards[1], common_cards[2], common_cards[3], common_cards[4]);
+		//calculate the rank here for each player
+//		rank = evaluator.GetRank(it->get_card(0), it->get_card(1), common_cards[0], common_cards[1], common_cards[2], common_cards[3], common_cards[4]);
 		if(rank > max_rank) {                   /* when beaten */
 			winner = it;                        /* set the winner to iterator */
 			max_rank = rank;                    /* raise the maximum rank */
@@ -195,10 +205,8 @@ void Poker_game::start() {
 
 void Poker_game::deal_player_cards(int n) {
 	std::vector<Poker_player>::iterator it;
-
-	int j;
 	for ( it=players.begin(); it!=players.end(); it++) {     /* iterate over all players */
-		for(j=0; j<n; j++) {                                 /* draw 2 cards */
+		for(int j=0; j<n; j++) {                                 /* draw 2 cards */
 			it -> set_card(j, deck.draw_card());
 		}
 	}
@@ -240,7 +248,7 @@ void Poker_game::betting_round () {
 			}
 
 			else {
-				continue;
+				continue;                       /* give the player another chance to chose an action */
 			}
 		}
 		if(current_player==big_blind && current_player==highest_better) {       /* Assure that big blind can also play */
@@ -254,7 +262,6 @@ void Poker_game::betting_round () {
 	return;
 }
 
-//void print_info(int line, int n_cards, int *comm_cards) {
 void Poker_game::print_info (  ) {
 	unsigned int i;
 	std::vector<Poker_player>::iterator it;
@@ -282,11 +289,9 @@ void Poker_game::print_info (  ) {
 		clrtoeol();
 		if(it == big_blind) {
 			printw("\tBB");
-		}
-		if(it == small_blind) {
+		} else if(it == small_blind) {
 			printw("\tSB");
-		}
-		if(it == dealer) {
+		} else if(it == dealer) {
 			printw("\tD");
 		}
 		if(it == highest_better) {

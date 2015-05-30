@@ -10,15 +10,22 @@
 
 int main ( int argc, char *argv[] )
 {
-	std::srand(time(NULL));                                                /* initialize random generator */
+//	std::srand(time(NULL));                                                /* initialize random generator */
+	SevenEval se;
+
+	return 0;
 
 	int opt;
 	bool flag_help=false,
 		 flag_server=false,
 		 flag_demo=false;
 
+	cout << "pid: " << getpid() << endl;
+	string interrupt;
+	cin >> interrupt;
 
-	while ((opt = getopt(argc, argv, "dhs")) != -1) {
+//	while ((opt = getopt(argc, argv, "dhs")) != -1) {
+	while (1) {
 		switch (opt) {
 			case 'h':
 				cout << "flag_help" << endl;
@@ -36,6 +43,8 @@ int main ( int argc, char *argv[] )
 				break;
 		}
 	}
+
+
 	
 	if(flag_help) {
 		cout << "Usage: ./server -s" << endl;
@@ -78,7 +87,7 @@ int main ( int argc, char *argv[] )
 //		init_pair(2, COLOR_BLACK, COLOR_WHITE);
 
 
-		Poker_game pg;
+		Poker_game pg(&se);
 		pg.setup();                             /* start the setup here */
 		pg.start();                             /* start the game */
 	  

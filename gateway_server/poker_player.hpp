@@ -28,7 +28,6 @@ typedef struct {
 
 class Socket;
 
-
 class Poker_player
 {
 	public:
@@ -63,6 +62,9 @@ class Poker_player
 		void set_prob(double prob);
 		double get_prob();
 
+		//SevenEval setter
+		void set_evaluator(SevenEval *se);
+
 		double winning_odds(int rounds, int n_common_cards, int *common_cards); /* only when player cards are already dealt */
 
 		WINDOW *get_wnd();
@@ -85,12 +87,7 @@ class Poker_player
 		double winprob;
 
 		Socket *sock;
-
-		/*-----------------------------------------------------------------------------
-		 *  Hands evaluator
-		 *-----------------------------------------------------------------------------*/
-		SevenEval evaluator;
-
+		SevenEval *evaluator;
 
 };
 

@@ -196,9 +196,6 @@ double Poker_player::winning_odds(int rounds, int n_common_cards, int *common_ca
 	double wins = 0, losses = 0;
 
 	Card_deck cd;                         /* generate a new card deck for every round */
-	SevenEval *e1, *e2;
-	e1 = new SevenEval();
-	e2 = new SevenEval();
 	while(rounds--) {                         /* as many rounds as needed */
 		cd.reset();
 		cd.shuffle();
@@ -229,8 +226,8 @@ double Poker_player::winning_odds(int rounds, int n_common_cards, int *common_ca
 //			cout	<< opponent_cards[i] << endl;
 		}
 
-		own_rank = e1->GetRank(own_cards[0], own_cards[1], own_cards[2], own_cards[3], own_cards[4], own_cards[5], own_cards[6]); 
-		opponent_rank = e2->GetRank(opponent_cards[0], opponent_cards[1], opponent_cards[2], opponent_cards[3], opponent_cards[4], opponent_cards[5], opponent_cards[6]);
+		own_rank = evaluator->GetRank(own_cards[0], own_cards[1], own_cards[2], own_cards[3], own_cards[4], own_cards[5], own_cards[6]); 
+		opponent_rank = evaluator->GetRank(opponent_cards[0], opponent_cards[1], opponent_cards[2], opponent_cards[3], opponent_cards[4], opponent_cards[5], opponent_cards[6]);
 
 		if(own_rank < opponent_rank) {
 			losses++;
@@ -238,8 +235,6 @@ double Poker_player::winning_odds(int rounds, int n_common_cards, int *common_ca
 			wins++;
 		}
 	}
-	delete e1;
-	delete e2;
 
 	double odds = wins / (wins+losses);
 //	mvprintw(LINES - 5, 0, "Calculated odds: %f", odds);
@@ -254,6 +249,9 @@ double Poker_player::winning_odds(int rounds, int n_common_cards, int *common_ca
 
 
 
+void Poker_player::set_evaluator(SevenEval *se) {
+	evaluator = se;
+}
 
 
 
