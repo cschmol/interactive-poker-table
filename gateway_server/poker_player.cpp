@@ -133,6 +133,17 @@ Poker_action *Poker_player::poker_action(unsigned int new_bet) {
 				amount = sock->recv();
 				amount.erase(amount.length() - 1);
 				istringstream ( amount ) >> pa->new_high_bet; /* convert string to integer */
+
+// ________________________________________
+/// Need to rethink this, some logical     \
+//| errors, some structure members are not |
+//\ set                                    /
+// ----------------------------------------
+//        \   ^__^
+//         \  (oo)\_______
+//            (__)\       )\/\
+//                ||----w |
+//                ||     ||
 			} while (pa->new_high_bet <= new_bet || !make_bet(pa->new_high_bet - bet)); /* works because of short-circuit || */
 
 			unvalid_action = false;
@@ -246,6 +257,13 @@ double Poker_player::winning_odds(int rounds, int n_common_cards, int *common_ca
 }
 
 
+int Poker_player::rank(int n_common_cards, int *common_cards) {
+	if ( n_common_cards<5 || hand_cards[0]==-1 || hand_cards[1]==-1 ) {
+		return 0;
+	} else {
+		return evaluator->GetRank(hand_cards[0], hand_cards[1], common_cards[0], common_cards[1], common_cards[2], common_cards[3], common_cards[4]); 
+	}
+}
 
 
 

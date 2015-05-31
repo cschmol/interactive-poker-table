@@ -89,61 +89,19 @@ void Poker_game::round() {                          /* corresponds to 1 round of
 	for(it=players.begin(); it!=players.end(); it++) { /* iterate over all players */
 		//calculate the rank here for each player
 //		rank = evaluator.GetRank(it->get_card(0), it->get_card(1), common_cards[0], common_cards[1], common_cards[2], common_cards[3], common_cards[4]);
+		rank = it->rank(5, common_cards);
 		if(rank > max_rank) {                   /* when beaten */
 			winner = it;                        /* set the winner to iterator */
 			max_rank = rank;                    /* raise the maximum rank */
 		}
 	}
 
-	mvprintw(12, 0, "... the winner is %s", (it->get_name()).c_str());
+	mvprintw(LINES - 4, 0, "... the winner is %s", (winner->get_name()).c_str());
+	it->set_chips(it->get_chips() + pot);
+	getch();
 	
 
 	//check if splitpot is needed
-//	bool splitpot=false;
-//	std::vector<int> splitpot_index;
-//
-//	for (std::vector<int>::iterator it=player_ranks.begin(); it!=player_ranks.end(); it++ ) //checking for splitpot
-//	{
-//		if ( (*it)==(*it_rank) && it!=it_rank )
-//		{
-//			splitpot = true;
-//			splitpot_index.push_back(std::distance( player_ranks.begin(), it )); 	
-//		}					
-//	}
-//
-//
-//	if (splitpot)
-//	{
-//		string text="";
-//		splitpot_index.push_back(std::distance( player_ranks.begin(), it_rank ));
-//		
-//
-//		for (std::vector<int>::iterator it=splitpot_index.begin(); it!=splitpot_index.end(); it++ )
-//		{
-//			(players.at(*it)) .set_chips( (players.at(*it)).get_chips() + pot/splitpot_index.size() );
-//			text= text +" "+ players.at(*it).get_name();	
-//		}
-//
-//		mvprintw(2, 0, "Splitpot: %s won this round", text.c_str());
-//		clrtoeol();
-//		mvprintw(3, 0, "They wins a pot of %d", pot);
-//		clrtoeol();
-//		refresh();
-//
-//	}
-//	else
-//	{
-//		winner = std::distance( player_ranks.begin(), it_rank ); //index of winner
-//	
-//
-//		mvprintw(2, 0, "%s has won this round", players.at(winner).get_name().c_str());
-//		clrtoeol();
-//		mvprintw(3, 0, "He/she wins a pot of %d", pot);
-//		clrtoeol();
-//		refresh();
-//		(players.at(winner)) .set_chips( (players.at(winner)) . get_chips() + pot );
-//
-//	}
 
 	pot = 0;                                    /* reset the pot to 0 */
 }
@@ -190,7 +148,6 @@ void Poker_game::start() {
 		if(++dealer == players.end()) {
 			dealer = players.begin();
 		}
-		
 		if(++small_blind == players.end()) {
 			small_blind = players.begin();
 		}

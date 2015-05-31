@@ -66,6 +66,7 @@ class Poker_player
 		void set_evaluator(SevenEval *se);
 
 		double winning_odds(int rounds, int n_common_cards, int *common_cards); /* only when player cards are already dealt */
+		int rank(int n_common_cards, int *common_cards);
 
 		WINDOW *get_wnd();
 		void set_wnd(WINDOW *w);
