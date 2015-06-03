@@ -38,11 +38,8 @@ string card2str(int c) {
 			case 3:
 				buffer	<< "Valet";
 				break;
-			case 4:
-				buffer	<< "King";
-				break;
 			default:
-				buffer	<<  15 - (c/4);
+				buffer	<<  14 - (c/4);
 				break;
 		}
 	}

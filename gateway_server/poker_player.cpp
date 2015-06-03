@@ -134,6 +134,7 @@ Poker_action *Poker_player::poker_action(unsigned int new_bet) {
 				amount = sock->recv();
 				amount.erase(amount.length() - 1);
 				istringstream ( amount ) >> pa->new_high_bet; /* convert string to integer */
+				pa->new_player_chips = pa->new_high_bet -bet;
 			} while (pa->new_high_bet <= new_bet || !make_bet(pa->new_high_bet - bet)); /* works because of short-circuit || */
 
 			unvalid_action = false;

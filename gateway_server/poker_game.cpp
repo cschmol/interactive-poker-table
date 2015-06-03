@@ -49,6 +49,8 @@ void Poker_game::round() {                          /* corresponds to 1 round of
 	//this is only 1 round
 
 	pot = 0;
+
+	n_players = players.size();
 	
 	//set the big&small blind's bets accordingly
 	small_blind -> deduct_chips ( n_small_blind );
@@ -356,11 +358,17 @@ void Poker_game::betting_round () {
 //  it does not work correctly when players 
 //  fold in a previous round                
 // -----------------------------------------
-	int n_players = players.size();             /* might need to be some other place */
 
-	while ( (n_players > 1 && current_player != highest_better) || (current_player==highest_better && current_player==big_blind) ) {         /* while there are still players */
+	while ( (n_players > 1 && current_player != highest_better) || (current_player==highest_better && current_player==big_blind) ) {         
 		print_info();
 		if(!current_player -> folded()) {       /* only when player has not folded yet */
+
+
+			if (n_players==1){
+				action = new Poker_action;
+				action->action="check";
+			} 
+			else
 			action = current_player -> poker_action(high_bet); /* current player needs to play */
 
 			if(action->action == "fold") {
@@ -399,7 +407,7 @@ void Poker_game::print_info (  ) {
 //	cout	<< "+++++++++++++++++" << endl;
 //	cout	<< "Pot: " << pot << endl;
 //	cout	<< "Common cards: ";
-	
+
 
 	if (n_common_cards!=0)
 	{

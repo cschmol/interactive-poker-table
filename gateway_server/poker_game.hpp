@@ -59,6 +59,7 @@ class Poker_game
 	private:
 		Card_deck deck;                                     /* card deck for the game */
 		vector<Poker_player> players;                       /* all players that are still competing */
+		int n_players;
 
 //		int dealer, small_blind, big_blind, current_player; /* indexes for special players */
 //		int highest_better;
