@@ -12,6 +12,7 @@
 #include	<fstream>
 #include	"SevenEval.h"
 #include	"FiveEval.h"
+#include	<ncurses.h>
 
 using namespace std;
 

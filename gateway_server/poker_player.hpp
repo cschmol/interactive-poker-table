@@ -33,7 +33,7 @@ class Poker_player
 {
 	public:
 		Poker_player(string n, unsigned int c);
-		Poker_player(string n, unsigned int c, int sock);
+		Poker_player(string n, unsigned int c, int sock,WINDOW *parentwin);
 		
 		~Poker_player();
 
@@ -74,6 +74,7 @@ class Poker_player
 		Poker_action *poker_action(unsigned int new_bet);   /* player needs to chose an action */
 
 		void print_hello();
+		void draw();
 
 
 	private:
@@ -96,6 +97,7 @@ class Poker_player
 		 *  ncurses varialbes
 		 *-----------------------------------------------------------------------------*/
 		WINDOW *wnd;
+		//int wnd_x,wnd_y;		//coordinates of player window
 
 		/*-----------------------------------------------------------------------------
 		 *  Hands evaluator

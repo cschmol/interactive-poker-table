@@ -10,18 +10,7 @@
 
 int main ( int argc, char *argv[] )
 {
-	std::srand(time(NULL));                                                /* initialize random generator */
 
-
-
-    	initscr();
-    	clear();
-    	noecho();
-    	curs_set(0);
-    	cbreak();
-	start_color();
-	init_pair(1, COLOR_YELLOW, COLOR_BLACK);
-	init_pair(2, COLOR_BLACK, COLOR_WHITE);
 
 
 
@@ -29,8 +18,9 @@ int main ( int argc, char *argv[] )
 	Poker_game pg;
 
 	pg.setup();
-	pg.start();
-  
+	//pg.start();
+	pg.draw();
+  	getch();
 	endwin();
     return(0);
 }

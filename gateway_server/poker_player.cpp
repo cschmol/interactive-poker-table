@@ -10,7 +10,7 @@ Poker_player::Poker_player(string n, unsigned int c) {
 
 }
 
-Poker_player::Poker_player(string n, unsigned int c, int s) {
+Poker_player::Poker_player(string n, unsigned int c, int s,WINDOW *parentwin) {
 	name 	= n;                                /* set name */
 	chips 	= c;                                /* set number of chips */
 	bet		= 0;
@@ -20,6 +20,9 @@ Poker_player::Poker_player(string n, unsigned int c, int s) {
 
 	sock = new Socket(s);
 	sock->send("Welcome to the game");
+
+	wnd=subwin(parentwin,6,12,0,0);
+	wbkgd(wnd,2);
 
 }
 
@@ -204,9 +207,16 @@ void Poker_player::print_hello() {
 }
 
 
+void Poker_player::draw(){
 
+	
 
-
+	werase(wnd);
+	mvwprintw(wnd,0,0,name.c_str());
+	mvwprintw(wnd,1,0,"blabla");
+	wrefresh(wnd);
+	
+}
 
 
 

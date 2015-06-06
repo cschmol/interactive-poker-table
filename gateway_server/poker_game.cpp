@@ -458,6 +458,23 @@ void Poker_game::print_info (  ) {
 }		/* -----  end of method Poker_game::print_info  ----- */
 
 void Poker_game::setup(){
+
+
+	std::srand(time(NULL));                                
+
+
+
+    	initscr();
+    	clear();
+    	noecho();
+    	curs_set(0);
+    	cbreak();
+	start_color();
+	init_pair(1, COLOR_YELLOW, COLOR_BLACK);
+	init_pair(2, COLOR_BLACK, COLOR_WHITE);
+	wGameInfo=newwin(LINES,COLS,0,0);
+	wbkgd(wGameInfo,1);
+
         fstream fin("gameconfig");
 
         string playerstring,valuestring;
@@ -489,17 +506,19 @@ void Poker_game::setup(){
 			clrtoeol();
 			refresh();
 
-			Poker_player *player = new Poker_player("", 0, sock.get_sock());
+			Poker_player *player = new Poker_player("", 0, sock.get_sock(),wGameInfo);
 
 
 			player->set_name(*it);
 			player->set_chips(values.at(2));
-			player->set_wnd(stdscr);
+			//player->set_wnd(stdscr);
 			add_player(player);
 			mvprintw(LINES-1, 0, "Player %s added to the game", it->c_str());
 			clrtoeol();
 			refresh();
-        }      
+        }
+
+	update_player_windows(); 
 	
 	move(LINES-2, 0);          // move to begining of line
 	clrtoeol();          // clear line
@@ -686,6 +705,34 @@ void Poker_game::update_probs()
 
 }
 
+
+void Poker_game::update_player_windows()
+{
+	int i=0;
+	for (std::vector<Poker_player>::iterator it=players.begin(); it!=players.end(); it++) {  
+		int y=static_cast<int>(0.8*LINES*sin(i/players.size()*2*M_PI));
+		int x=static_cast<int>(0.8*COLS*cos(i/players.size()*2*M_PI));
+		i++;
+
+		mvderwin(it->get_wnd(),y,x);
+	}
+}	
+
+
+void Poker_game::draw()
+{
+
+	werase(wGameInfo); 
+	
+	touchwin(wGameInfo);
+
+	for (std::vector<Poker_player>::iterator it=players.begin(); it!=players.end(); it++) {
+		 
+		it->draw();
+	}
+
+	//refresh();
+}
 
 
 

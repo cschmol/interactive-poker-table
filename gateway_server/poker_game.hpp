@@ -10,6 +10,7 @@
 #include 	<array>        // std::array
 #include 	<random>       // std::default_random_engine
 #include 	<chrono>       // std::chrono::system_clock
+#include	<math.h>
 
 /*-----------------------------------------------------------------------------
  *  headers for sockets
@@ -52,6 +53,9 @@ class Poker_game
 
 		void print_info();                      /* print info about the game */
 		void update_probs();
+
+		void update_player_windows();
+		void draw();
 
 
 	protected:
