@@ -56,6 +56,7 @@ class Poker_game
 
 		void update_player_windows();
 		void draw();
+		void addmessage(std::string text);
 
 
 	protected:
@@ -80,7 +81,7 @@ class Poker_game
 
 		double winprobs[NMAXPLAYERS];
 		SevenEval const* eval;
-
+		std::string message[5];
 
 		/*-----------------------------------------------------------------------------
 		 *  socket variables
@@ -96,7 +97,7 @@ class Poker_game
 		/*-----------------------------------------------------------------------------
 		 *  Ncurses variables
 		 *-----------------------------------------------------------------------------*/
-		WINDOW *wGameInfo;
+		WINDOW *wGameInfo,*wPot,*wMessage;
 };
 
 #endif

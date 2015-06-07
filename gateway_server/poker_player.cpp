@@ -21,8 +21,10 @@ Poker_player::Poker_player(string n, unsigned int c, int s,WINDOW *parentwin) {
 	sock = new Socket(s);
 	sock->send("Welcome to the game");
 
-	wnd=subwin(parentwin,6,12,0,0);
-	wbkgd(wnd,2);
+	setlocale(LC_ALL,"");
+	wnd=derwin(parentwin,6,22,10,10);
+	wbkgd(wnd,COLOR_PAIR(2));
+	
 
 }
 
@@ -207,14 +209,35 @@ void Poker_player::print_hello() {
 }
 
 
-void Poker_player::draw(){
+void Poker_player::draw(bool active){
+
+	if (active)
+		wbkgd(wnd,COLOR_PAIR(3));
+	else
+		wbkgd(wnd,COLOR_PAIR(2));
+
+	wclear(wnd);
+	
+
+
+	box(wnd, 0, 0);
+	mvwprintw(wnd,1,1,+"%s: %d$",name.c_str(),chips);
 
 	
 
-	werase(wnd);
-	mvwprintw(wnd,0,0,name.c_str());
-	mvwprintw(wnd,1,0,"blabla");
+	if (has_folded)
+		mvwprintw(wnd,2,1,"FOLDED");
+	else{
+		mvwprintw(wnd,2,1,"Bet: %d",bet);
+		mvwprintw(wnd,3,1,"Odds: %f",winprob);
+		mvwprintw(wnd,4,1,"Cards:");
+		
+		waddwstr(wnd, card2unistr(hand_cards[0]).c_str());
+		waddwstr(wnd, card2unistr(hand_cards[1]).c_str());
+	}
 	wrefresh(wnd);
+
+
 	
 }
 

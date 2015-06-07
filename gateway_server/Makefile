@@ -1,7 +1,7 @@
 #Variablen die gebraucht werden
 CXX		= g++
 CFLAGS	= -Wall -g -std=c++11
-LDFLAGS	= -g -lncurses
+LDFLAGS	= -g -lncursesw
 OBJ = card_deck.o server.o poker_player.o poker_game.o socket.o FiveEval.o SevenEval.o
 NAME = server
 dependfile = .depend

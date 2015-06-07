@@ -13,6 +13,11 @@
 #include	"SevenEval.h"
 #include	"FiveEval.h"
 #include	<ncurses.h>
+//#include 	<stdio.h>
+//#include 	<stdlib.h>
+#include 	<ncursesw/ncurses.h> 
+//#include	<ncurses.h>
+#include 	<locale.h> 
 
 using namespace std;
 
@@ -22,6 +27,7 @@ int myrandom (int i);
 // integer from 0 (resp. Ace of Spades) to 51 (resp. Two of Clubs) inclusive.
 // The higher the rank the better the hand. Two hands of equal rank tie.
 string card2str(int c);
+std::wstring card2unistr(int c);
 
 class Card_deck
 {

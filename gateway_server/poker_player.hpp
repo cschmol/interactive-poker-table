@@ -10,7 +10,9 @@
 #include	<sys/socket.h>
 #include	<string.h>
 
-#include	<ncurses.h>
+//#include	<ncurses.h>
+#include 	<ncursesw/ncurses.h> 
+
 
 #include	"card_deck.hpp"
 #include	"socket.hpp"
@@ -74,7 +76,7 @@ class Poker_player
 		Poker_action *poker_action(unsigned int new_bet);   /* player needs to chose an action */
 
 		void print_hello();
-		void draw();
+		void draw(bool active);
 
 
 	private:
