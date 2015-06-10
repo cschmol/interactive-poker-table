@@ -97,6 +97,7 @@ Poker_action *Poker_player::poker_action(unsigned int new_bet) {
 	Poker_action *pa = new Poker_action;
 	string action;
 	string amount;
+	string allin;
 	char buffer[512];
 
 	bool unvalid_action = true;
@@ -126,6 +127,19 @@ Poker_action *Poker_player::poker_action(unsigned int new_bet) {
 
 		} else if(action == "call") {
 			pa->new_player_chips = new_bet - bet;
+
+			if (pa->new_player_chips>chips){	//Allin?
+				sock->send("Allin? (y/n) :");
+				allin=sock->recv();		
+				allin.erase(allin.length() - 1);
+
+				if (allin=="y"){
+					pa->new_player_chips=chips;
+				}else{
+					continue;
+				}
+			}
+
 			if(make_bet(pa->new_player_chips)) {
 			} else {
 				sock->send("You don't have enough chips to call");
@@ -150,8 +164,7 @@ Poker_action *Poker_player::poker_action(unsigned int new_bet) {
 	} while (unvalid_action);
 
 
-//	wbkgd(wnd, COLOR_PAIR(2));
-//	wrefresh(wnd);
+
 	return pa;
 }
 

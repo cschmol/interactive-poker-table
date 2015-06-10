@@ -100,7 +100,7 @@ const wchar_t* card2unistr(int c) {
 }*/
 
 std::wstring card2unistr(int c) {
-	std::wstring buffer=(wchar_t*)malloc(100);
+	std::wstring buffer;
 	
 	if(c<0) {
 		return L"undefined";
@@ -108,21 +108,21 @@ std::wstring card2unistr(int c) {
 		switch (c%4) {
 			case 0:
 				//buffer={' ',0xE2,0x99,0xA0,' '};
-				buffer=L"  \u2660 ";
+				buffer=L" \u2660 ";
 				break;
 			case 1:
 				//buffer={' ',0xE2,0x99,0xA5,' '};
-				buffer=L"  \u2665 ";
+				buffer=L" \u2665 ";
 				break;
 			case 2:
 
 				//buffer={' ',0xE2,0x99,0xA6,' '};
-				buffer=L"  \u2666 ";
+				buffer=L" \u2666 ";
 				break;
 			case 3:
 
 				//buffer={' ',0xE2,0x99,0xA3,' '};
-				buffer=L"  \u2663 ";
+				buffer=L" \u2663 ";
 				break;
 			default:
 				break;

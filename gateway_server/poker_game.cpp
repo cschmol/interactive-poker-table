@@ -65,7 +65,7 @@ void Poker_game::round() {                          /* corresponds to 1 round of
 	pot += n_small_blind;
 	pot += n_big_blind;
 
-
+	deck.reset();
 	deal_player_cards();                             /* deal player cards */
 	addmessage("Dealing player cards");
 	//Preflop odds
@@ -222,6 +222,10 @@ void Poker_game::start() {
 		highest_better=big_blind;
 
 		//set each players has_folded to 0, so that each player can play again
+
+
+		round();
+
 		for ( it=players.begin(); it!=players.end(); it++ ) {
 			it -> reset_fold();
 			it -> set_bet(0);
@@ -236,14 +240,29 @@ void Poker_game::start() {
 		}
 		draw();
 
-		round();
+
+		//check if iterator is invalid because of erasing player
+		if(dealer == players.end()) {
+			dealer = players.begin();
+		}
+		
+
+		if(small_blind == players.end()) {
+			small_blind = players.begin();
+		}
+		if(big_blind == players.end()) {
+			big_blind = players.begin();
+		}
+		if(current_player == players.end()) {
+			current_player = players.begin();
+		}
+		
 
 
 		if(++dealer == players.end()) {
 			dealer = players.begin();
 		}
 		
-		//advance special functions
 		if(++small_blind == players.end()) {
 			small_blind = players.begin();
 		}
@@ -254,8 +273,9 @@ void Poker_game::start() {
 			current_player = players.begin();
 		}
 	}
-
+	getch();
 	addmessage(players.at(0).get_name()+" has won the game");
+	draw();
 	getch();
 	return;
 }
@@ -342,8 +362,10 @@ void Poker_game::betting_round () {
 //  it does not work correctly when players 
 //  fold in a previous round                
 // -----------------------------------------
+	addmessage("New betting round");	
 
-	while ( (n_players > 1 && current_player != highest_better) || (current_player==highest_better && current_player==big_blind) ) {         
+
+	while ((n_players > 1 && current_player != highest_better) || (current_player==highest_better && current_player==big_blind)) {         
 		draw();
 		if(!current_player -> folded()) {       /* only when player has not folded yet */
 
@@ -366,7 +388,6 @@ void Poker_game::betting_round () {
 				highest_better = current_player;
 				pot += action->new_player_chips;
 			}
-
 			else {
 				continue;
 			}
