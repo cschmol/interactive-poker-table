@@ -18,7 +18,8 @@ int currentMenuItem = 0;
 int lastState = 0;
 
 //ip adress of the server 
-byte ip[] = {192, 168, 240, 215};
+byte IP[] = {192, 168, 240, 215};
+int ip[] = {1,9,2,1,6,8,2,4,0,1,2,8};  //this array exists for setting purposes
 
 //values from server
 int bet, chips, highbet, action;
@@ -38,8 +39,17 @@ void setup() {
   
   while (!Console);
   Console.println("You're connected to the Console!!!!");
+  
+  //setting ip
+  lcd.clear();
+  lcd.home();
+  lcd.print("Set your IP!!!");
+  delay(5000);
+  setIP();
+  delay(100);
+  lcd.clear();
     
-  while(!client.connect(ip, 8888))
+  while(!client.connect(IP, 8888))
   {
     Console.println("connecting...");
     delay(300);
@@ -134,11 +144,11 @@ void mainMenu() {
         switch (currentMenuItem)
         {
           case 0:  //->Check
-            client.print("check\n")
+            client.print("check\n");
             action = 0;
             break;
           case 1:  //->Call
-            client.print("call\n")
+            client.print("call\n");
             action = 0;
             break;
           case 2:  //->Rise
@@ -149,19 +159,13 @@ void mainMenu() {
           case 3:  //->Fold
             client.print("fold\n");
             action = 0;
-            break;
-          
+            break;   
         }
       }
-
       
       //Save the last State to compare.
       lastState = state;
    }
-   
-   
-  
-   
 }
  
 //Display Menu Option based on Index.
@@ -255,7 +259,7 @@ void displayChipsAndBet()
     wort = client.readStringUntil('/');
     odds = client.parseFloat();
     lcd.setCursor(0,1);
-    lcd.print(odds*100);
+    lcd.print(int(odds*100));
     lcd.print("%  ");
  
     wort = client.readStringUntil('/');
@@ -274,6 +278,110 @@ void displayChipsAndBet()
       }
   } 
 }
-  
 
+
+
+void setIP()
+{
+  int i = 0;
+  int state = 0;
+  int lastState = 0;
+  int select = 0;
+  int x;
+ 
+   while(select != 1) //select not pressed
+   { 
+     state = 0; 
+     x = analogRead (A0);
+      //Check analog values from LCD Keypad Shield
+      if (x < 100) 
+      {
+        //Right
+        state = 3;
+      } 
+      else if (x < 200) 
+      {
+       //Up
+       state = 1;
+      } 
+      else if (x < 400)
+      {
+       //Down
+       state = 2;
+      }
+      else if (x < 600)
+      {
+        //Left
+        state = 4;
+      } 
+      else if (x < 800)
+      {
+        //Select
+        state = 5;
+      }
+      
+      
+   //If we have changed Index, saves re-draws.
+   if (state != lastState) 
+   {
+      if (state == 1 && ip[i] < 9) {
+         //If Up
+         ip[i]++;
+      } 
+      else if (state == 2 && ip[i] > 0) 
+      {
+         //If Down
+         ip[i]--;
+      }
+      else if (state == 3 && i < 11)
+      {
+        //if Right
+        i++;
+      }
+      else if(state == 4 && i > 0){
+        //if Left
+        i--;
+      }
+      else if(state == 5)
+      {
+        //if Select
+        select = 1;
+        
+        //transferring to byte array
+        int index = 0;
+        for(int k = 0; k < 4; k++)
+        {
+          index = k * 3;
+          IP[k] = ip[index]*100 + ip[index+1]*10 + ip[index+2];
+        }
+      }
+      
+      lastState = state;
+   }
+   displayIP(i);
+   delay(100);
+  }
+}
+  
+void displayIP(int zeiger){
+  lcd.clear();
+  if(zeiger < 6 && zeiger > 2)
+    zeiger++;
+  else if (zeiger < 9 && zeiger > 5)
+    zeiger += 2;
+  else if (zeiger > 8)
+    zeiger += 3;
+    
+  lcd.setCursor(zeiger,0);
+  lcd.print("|");
+  lcd.setCursor(0,1);
+  
+  for(int i = 0; i < 12; i++)
+  {
+    if (i % 3 == 0 && i > 0)
+      lcd.print(".");
+      
+    lcd.print(ip[i]);
+  }
+}
  
