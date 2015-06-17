@@ -106,7 +106,7 @@ Poker_action *Poker_player::poker_action(unsigned int new_bet) {
 //	wrefresh(wnd);
 
 	do {
-		sprintf(buffer, "ch:%d,nb:%d,b:%d,p:%f(%s)$ ", chips, new_bet, bet,winprob,name.c_str());
+		sprintf(buffer, "send/%d/%d/%d/%f/1",bet, chips, new_bet, winprob);
 		sock->send(buffer);
 //		mvwprintw(wnd, 0, 0, "ch:%d,nb:%d,b:%d(%s)$", chips, new_bet, bet, name.c_str());
 //		wrefresh(wnd);
@@ -129,15 +129,8 @@ Poker_action *Poker_player::poker_action(unsigned int new_bet) {
 			pa->new_player_chips = new_bet - bet;
 
 			if (pa->new_player_chips>chips){	//Allin?
-				sock->send("Allin? (y/n) :");
-				allin=sock->recv();		
-				allin.erase(allin.length() - 1);
 
-				if (allin=="y"){
-					pa->new_player_chips=chips;
-				}else{
-					continue;
-				}
+				pa->new_player_chips=chips;
 			}
 
 			if(make_bet(pa->new_player_chips)) {
@@ -147,16 +140,17 @@ Poker_action *Poker_player::poker_action(unsigned int new_bet) {
 			}
 			unvalid_action = false;
 
-		} else if(action == "raise") {
-			do {
-				sock->send("What should be the new high bet?");
-				amount = sock->recv();
-				amount.erase(amount.length() - 1);
+		} else if(action.substr(0,5) == "raise") {
+				amount = action.substr(6,action.length()-6);
+				//amount.erase(amount.length() - 1);
 				istringstream ( amount ) >> pa->new_high_bet; /* convert string to integer */
 				pa->new_player_chips = pa->new_high_bet -bet;
-			} while (pa->new_high_bet <= new_bet || !make_bet(pa->new_high_bet - bet)); /* works because of short-circuit || */
 
-			unvalid_action = false;
+				action=action.substr(0,5);
+				if (pa->new_high_bet >= new_bet && make_bet(pa->new_high_bet - bet))
+					unvalid_action = false;
+
+			
 		}
 
 		pa->action = action;
