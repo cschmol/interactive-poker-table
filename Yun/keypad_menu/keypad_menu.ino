@@ -6,8 +6,9 @@
 
 YunClient client;
 
-int readPin = A1;
+int readPin = A5;
 int potiValue = 0;
+int raiseValue = 0;
 char helper[5] = "call";
  
 // Initialize the library with the numbers of the interface pins
@@ -19,10 +20,10 @@ int lastState = 0;
 
 //ip adress of the server 
 byte IP[] = {192, 168, 240, 215};
-int ip[] = {1,9,2,1,6,8,2,4,0,1,2,8};  //this array exists for setting purposes
+int ip[] = {1,9,2,1,6,8,0,0,2,0,0,1};  //this array exists for setting purposes
 
 //values from server
-int bet, chips, highbet, action;
+int bet, chips, highbet, action = 0;
 float odds;
 
 
@@ -35,27 +36,26 @@ void setup() {
   //initialize communication
   Bridge.begin();
   
-  Console.begin(); //Console for Debug purposes
+  //Console.begin(); //Console for Debug purposes
   
-  while (!Console);
-  Console.println("You're connected to the Console!!!!");
+  //while (!Console);
+  //Console.println("You're connected to the Console!!!!");
   
   //setting ip
   lcd.clear();
   lcd.home();
   lcd.print("Set your IP!!!");
-  delay(5000);
+  delay(1000);
   setIP();
   delay(100);
   lcd.clear();
     
   while(!client.connect(IP, 8888))
   {
-    Console.println("connecting...");
+    //Console.println("connecting...");
     delay(300);
   }
- 
-  Console.println("client connected");
+  //Console.println("client connected");
 }
  
 void loop() 
@@ -70,6 +70,10 @@ void loop()
 void mainMenu() {
   //refresh potiValue
   potiValue = analogRead(readPin);
+  if (potiValue > 1000)
+    potiValue = 1000;
+  potiValue /= 10;
+  
   //State = 0 every loop cycle.
   int state = 0;
   //Refresh the button pressed.
@@ -122,7 +126,7 @@ void mainMenu() {
          {
            currentMenuItem = currentMenuItem + 1;
          }
-         displayMenu(currentMenuItem);
+         //displayMenu(currentMenuItem);
       } 
       else if (state == 2) 
       {
@@ -135,8 +139,8 @@ void mainMenu() {
          {
          currentMenuItem = currentMenuItem - 1;  
          }
-         displayMenu(currentMenuItem);
       }
+      
       
       //if Select
       else if (state == 3 && action == 1)
@@ -147,25 +151,31 @@ void mainMenu() {
             client.print("check\n");
             action = 0;
             break;
+            
           case 1:  //->Call
             client.print("call\n");
             action = 0;
             break;
-          case 2:  //->Rise
-            //helper = "call";
-            client.print("raise \n");
+            
+          case 2:  //->Raise
+            raiseValue = raiseBet();
+            char cmd[20];
+            sprintf(cmd, "raise %d\n", raiseValue);
+            client.print(cmd);
             action = 0;
             break;
+          
           case 3:  //->Fold
             client.print("fold\n");
             action = 0;
             break;   
         }
-      }
-      
+      }      
       //Save the last State to compare.
       lastState = state;
    }
+   displayMenu(currentMenuItem);
+
 }
  
 //Display Menu Option based on Index.
@@ -199,37 +209,7 @@ void displayMenu(int x)
 
 //display bet and chips
 void displayChipsAndBet()
-{
-  /*lcd.setCursor(0,1);
-  //lcd.print("hallo");
-  if(client.available())
-  {
-    String wort = client.readStringUntil('/');
-    //Console.println(wort);
-    //if (wort == "bet")
-    //{
-      bet = client.parseInt();
-      //Console.println(bet);
-      lcd.setCursor(0,1);
-      lcd.print("B ");
-      lcd.print(bet);
-      client.write(bet);
-    //}
-  
-    wort = client.readStringUntil('/');
-    //wort = client.readStringUntil('/');
-    //Console.println(wort);
-    
-    //if(wort == "chips")
-    //{
-      chips = client.parseInt();
-      Console.println(chips);
-      lcd.setCursor(9,1);
-      lcd.print("CP ");
-      lcd.print(chips);
-    //}*/
-  
-  
+{  
   String wort;  
     lcd.setCursor(0,1);
   if(client.available())
@@ -266,15 +246,12 @@ void displayChipsAndBet()
     action = client.parseInt();
     
     client.flush();
-    
-      
-    
-    
-    Console.println(bet);
-    Console.println(chips);
-    Console.println(highbet);
-    Console.println(odds);
-    Console.println(action);
+       
+    //Console.println(bet);
+    //Console.println(chips);
+    //Console.println(highbet);
+    //Console.println(odds);
+    //Console.println(action);
       }
   } 
 }
@@ -383,5 +360,33 @@ void displayIP(int zeiger){
       
     lcd.print(ip[i]);
   }
+}
+
+
+int raiseBet()
+{
+  delay(300);
+  int select = 0;
+  float percent;
+  int x;
+  while(select == 0)
+  {
+    //refresh potiValue
+    potiValue = analogRead(readPin);
+    if (potiValue > 970)
+      potiValue = 1000;
+    potiValue /= 10;
+    percent = float(potiValue) /100;
+    
+    lcd.setCursor(8, 1);
+    lcd.print(int(percent * chips) + bet);
+    lcd.print("       ");
+    
+    //look if select is pressed
+    x = analogRead(A0);
+    if(x < 715 && x > 700)
+      select = 1;    
+  }
+  return (int(percent * chips) + bet);  
 }
  
