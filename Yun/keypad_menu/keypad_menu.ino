@@ -1,13 +1,16 @@
 #include <LiquidCrystal.h>
 #include <Bridge.h>
 #include <YunClient.h>
-#include <Console.h>
 
+#define ABS(x)  ((x>0) ? (x) : (-x))
+
+//#define DEBUG
 
 YunClient client;
 
-int readPin = A1;
+int readPin = A5;
 int potiValue = 0;
+int raiseValue = 0;
 char helper[5] = "call";
  
 // Initialize the library with the numbers of the interface pins
@@ -18,12 +21,37 @@ int currentMenuItem = 0;
 int lastState = 0;
 
 //ip adress of the server 
-byte ip[] = {192, 168, 240, 215};
+byte IP[] = {192, 168, 178, 82};
+int ip[] = {1,9,2,1,6,8,1,7,8,0,8,2};  //this array exists for setting purposes
 
 //values from server
-int bet, chips, highbet, action;
+int bet, chips, highbet, action = 0;
 float odds;
 
+
+//get the pressed key
+String keypress() {
+  unsigned int v;
+  v = analogRead(A0);
+  if(v < 985 && v>975) {
+    return "none";
+  } else if(v<715 && v>700) {
+    return "select";
+  } else if(v<485 && v>475) {
+    return "left";
+  } else if(v<140 && v>130) {
+    return "up";
+  } else if(v<315 && v>310) {
+    return "down";
+  } else if(v<5) {
+    return "right";
+  }
+
+  while(ABS(analogRead(A0) - v) < 20)
+    ;
+
+  return "combination";
+}
 
 
 void setup() {
@@ -33,214 +61,102 @@ void setup() {
    
   //initialize communication
   Bridge.begin();
+
+#ifdef DEBUG
+  Serial.begin(9600);
+  while(!Serial)
+    ;
+  Serial.println("Serial monitor connected");
+#endif
   
-  Console.begin(); //Console for Debug purposes
-  
-  while (!Console);
-  Console.println("You're connected to the Console!!!!");
+  //setting ip
+  lcd.clear();
+  lcd.home();
+  lcd.print("Set your IP!!!");
+  delay(1000);
+  setIP();
+  delay(100);
+  lcd.clear();
     
-  while(!client.connect(ip, 8888))
+  lcd.home();
+  lcd.print("Connecting now");
+  while(!client.connect(IP, 8888))
   {
-    Console.println("connecting...");
     delay(300);
   }
- 
-  Console.println("client connected");
-}
- 
-void loop() 
-{
-  //Call the main menu.
-  displayChipsAndBet();
-  mainMenu();
-  delay(100);
+#ifdef DEBUG
+  Serial.println("Connection established");
+#endif
+
 }
 
+enum ACTION {
+  ACTION_FOLD,
+  ACTION_CHECK,
+  ACTION_CALL,
+  ACTION_RAISE
+};
+
+void menu_next() {
+  if(++currentMenuItem > ACTION_RAISE) {
+    currentMenuItem = 0;
+  }
+  return;
+}
+
+void menu_previous() {
+  if(--currentMenuItem < ACTION_FOLD) {
+    currentMenuItem = ACTION_RAISE;
+  }
+  return;
+}
+
+void send_data(int action) {
+  switch(action) {
+    case ACTION_FOLD:
+      client.print("fold\n");
+      break;
+
+    case ACTION_CHECK:
+      client.print("check");
+      break;
+
+    case ACTION_CALL:
+      client.print("call");
+      break;
+
+    case ACTION_RAISE:
+      client.print("raise");
+      break;
+
+  }
+}
  
-void mainMenu() {
+void loop() {
+  String wort;  
+  String button;
+  int update=1;
+
   //refresh potiValue
   potiValue = analogRead(readPin);
-  //State = 0 every loop cycle.
-  int state = 0;
-  //Refresh the button pressed.
-  int x = analogRead (A0);
-  //Set the Row 0, Col 0 position.
-  lcd.setCursor(8,1);
- 
-  //Check analog values from LCD Keypad Shield
-  if (x < 100) 
-  {
-    //Right
-  } 
-  else if (x < 200) 
-  {
-   //Up
-    state = 1;
-  } 
-  else if (x < 400)
-  {
-   //Down
-    state = 2;
-  }
-  else if (x < 600)
-  {
-    //Left
-  } 
-  else if (x < 800)
-  {
-    //Select
-    state = 3;
-  }
- 
-  
-  //If we are out of bounds on th menu then reset it.
-  if (currentMenuItem < 0 || currentMenuItem > 4) 
-  {
-   currentMenuItem = 0; 
-  }
- 
-   //If we have changed Index, saves re-draws.
-   if (state != lastState) 
-   {
-      if (state == 1) {
-         //If Up
-         if (currentMenuItem == 4)
-         {
-           currentMenuItem = 0;
-         }
-         else
-         {
-           currentMenuItem = currentMenuItem + 1;
-         }
-         displayMenu(currentMenuItem);
-      } 
-      else if (state == 2) 
-      {
-         //If Down
-         if (currentMenuItem == 0)
-         {
-           currentMenuItem = 4;
-         }
-         else
-         {
-         currentMenuItem = currentMenuItem - 1;  
-         }
-         displayMenu(currentMenuItem);
-      }
-      
-      //if Select
-      else if (state == 3 && action == 1)
-      { 
-        switch (currentMenuItem)
-        {
-          case 0:  //->Check
-            client.print("check\n")
-            action = 0;
-            break;
-          case 1:  //->Call
-            client.print("call\n")
-            action = 0;
-            break;
-          case 2:  //->Rise
-            //helper = "call";
-            client.print("raise \n");
-            action = 0;
-            break;
-          case 3:  //->Fold
-            client.print("fold\n");
-            action = 0;
-            break;
-          
-        }
-      }
+  potiValue = (potiValue>1000) ? 1000 : potiValue; //potiValue auf 1000 begrenzen
+  potiValue /= 10; //und durch 10 teilen
 
-      
-      //Save the last State to compare.
-      lastState = state;
-   }
-   
-   
-  
-   
-}
- 
-//Display Menu Option based on Index.
-void displayMenu(int x) 
-{
-     
-  if(action == 1)
-  {
-      switch (x) {
-      case 0:
-        lcd.print ("-> Check        ");
-        break;
-      case 1:
-        lcd.print ("-> Call        ");
-        break;
-      case 2:
-        lcd.print ("-> Raise        ");
-        break;
-      case 3:
-        lcd.print ("-> Fold        ");
-        break;
-    }
-  }
-  
-  else
-  {
-    lcd.print("wait        ");
-  }
-}
+  lcd.setCursor(0,1);
 
-
-//display bet and chips
-void displayChipsAndBet()
-{
-  /*lcd.setCursor(0,1);
-  //lcd.print("hallo");
-  if(client.available())
-  {
-    String wort = client.readStringUntil('/');
-    //Console.println(wort);
-    //if (wort == "bet")
-    //{
-      bet = client.parseInt();
-      //Console.println(bet);
-      lcd.setCursor(0,1);
-      lcd.print("B ");
-      lcd.print(bet);
-      client.write(bet);
-    //}
-  
+  //data is available on the TCP connection
+  if(client.available()) {
     wort = client.readStringUntil('/');
-    //wort = client.readStringUntil('/');
-    //Console.println(wort);
-    
-    //if(wort == "chips")
-    //{
-      chips = client.parseInt();
-      Console.println(chips);
-      lcd.setCursor(9,1);
-      lcd.print("CP ");
-      lcd.print(chips);
-    //}*/
-  
-  
-  String wort;  
-    lcd.setCursor(0,1);
-  if(client.available())
-  {
-      wort = client.readStringUntil('/');
       
-      if(wort == "send")
-      {
+    //when the right prefix is sent
+    if(wort == "send") {
       bet = client.parseInt();
       lcd.setCursor(8,0);
       lcd.print("B");
       lcd.print(bet);
       lcd.print("   ");
   
-    wort = client.readStringUntil('/');
+      wort = client.readStringUntil('/');
 
       chips = client.parseInt();
       lcd.setCursor(0,0);
@@ -248,32 +164,193 @@ void displayChipsAndBet()
       lcd.print(chips);
       lcd.print("  ");    
     
-    wort = client.readStringUntil('/');
-    highbet = client.parseInt();
+      wort = client.readStringUntil('/');
+      highbet = client.parseInt();
     
     
-    wort = client.readStringUntil('/');
-    odds = client.parseFloat();
-    lcd.setCursor(0,1);
-    lcd.print(odds*100);
-    lcd.print("%  ");
+      wort = client.readStringUntil('/');
+      odds = client.parseFloat();
+      lcd.setCursor(0,1);
+      lcd.print(int(odds*100));
+      lcd.print("%  ");
  
-    wort = client.readStringUntil('/');
-    action = client.parseInt();
+      wort = client.readStringUntil('/');
+      action = client.parseInt();
     
-    client.flush();
-    
-      
-    
-    
-    Console.println(bet);
-    Console.println(chips);
-    Console.println(highbet);
-    Console.println(odds);
-    Console.println(action);
-      }
-  } 
-}
-  
+      client.flush();
+       
+    }
 
+
+    do {
+
+      if(update) {
+        //Set the Row 0, Col 0 position.
+        lcd.clear();
+        lcd.setCursor(8,1);
+
+        //display the menu here
+        switch (currentMenuItem) {
+          case ACTION_FOLD:
+            lcd.print("fold");
+            break;
+          case ACTION_CHECK:
+            lcd.print("check");
+            break;
+          case ACTION_CALL:
+            lcd.print("call");
+            break;
+          case ACTION_RAISE:
+            lcd.print("raise");
+            break;
+        }
+        update = 0;
+       delay(500);
+      }
+
+      //received the command, now get an action
+      button = keypress();
+      if(button != "none") {
+        update = 1;
+      }
+     
+      if (button == "right") {
+      } else if (button == "up") {
+        menu_next(); //go to next menu item
+      } else if (button == "down") {
+        menu_previous(); //go to previous menu item
+      } else if (button == "left") {
+      } else if (button == "select") {
+      }
+
+
+    } while(button != "select");
+    send_data(currentMenuItem);
+    
+  }
+}
+
+
+/*
+byte IP[] = {192, 168, 178, 82};
+int ip[] = {1,9,2,1,6,8,1,7,8,0,8,2};  //this array exists for setting purposes
+*/
+void setIP() {
+  int i = 0;
+  int state = 0;
+  int lastState = 0;
+  int select = 0;
+  int x;
+
+  String button;
+ 
+   while( (button = keypress()) != "select") //select not pressed
+   { 
+     state = 0; 
+      if (button == "right") {
+        state = 3;
+      } else if (button == "up") {
+       state = 1;
+      } else if (button == "down") {
+       state = 2;
+      } else if (button == "left") {
+        state = 4;
+      } else if (button == "select") {
+        state = 5;
+      }
+      
+      
+   //If we have changed Index, saves re-draws.
+   if (state != lastState) 
+   {
+      if (state == 1 && ip[i] < 9) {
+         //If Up
+         ip[i]++;
+      } 
+      else if (state == 2 && ip[i] > 0) 
+      {
+         //If Down
+         ip[i]--;
+      }
+      else if (state == 3 && i < 11)
+      {
+        //if Right
+        i++;
+      }
+      else if(state == 4 && i > 0){
+        //if Left
+        i--;
+      }
+      else if(state == 5)
+      {
+        //if Select
+        select = 1;
+        
+        //transferring to byte array
+        int index = 0;
+        for(int k = 0; k < 4; k++)
+        {
+          index = k * 3;
+          IP[k] = ip[index]*100 + ip[index+1]*10 + ip[index+2];
+        }
+      }
+      
+      lastState = state;
+   }
+   displayIP(i);
+   delay(100);
+  }
+}
+
+  
+void displayIP(int zeiger) {
+  lcd.clear();
+  if(zeiger < 6 && zeiger > 2)
+    zeiger++;
+  else if (zeiger < 9 && zeiger > 5)
+    zeiger += 2;
+  else if (zeiger > 8)
+    zeiger += 3;
+    
+  lcd.setCursor(zeiger,0);
+  lcd.print("|");
+  lcd.setCursor(0,1);
+  
+  for(int i = 0; i < 12; i++)
+  {
+    if (i % 3 == 0 && i > 0)
+      lcd.print(".");
+      
+    lcd.print(ip[i]);
+  }
+}
+
+
+int raiseBet() {
+  delay(300);
+  int select = 0;
+  float percent;
+  int x;
+
+  while(select == 0)
+  {
+    //refresh potiValue
+    potiValue = analogRead(readPin);
+    if (potiValue > 970) {
+      potiValue = 1000;
+    }
+    potiValue /= 10;
+    percent = float(potiValue) /100;
+    
+    lcd.setCursor(8, 1);
+    lcd.print(int(percent * chips) + bet);
+    lcd.print("       ");
+    
+    //look if select is pressed
+    x = analogRead(A0);
+    if(x < 715 && x > 700)
+      select = 1;    
+  }
+  return (int(percent * chips) + bet);  
+}
  
