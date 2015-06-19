@@ -47,6 +47,7 @@ String keypress() {
     return "right";
   }
 
+  //wait until key is released
   while(ABS(analogRead(A0) - v) < 20)
     ;
 
@@ -74,7 +75,7 @@ void setup() {
   lcd.home();
   lcd.print("Set your IP!!!");
   delay(1000);
-  setIP();
+  set_ip();
   delay(100);
   lcd.clear();
     
@@ -118,15 +119,38 @@ void send_data(int action) {
       break;
 
     case ACTION_CHECK:
-      client.print("check");
+      client.print("check\n");
       break;
 
     case ACTION_CALL:
-      client.print("call");
+      client.print("call\n");
       break;
 
     case ACTION_RAISE:
-      client.print("raise");
+      client.print("raise\n");
+      delay(300);
+      float percent;
+      int x;
+      char str[20];
+
+      while(keypress() != "select") {
+        //refresh potiValue
+        potiValue = analogRead(readPin);
+        if (potiValue > 970) {
+          potiValue = 1000;
+        }
+        potiValue /= 10;
+        percent = float(potiValue) /100;
+        
+        lcd.setCursor(8, 1);
+        lcd.print(int(percent * chips) + bet);
+        lcd.print("       ");
+      }
+
+      //send data
+      sprintf(str, "raise %d\n", (int(percent * chips) + bet) ); 
+      client.print(str);
+
       break;
 
   }
@@ -137,12 +161,9 @@ void loop() {
   String button;
   int update=1;
 
-  //refresh potiValue
-  potiValue = analogRead(readPin);
-  potiValue = (potiValue>1000) ? 1000 : potiValue; //potiValue auf 1000 begrenzen
-  potiValue /= 10; //und durch 10 teilen
-
   lcd.setCursor(0,1);
+  //lcd.clear();
+  lcd.print("wait for turn");
 
   //data is available on the TCP connection
   if(client.available()) {
@@ -186,22 +207,22 @@ void loop() {
 
       if(update) {
         //Set the Row 0, Col 0 position.
-        lcd.clear();
+        //lcd.clear();
         lcd.setCursor(8,1);
 
         //display the menu here
         switch (currentMenuItem) {
           case ACTION_FOLD:
-            lcd.print("fold");
+            lcd.print("fold  ");
             break;
           case ACTION_CHECK:
-            lcd.print("check");
+            lcd.print("check  ");
             break;
           case ACTION_CALL:
-            lcd.print("call");
+            lcd.print("call  ");
             break;
           case ACTION_RAISE:
-            lcd.print("raise");
+            lcd.print("raise  ");
             break;
         }
         update = 0;
@@ -231,126 +252,78 @@ void loop() {
 }
 
 
-/*
-byte IP[] = {192, 168, 178, 82};
-int ip[] = {1,9,2,1,6,8,1,7,8,0,8,2};  //this array exists for setting purposes
-*/
-void setIP() {
-  int i = 0;
-  int state = 0;
-  int lastState = 0;
-  int select = 0;
-  int x;
-
+void set_ip() {
+  int i=0;
+  int j;
+  int update = 1;
+  int offset;
   String button;
- 
-   while( (button = keypress()) != "select") //select not pressed
-   { 
-     state = 0; 
-      if (button == "right") {
-        state = 3;
-      } else if (button == "up") {
-       state = 1;
-      } else if (button == "down") {
-       state = 2;
-      } else if (button == "left") {
-        state = 4;
-      } else if (button == "select") {
-        state = 5;
-      }
-      
-      
-   //If we have changed Index, saves re-draws.
-   if (state != lastState) 
-   {
-      if (state == 1 && ip[i] < 9) {
-         //If Up
-         ip[i]++;
-      } 
-      else if (state == 2 && ip[i] > 0) 
-      {
-         //If Down
-         ip[i]--;
-      }
-      else if (state == 3 && i < 11)
-      {
-        //if Right
-        i++;
-      }
-      else if(state == 4 && i > 0){
-        //if Left
-        i--;
-      }
-      else if(state == 5)
-      {
-        //if Select
-        select = 1;
-        
-        //transferring to byte array
-        int index = 0;
-        for(int k = 0; k < 4; k++)
-        {
-          index = k * 3;
-          IP[k] = ip[index]*100 + ip[index+1]*10 + ip[index+2];
-        }
-      }
-      
-      lastState = state;
-   }
-   displayIP(i);
-   delay(100);
-  }
-}
+  do {
+    button = keypress();
 
-  
-void displayIP(int zeiger) {
-  lcd.clear();
-  if(zeiger < 6 && zeiger > 2)
-    zeiger++;
-  else if (zeiger < 9 && zeiger > 5)
-    zeiger += 2;
-  else if (zeiger > 8)
-    zeiger += 3;
-    
-  lcd.setCursor(zeiger,0);
-  lcd.print("|");
-  lcd.setCursor(0,1);
-  
-  for(int i = 0; i < 12; i++)
-  {
-    if (i % 3 == 0 && i > 0)
-      lcd.print(".");
-      
-    lcd.print(ip[i]);
-  }
-}
-
-
-int raiseBet() {
-  delay(300);
-  int select = 0;
-  float percent;
-  int x;
-
-  while(select == 0)
-  {
-    //refresh potiValue
-    potiValue = analogRead(readPin);
-    if (potiValue > 970) {
-      potiValue = 1000;
+    if (button == "right") {
+      i = (i>0) ? i-1 : 3;
+      update = 1;
+    } else if (button == "up") {
+      IP[i]++;
+      update = 1;
+    } else if (button == "down") {
+      IP[i]--;
+      update = 1;
+    } else if (button == "left") {
+      i = (i<3) ? 0 : i+1;
+      update = 1;
     }
-    potiValue /= 10;
-    percent = float(potiValue) /100;
-    
-    lcd.setCursor(8, 1);
-    lcd.print(int(percent * chips) + bet);
-    lcd.print("       ");
-    
-    //look if select is pressed
-    x = analogRead(A0);
-    if(x < 715 && x > 700)
-      select = 1;    
-  }
-  return (int(percent * chips) + bet);  
+    //update the lcd
+    if(update) {
+      lcd.clear();
+      lcd.setCursor(0, 1);
+
+      lcd.print(IP[0]);
+      lcd.print(".");
+
+      lcd.print(IP[1]);
+      lcd.print(".");
+
+      lcd.print(IP[2]);
+      lcd.print(".");
+
+      lcd.print(IP[3]);
+
+      lcd.setCursor(0, 0);
+      lcd.print("i=");
+      lcd.print(i);
+      lcd.print("j=");
+      lcd.print(j);
+
+      //make the cursor blink on the right place
+      offset = 0;
+      for(j=0; j<=i; j++) {
+        if(IP[j] >= 100)
+          offset += 2;
+        else if(IP[j] >= 10)
+          offset += 1;
+      }
+      offset+=i;
+
+      lcd.setCursor(0, 0);
+      lcd.print("i=");
+      lcd.print(i);
+
+      lcd.print("|j=");
+      lcd.print(j);
+
+      lcd.print("|os=");
+      lcd.print(offset);
+
+      lcd.setCursor(offset, 1);
+      lcd.blink();
+
+      update = 0;
+      delay(80);
+    }
+
+  } while( button != "select");
+  lcd.noBlink();
 }
- 
+
