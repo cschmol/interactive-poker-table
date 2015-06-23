@@ -45,6 +45,25 @@ class Card_deck
 			return res;                         /* and return a copy of it */
 
 		}
+
+		int draw_card_nfc() {
+			FILE *pipe = popen("explorenfc-basic | grep Title | awk '{print $2}'", "r");
+			if(pipe==NULL) {
+				cout << "Error opening pipe" << endl;
+				exit(1);
+			}
+
+			int card;
+			char buffer[512];
+			while(fgets(buffer, 512, pipe) != NULL) {
+				card = atoi(buffer);
+			}
+			fscanf(pipe, "%d\n", &card);
+			cout << "card " << card2str(card) << " drawn" << endl;
+			pclose(pipe);
+			return card;
+		}
+
 		void shuffle() {
 //			cout << "Shuffling deck now" << endl;
 			std::random_shuffle(card_deck.begin(), card_deck.end(), myrandom); /* shuffle the deck */
