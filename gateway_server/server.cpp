@@ -11,10 +11,7 @@ int main ( int argc, char *argv[] )
 {
 
 
-	Card_deck asdf;
-	while(1) {
-		asdf.draw_card_nfc();
-	}
+
 
 
 	//Start the poker game here

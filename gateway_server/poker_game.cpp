@@ -18,7 +18,7 @@ Poker_game::Poker_game () {                            /* constructor */
 	for(int i=0; i<NMAXPLAYERS; i++) {
 		winprobs[i] = 0;           /* initalize the cards with -1 */
 	}
-
+	nfc=0;
 	eval = new SevenEval();
 
 }
@@ -27,6 +27,7 @@ Poker_game::~Poker_game (  )
 {
 	//close(serv_sock);                          /* close the socket */
 }
+
 
 
 bool Poker_game::add_player(Poker_player *player) {
@@ -40,8 +41,20 @@ bool Poker_game::add_player(Poker_player *player) {
 }
 
 void Poker_game::deal_common_cards(int count) {
-	for(int i=0; i<count; i++) {                /* deal as many cards as specified */
-		common_cards[n_common_cards++] = deck.draw_card();
+
+	switch (nfc) {
+
+	case 0:
+		for(int i=0; i<count; i++) {                /* deal as many cards as specified */
+			common_cards[n_common_cards++] = deck.draw_card();
+		}
+
+	case 1:
+		for(int i=0; i<count; i++) {                /* deal as many cards as specified */
+			addmessage("Place card over NFC reader");
+			common_cards[n_common_cards++] = deck.draw_card_nfc();
+			
+		}
 	}
 }
 
@@ -286,9 +299,21 @@ void Poker_game::deal_player_cards() {
 //	cout << "Dealing player cards" << endl;
 //	cout << "--------------------" << endl;
 	unsigned int j;
-	for ( it=players.begin(); it!=players.end(); it++) {     /* iterate over all players */
-		for(j=0; j<2; j++) {                                 /* draw 2 cards */
+
+	switch (nfc){
+	case 0:
+		for ( it=players.begin(); it!=players.end(); it++) {     /* iterate over all players */
+			for(j=0; j<2; j++) {                                 /* draw 2 cards */
 			it -> set_card(j, deck.draw_card());
+			}
+		}
+
+	case 1:
+		for ( it=players.begin(); it!=players.end(); it++) {     /* iterate over all players */
+			for(j=0; j<2; j++) {
+				addmessage("Place card over NFC reader");
+				it -> set_card(j, deck.draw_card_nfc());
+			}
 		}
 	}
 }
@@ -474,6 +499,8 @@ void Poker_game::setup(){
 
         n_small_blind=values.at(0);
         n_big_blind=values.at(1);
+	nfc=values.at(3);
+
 
 	wPot=derwin(wGameInfo,4,28,static_cast<int>(LINES/2-4/2),static_cast<int>(COLS/2)-28/2);
 	wbkgd(wPot,COLOR_PAIR(2));

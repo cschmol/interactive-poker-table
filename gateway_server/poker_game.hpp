@@ -82,7 +82,7 @@ class Poker_game
 		double winprobs[NMAXPLAYERS];
 		SevenEval const* eval;
 		std::string message[5];
-
+		int nfc;
 		/*-----------------------------------------------------------------------------
 		 *  socket variables
 		 *-----------------------------------------------------------------------------*/
