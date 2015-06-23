@@ -10,7 +10,7 @@ int ABS(int x){
     return (-x);
 }
 
-//define DEBUG
+//#define DEBUG
 
 YunClient client;
 
@@ -28,7 +28,7 @@ int lastState = 0;
 
 //ip adress of the server 
 byte IP[] = {192, 168, 240, 128};
-int ip[] = {1,9,2,1,6,8,1,7,8,0,8,2};  //this array exists for setting purposes
+int ip[] = {1,9,2,1,6,8,2,4,0,1,2,8};  //this array exists for setting purposes
 
 //values from server
 int bet, chips, highbet, action = 0;
@@ -74,10 +74,10 @@ void setup() {
   Bridge.begin();
 
 #ifdef DEBUG
-  Console.begin();
-  while(!Console)
-    ;
-  Console.println("Serial monitor connected");
+  Serial.begin(9600);
+   while(!Serial)
+     ;
+   Serial.println("Serial monitor connected");
 #endif
   
   //setting ip
@@ -98,7 +98,7 @@ void setup() {
   lcd.clear();
   delay(100);
 #ifdef DEBUG
-  Console.println("Connection established");
+  Serial.println("Connection established");
 #endif
 
 }
@@ -276,61 +276,49 @@ void set_ip() {
     button = keypress();
 
     if (button == "right") {
-      i = (i<3) ? i+1 : 0;
+      i = (i<11) ? i+1 : 0;
       update = 1;
     } else if (button == "up") {
-      IP[i]++;
+        if(ip[i] < 9)
+          ip[i]++;
+        else
+          ip[i] = 0;
       update = 1;
     } else if (button == "down") {
-      IP[i]--;
+      if(ip[i] > 0)
+        ip[i]--;
+      else 
+        ip[i] = 9;
       update = 1;
     } else if (button == "left") {
-      i = (i>0) ? i-1 : 3;
+      i = (i>0) ? i-1 : 11;
       update = 1;
     }
     //update the lcd
     if(update) {
       lcd.clear();
-      lcd.setCursor(1, 1);
-
-      lcd.print(IP[0]);
-      lcd.print(".");
-
-      lcd.print(IP[1]);
-      lcd.print(".");
-
-      lcd.print(IP[2]);
-      lcd.print(".");
-
-      lcd.print(IP[3]);
-
-      lcd.setCursor(0, 0);
-      lcd.print("i=");
-      lcd.print(i);
-      lcd.print("j=");
-      lcd.print(j);
+      lcd.setCursor(0, 1);
+      
+      //prints ip on lcd with dots
+      for(int k = 0; k < 12; k++)
+      {
+        if (k % 3 == 0 && k > 0)
+          lcd.print(".");
+        lcd.print(ip[k]);
+      }
 
       //make the cursor blink on the right place
-      offset = 0;
+      offset = i;
+      if(offset < 6 && offset > 2)
+        offset++;
+      else if (offset < 9 && offset > 5)
+        offset += 2;
+      else if (offset > 8)
+        offset += 3;
       
-      for(j=0; j<=i; j++) {
-        if(IP[j] >= 100)
-          offset += 3;
-        else if(IP[j] >= 10)
-          offset += 2;
-        else if(IP[j] < 10)
-          offset += 1;
-      }
-      
-      offset+=i;
-
       lcd.setCursor(0, 0);
       lcd.print("i=");
       lcd.print(i);
-
-      lcd.print("|j=");
-      lcd.print(j);
-
       lcd.print("|os=");
       lcd.print(offset);
 
@@ -343,5 +331,15 @@ void set_ip() {
     
   } while( button != "select");
   lcd.noBlink();
+  
+  //transferring to byte array
+  int index = 0;
+  for(int k = 0; k < 4; k++)
+  {
+    index = k * 3;
+    IP[k] = ip[index]*100 + ip[index+1]*10 + ip[index+2];
+  }
+  
+  
 }
 
