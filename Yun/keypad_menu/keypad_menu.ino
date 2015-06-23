@@ -1,10 +1,16 @@
 #include <LiquidCrystal.h>
 #include <Bridge.h>
 #include <YunClient.h>
+#include <Console.h>
 
-#define ABS(x)  ((x>0) ? (x) : (-x))
+int ABS(int x){
+  if(x >= 0)
+    return x;
+  else
+    return (-x);
+}
 
-//#define DEBUG
+//define DEBUG
 
 YunClient client;
 
@@ -21,7 +27,7 @@ int currentMenuItem = 0;
 int lastState = 0;
 
 //ip adress of the server 
-byte IP[] = {192, 168, 178, 82};
+byte IP[] = {192, 168, 240, 128};
 int ip[] = {1,9,2,1,6,8,1,7,8,0,8,2};  //this array exists for setting purposes
 
 //values from server
@@ -31,26 +37,30 @@ float odds;
 
 //get the pressed key
 String keypress() {
+  delay(50);
   unsigned int v;
   v = analogRead(A0);
-  if(v < 985 && v>975) {
+  if(v < 990 && v>970) {
     return "none";
-  } else if(v<715 && v>700) {
+  } else if(v<720 && v>690) {
+    while(ABS(analogRead(A0) - v) < 60);
     return "select";
-  } else if(v<485 && v>475) {
+  } else if(v<490 && v>470) {
+    while(ABS(analogRead(A0) - v) < 50);
     return "left";
   } else if(v<140 && v>130) {
+    while(ABS(analogRead(A0) - v) < 50);
     return "up";
-  } else if(v<315 && v>310) {
+  } else if(v<330 && v>300) {
+    while(ABS(analogRead(A0) - v) < 50);
     return "down";
   } else if(v<5) {
+    while(ABS(analogRead(A0) - v) < 50);
     return "right";
   }
 
   //wait until key is released
-  while(ABS(analogRead(A0) - v) < 20)
-    ;
-
+  //while(ABS(analogRead(A0) - v) < 20);
   return "combination";
 }
 
@@ -64,10 +74,10 @@ void setup() {
   Bridge.begin();
 
 #ifdef DEBUG
-  Serial.begin(9600);
-  while(!Serial)
+  Console.begin();
+  while(!Console)
     ;
-  Serial.println("Serial monitor connected");
+  Console.println("Serial monitor connected");
 #endif
   
   //setting ip
@@ -85,8 +95,10 @@ void setup() {
   {
     delay(300);
   }
+  lcd.clear();
+  delay(100);
 #ifdef DEBUG
-  Serial.println("Connection established");
+  Console.println("Connection established");
 #endif
 
 }
@@ -99,6 +111,7 @@ enum ACTION {
 };
 
 void menu_next() {
+  delay(20);
   if(++currentMenuItem > ACTION_RAISE) {
     currentMenuItem = 0;
   }
@@ -106,6 +119,7 @@ void menu_next() {
 }
 
 void menu_previous() {
+  delay(20);
   if(--currentMenuItem < ACTION_FOLD) {
     currentMenuItem = ACTION_RAISE;
   }
@@ -127,8 +141,6 @@ void send_data(int action) {
       break;
 
     case ACTION_RAISE:
-      client.print("raise\n");
-      delay(300);
       float percent;
       int x;
       char str[20];
@@ -167,6 +179,7 @@ void loop() {
 
   //data is available on the TCP connection
   if(client.available()) {
+    lcd.clear();
     wort = client.readStringUntil('/');
       
     //when the right prefix is sent
@@ -187,8 +200,7 @@ void loop() {
     
       wort = client.readStringUntil('/');
       highbet = client.parseInt();
-    
-    
+       
       wort = client.readStringUntil('/');
       odds = client.parseFloat();
       lcd.setCursor(0,1);
@@ -199,9 +211,7 @@ void loop() {
       action = client.parseInt();
     
       client.flush();
-       
     }
-
 
     do {
 
@@ -226,22 +236,26 @@ void loop() {
             break;
         }
         update = 0;
-       delay(500);
       }
 
       //received the command, now get an action
       button = keypress();
+      delay(50);
       if(button != "none") {
         update = 1;
       }
      
       if (button == "right") {
-      } else if (button == "up") {
+      } 
+      else if (button == "up") {
         menu_next(); //go to next menu item
-      } else if (button == "down") {
+      } 
+      else if (button == "down") {
         menu_previous(); //go to previous menu item
-      } else if (button == "left") {
-      } else if (button == "select") {
+      } 
+      else if (button == "left") {
+      } 
+      else if (button == "select") {
       }
 
 
@@ -262,7 +276,7 @@ void set_ip() {
     button = keypress();
 
     if (button == "right") {
-      i = (i>0) ? i-1 : 3;
+      i = (i<3) ? i+1 : 0;
       update = 1;
     } else if (button == "up") {
       IP[i]++;
@@ -271,13 +285,13 @@ void set_ip() {
       IP[i]--;
       update = 1;
     } else if (button == "left") {
-      i = (i<3) ? 0 : i+1;
+      i = (i>0) ? i-1 : 3;
       update = 1;
     }
     //update the lcd
     if(update) {
       lcd.clear();
-      lcd.setCursor(0, 1);
+      lcd.setCursor(1, 1);
 
       lcd.print(IP[0]);
       lcd.print(".");
@@ -298,12 +312,16 @@ void set_ip() {
 
       //make the cursor blink on the right place
       offset = 0;
+      
       for(j=0; j<=i; j++) {
         if(IP[j] >= 100)
-          offset += 2;
+          offset += 3;
         else if(IP[j] >= 10)
+          offset += 2;
+        else if(IP[j] < 10)
           offset += 1;
       }
+      
       offset+=i;
 
       lcd.setCursor(0, 0);
@@ -322,7 +340,7 @@ void set_ip() {
       update = 0;
       delay(80);
     }
-
+    
   } while( button != "select");
   lcd.noBlink();
 }
