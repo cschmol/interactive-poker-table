@@ -47,7 +47,7 @@ class Card_deck
 		}
 
 		int draw_card_nfc() {
-			WINDOW *temp = derwin(stdscr, 5, 20, LINES/2, COLS/2);
+			/*WINDOW *temp = derwin(stdscr, 5, 20, LINES/2, COLS/2);
 			mvwprintw(temp, 0, 0, "Please scan card now");
 			wrefresh(temp);
 			FILE *pipe = popen("explorenfc-basic | grep Title | awk '{print $2}'", "r");
@@ -85,7 +85,7 @@ class Card_deck
 			} while(pin==1);
 
 
-			return card;
+			return card;*/
 		}
 
 		void shuffle() {
