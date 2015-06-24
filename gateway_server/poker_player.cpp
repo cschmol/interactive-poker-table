@@ -106,7 +106,7 @@ Poker_action *Poker_player::poker_action(unsigned int new_bet) {
 //	wrefresh(wnd);
 
 	do {
-		sprintf(buffer, "ch:%d,nb:%d,b:%d,p:%f(%s)$ ", chips, new_bet, bet,winprob,name.c_str());
+		sprintf(buffer, "send/%d/%d/%f/1",bet, chips,winprob);
 		sock->send(buffer);
 //		mvwprintw(wnd, 0, 0, "ch:%d,nb:%d,b:%d(%s)$", chips, new_bet, bet, name.c_str());
 //		wrefresh(wnd);

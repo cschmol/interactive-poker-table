@@ -47,6 +47,9 @@ class Card_deck
 		}
 
 		int draw_card_nfc() {
+			WINDOW *temp = derwin(stdscr, 5, 20, LINES/2, COLS/2);
+			mvwprintw(temp, 0, 0, "Please scan card now");
+			wrefresh(temp);
 			FILE *pipe = popen("explorenfc-basic | grep Title | awk '{print $2}'", "r");
 			if(pipe==NULL) {
 				cout << "Error opening pipe" << endl;
@@ -59,8 +62,29 @@ class Card_deck
 				card = atoi(buffer);
 			}
 			fscanf(pipe, "%d\n", &card);
-			cout << "card " << card2str(card) << " drawn" << endl;
+			//cout << "card " << card2str(card) << " drawn" << endl;
 			pclose(pipe);
+			mvwprintw(temp, 0, 0, "Card scanned           ");
+			wrefresh(temp);
+			
+
+			int pin=1;
+			do {
+				pipe = popen("gpio read 0", "r");
+				if(pipe==NULL) {
+					cout << "Error opening pipe" << endl;
+					exit(1);
+				}
+
+				while(fgets(buffer, 512, pipe) != NULL) {
+					pin = atoi(buffer);
+				}
+				fscanf(pipe, "%d\n", &pin);
+				//cout << "card " << card2str(card) << " drawn" << endl;
+				pclose(pipe);
+			} while(pin==1);
+
+
 			return card;
 		}
 
