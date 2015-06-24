@@ -30,7 +30,7 @@ int lastState = 0;
 byte IP[] = {192, 168, 240, 128};
 
 //values from server
-int bet, chips, highbet, action = 0;
+int bet, chips, action = 0;
 float odds;
 
 
@@ -176,6 +176,7 @@ void loop() {
   //lcd.clear();
   lcd.print("wait for turn");
 
+    do {
   //data is available on the TCP connection
   if(client.available()) {
     lcd.clear();
@@ -197,9 +198,11 @@ void loop() {
       lcd.print(chips);
       lcd.print("  ");    
     
+      /*
       wort = client.readStringUntil('/');
       highbet = client.parseInt();
-       
+      */
+      
       wort = client.readStringUntil('/');
       odds = client.parseFloat();
       lcd.setCursor(0,1);
@@ -211,10 +214,9 @@ void loop() {
     
       client.flush();
     }
-
-    do {
-
-      if(update) {
+    
+    
+    if(update) {
         //Set the Row 0, Col 0 position.
         //lcd.clear();
         lcd.setCursor(8,1);
