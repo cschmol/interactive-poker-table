@@ -28,7 +28,6 @@ int lastState = 0;
 
 //ip adress of the server 
 byte IP[] = {192, 168, 240, 128};
-int ip[] = {1,9,2,1,6,8,2,4,0,1,2,8};  //this array exists for setting purposes
 
 //values from server
 int bet, chips, highbet, action = 0;
@@ -267,6 +266,7 @@ void loop() {
 
 
 void set_ip() {
+  int ip[] = {1,9,2,1,6,8,2,4,0,1,2,8};  //this array exists for setting purposes
   int i=0;
   int j;
   int update = 1;
@@ -316,12 +316,14 @@ void set_ip() {
       else if (offset > 8)
         offset += 3;
       
+      /*
       lcd.setCursor(0, 0);
       lcd.print("i=");
       lcd.print(i);
       lcd.print("|os=");
       lcd.print(offset);
-
+      */
+      
       lcd.setCursor(offset, 1);
       lcd.blink();
 
@@ -339,7 +341,5 @@ void set_ip() {
     index = k * 3;
     IP[k] = ip[index]*100 + ip[index+1]*10 + ip[index+2];
   }
-  
-  
 }
 
