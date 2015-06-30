@@ -28,10 +28,9 @@ int lastState = 0;
 
 //ip adress of the server 
 byte IP[] = {192, 168, 240, 128};
-int ip[] = {1,9,2,1,6,8,2,4,0,1,2,8};  //this array exists for setting purposes
 
 //values from server
-int bet, chips, highbet, action = 0;
+int bet, chips,highbet, action = 0;
 float odds;
 
 
@@ -172,49 +171,56 @@ void loop() {
   String wort;  
   String button;
   int update=1;
-
-  lcd.setCursor(0,1);
-  //lcd.clear();
-  lcd.print("wait for turn");
-
-  //data is available on the TCP connection
-  if(client.available()) {
-    lcd.clear();
-    wort = client.readStringUntil('/');
-      
-    //when the right prefix is sent
-    if(wort == "send") {
-      bet = client.parseInt();
-      lcd.setCursor(8,0);
-      lcd.print("B");
-      lcd.print(bet);
-      lcd.print("   ");
   
-      wort = client.readStringUntil('/');
+  if(client.available()){
+        wort = client.readStringUntil('/');
+        
+        //when the right prefix is sent
+        if(wort == "send") {
+          lcd.clear();
+          bet = client.parseInt();
+          lcd.setCursor(8,0);
+          lcd.print("B");
+          lcd.print(bet);
+          lcd.print("   ");
+    
+          wort = client.readStringUntil('/');
+  
+          chips = client.parseInt();
+          lcd.setCursor(0,0);
+          lcd.print("CP");
+          lcd.print(chips);
+          lcd.print("  ");    
+        
+          /* 
+          wort = client.readStringUntil('/');
+          highbet = client.parseInt();
+          */
+        
+          wort = client.readStringUntil('/');
 
-      chips = client.parseInt();
-      lcd.setCursor(0,0);
-      lcd.print("CP");
-      lcd.print(chips);
-      lcd.print("  ");    
-    
-      wort = client.readStringUntil('/');
-      highbet = client.parseInt();
-       
-      wort = client.readStringUntil('/');
-      odds = client.parseFloat();
-      lcd.setCursor(0,1);
-      lcd.print(int(odds*100));
-      lcd.print("%  ");
- 
-      wort = client.readStringUntil('/');
-      action = client.parseInt();
-    
-      client.flush();
-    }
+          odds = client.parseFloat();
+          lcd.setCursor(0,1);
+          lcd.print(int(odds/10));
+          lcd.print("%  ");
+     
+          wort = client.readStringUntil('/');
+          action = client.parseInt();
+        
+          client.flush();
+        }
+  }
+  
+  if (action == 0){
+    lcd.setCursor(0,1);
+    //lcd.clear();
+    lcd.print("wait for turn");
+  }
+  
+  else if (action == 1){
+  //data is available on the TCP connection
 
     do {
-
       if(update) {
         //Set the Row 0, Col 0 position.
         //lcd.clear();
@@ -244,7 +250,6 @@ void loop() {
       if(button != "none") {
         update = 1;
       }
-     
       if (button == "right") {
       } 
       else if (button == "up") {
@@ -260,13 +265,14 @@ void loop() {
 
 
     } while(button != "select");
+    action = 0;
     send_data(currentMenuItem);
-    
   }
 }
 
 
 void set_ip() {
+  int ip[] = {1,9,2,1,6,8,0,0,2,0,1,8};  //this array exists for setting purposes
   int i=0;
   int j;
   int update = 1;
@@ -316,12 +322,14 @@ void set_ip() {
       else if (offset > 8)
         offset += 3;
       
+      /*
       lcd.setCursor(0, 0);
       lcd.print("i=");
       lcd.print(i);
       lcd.print("|os=");
       lcd.print(offset);
-
+      */
+      
       lcd.setCursor(offset, 1);
       lcd.blink();
 
@@ -339,7 +347,5 @@ void set_ip() {
     index = k * 3;
     IP[k] = ip[index]*100 + ip[index+1]*10 + ip[index+2];
   }
-  
-  
 }
 
