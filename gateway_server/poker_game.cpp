@@ -65,7 +65,7 @@ void Poker_game::round() {                          /* corresponds to 1 round of
 
 	addmessage("Starting a new round");
 	pot = 0;
-
+	n_common_cards=0;
 	n_players = players.size();
 	
 	//set the big&small blind's bets accordingly
@@ -80,6 +80,7 @@ void Poker_game::round() {                          /* corresponds to 1 round of
 	pot += n_big_blind;
 
 	deck.reset();
+	draw();
 	deal_player_cards();                             /* deal player cards */
 	addmessage("Dealing player cards");
 	//Preflop odds

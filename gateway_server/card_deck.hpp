@@ -47,7 +47,8 @@ class Card_deck
 		}
 
 		int draw_card_nfc() {
-			/*WINDOW *temp = derwin(stdscr, 5, 20, LINES/2, COLS/2);
+			/*WINDOW *temp = derwin(stdscr, 5, 20, LINES/2-2, COLS/2-10);
+			wbkgd(temp,COLOR_PAIR(2));
 			mvwprintw(temp, 0, 0, "Please scan card now");
 			wrefresh(temp);
 			FILE *pipe = popen("explorenfc-basic | grep Title | awk '{print $2}'", "r");
