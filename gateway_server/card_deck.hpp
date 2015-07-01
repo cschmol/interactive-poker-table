@@ -19,6 +19,9 @@
 //#include	<ncurses.h>
 #include 	<locale.h> 
 
+//#define NFC
+#undef NFC
+
 using namespace std;
 
 int myrandom (int i);
@@ -33,20 +36,18 @@ class Card_deck
 {
 	public:
 		Card_deck () {                           /* constructor */
-//			cout << "Card_deck created" << endl;
+#ifdef NFC
+			cout << "NFC enabled" << endl;
+#else
+			cout << "NFC disabled" << endl;
+#endif
 			reset();
 			std::srand(unsigned(time(0)));
 			return;
 		}
 
 		int draw_card() {
-			int res = card_deck.back();  /* get the last element */
-			card_deck.pop_back();               /* delete it from the vector */
-			return res;                         /* and return a copy of it */
-
-		}
-
-		int draw_card_nfc() {
+#ifdef NFC
 			FILE *pipe = popen("explorenfc-basic | grep Title | awk '{print $2}'", "r");
 			if(pipe==NULL) {
 				cout << "Error opening pipe" << endl;
@@ -62,13 +63,18 @@ class Card_deck
 			cout << "card " << card2str(card) << " drawn" << endl;
 			pclose(pipe);
 			return card;
+#else
+			int res = card_deck.back();  /* get the last element */
+			card_deck.pop_back();               /* delete it from the vector */
+			return res;                         /* and return a copy of it */
+#endif
 		}
 
 		void shuffle() {
-//			cout << "Shuffling deck now" << endl;
 			std::random_shuffle(card_deck.begin(), card_deck.end(), myrandom); /* shuffle the deck */
 			return;
 		}
+
 		void reset() {
 			card_deck.clear();                  /* clear the vector first */
 			
@@ -78,9 +84,9 @@ class Card_deck
 			shuffle();
 		}
 
-	bool empty() {
-		return card_deck.empty();
-	}
+		bool empty() {
+			return card_deck.empty();
+		}
 
 	protected:
 

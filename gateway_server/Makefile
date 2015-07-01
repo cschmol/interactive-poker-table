@@ -39,5 +39,8 @@ run: server
 	clear
 	./server
 
+client: server
+	nc localhost 8888
+
 client:
 	netcat localhost 8888

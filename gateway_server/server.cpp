@@ -9,11 +9,6 @@
 
 int main ( int argc, char *argv[] )
 {
-
-
-
-
-
 	//Start the poker game here
 	Poker_game pg;
 

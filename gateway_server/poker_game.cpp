@@ -41,20 +41,8 @@ bool Poker_game::add_player(Poker_player *player) {
 }
 
 void Poker_game::deal_common_cards(int count) {
-
-	switch (nfc) {
-
-	case 0:
-		for(int i=0; i<count; i++) {                /* deal as many cards as specified */
-			common_cards[n_common_cards++] = deck.draw_card();
-		}
-
-	case 1:
-		for(int i=0; i<count; i++) {                /* deal as many cards as specified */
-			addmessage("Place card over NFC reader");
-			common_cards[n_common_cards++] = deck.draw_card_nfc();
-			
-		}
+	for(int i=0; i<count; i++) {                /* deal as many cards as specified */
+		common_cards[n_common_cards++] = deck.draw_card();
 	}
 }
 
@@ -300,22 +288,12 @@ void Poker_game::deal_player_cards() {
 //	cout << "--------------------" << endl;
 	unsigned int j;
 
-	switch (nfc){
-	case 0:
-		for ( it=players.begin(); it!=players.end(); it++) {     /* iterate over all players */
-			for(j=0; j<2; j++) {                                 /* draw 2 cards */
-			it -> set_card(j, deck.draw_card());
-			}
-		}
-
-	case 1:
-		for ( it=players.begin(); it!=players.end(); it++) {     /* iterate over all players */
-			for(j=0; j<2; j++) {
-				addmessage("Place card over NFC reader");
-				it -> set_card(j, deck.draw_card_nfc());
-			}
+	for ( it=players.begin(); it!=players.end(); it++) {     /* iterate over all players */
+		for(j=0; j<2; j++) {                                 /* draw 2 cards */
+		it -> set_card(j, deck.draw_card());
 		}
 	}
+
 }
 
 void Poker_game::flop() {
