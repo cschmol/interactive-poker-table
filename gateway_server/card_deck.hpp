@@ -70,6 +70,7 @@ class Card_deck
 #endif
 		}
 
+
 		void shuffle() {
 			std::random_shuffle(card_deck.begin(), card_deck.end(), myrandom); /* shuffle the deck */
 			return;

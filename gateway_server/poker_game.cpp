@@ -296,13 +296,16 @@ void Poker_game::deal_player_cards() {
 
 }
 
+
+
 void Poker_game::flop() {
 
 
 	//deal 3 common cards
-	for(int j=0; j<3; j++) {                    /* draw 3 cards */
-		common_cards[j] = deck.draw_card();
-	}
+	//for(int j=0; j<3; j++) {                    /* draw 3 cards */
+		//common_cards[j] = deck.draw_card();
+	//}
+	deal_common_cards(3);
 	n_common_cards = 3;
 
 	std::array<int,2*NMAXPLAYERS> handcards;
@@ -339,7 +342,8 @@ void Poker_game::turn() {
 
 void Poker_game::river() {
 
-	common_cards[4] = deck.draw_card();
+	//common_cards[4] = deck.draw_card();
+	deal_common_cards(1);
 	n_common_cards = 5;
 
 	std::array<int,2*NMAXPLAYERS> handcards;

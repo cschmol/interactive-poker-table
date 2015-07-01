@@ -51,7 +51,7 @@ std::wstring card2unistr(int c) {
 	std::wstring buffer;
 	
 	if(c<0) {
-		return L"undefined";
+		return L"";
 	} else {
 		switch (c%4) {
 			case 0:
