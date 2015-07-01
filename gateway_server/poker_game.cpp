@@ -1,11 +1,18 @@
 #include	"poker_game.hpp"
 #include	<iterator>
+#include	<stdlib.h>
 
 #define MAX_PLAYERS 8
 
 
+void wait_for_press() {
+	system("x=1; while [ $x -eq 1 ] ; do x=`gpio -g read 17`; done;");
+}
 
 
+void wait_for_release() {
+	system("x=0; while [ $x -eq 0 ] ; do x=`gpio -g read 17`; done;");
+}
 
 
 Poker_game::Poker_game () {                            /* constructor */
@@ -43,6 +50,10 @@ bool Poker_game::add_player(Poker_player *player) {
 void Poker_game::deal_common_cards(int count) {
 	for(int i=0; i<count; i++) {                /* deal as many cards as specified */
 		common_cards[n_common_cards++] = deck.draw_card();
+#ifdef NFC
+		wait_for_press();
+		wait_for_release();
+#endif
 	}
 }
 
@@ -130,8 +141,12 @@ void Poker_game::round() {                          /* corresponds to 1 round of
 
 
 	addmessage("Press ENTER to show the winner");
+#ifdef NFC
+		wait_for_press();
+		wait_for_release();
+#endif
 	draw();
-	getch();
+//	getch();
 
 	std::vector<int> player_ranks;
 
@@ -274,10 +289,14 @@ void Poker_game::start() {
 			current_player = players.begin();
 		}
 	}
-	getch();
+//	getch();
 	addmessage(players.at(0).get_name()+" has won the game");
 	draw();
-	getch();
+//	getch();
+#ifdef NFC
+		wait_for_press();
+		wait_for_release();
+#endif
 	return;
 }
 
@@ -290,7 +309,11 @@ void Poker_game::deal_player_cards() {
 
 	for ( it=players.begin(); it!=players.end(); it++) {     /* iterate over all players */
 		for(j=0; j<2; j++) {                                 /* draw 2 cards */
-		it -> set_card(j, deck.draw_card());
+			it -> set_card(j, deck.draw_card());
+#ifdef NFC
+			wait_for_press();
+			wait_for_release();
+#endif
 		}
 	}
 
@@ -324,6 +347,10 @@ void Poker_game::flop() {
 void Poker_game::turn() {
 
 	common_cards[3] = deck.draw_card();
+#ifdef NFC
+	wait_for_press();
+	wait_for_release();
+#endif
 	n_common_cards = 4;
 
 

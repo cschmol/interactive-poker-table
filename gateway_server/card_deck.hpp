@@ -19,8 +19,8 @@
 //#include	<ncurses.h>
 #include 	<locale.h> 
 
-//#define NFC
-#undef NFC
+#define NFC
+//#undef NFC
 
 using namespace std;
 
@@ -48,6 +48,12 @@ class Card_deck
 
 		int draw_card() {
 #ifdef NFC
+			WINDOW *temp = derwin(stdscr, 3, 25, LINES/2-2, COLS/2-10);
+  			wbkgd(temp,COLOR_PAIR(2));
+			mvwprintw(temp, 0, 0, "Please scan card now");
+			wrefresh(temp);
+
+
 			FILE *pipe = popen("explorenfc-basic | grep Title | awk '{print $2}'", "r");
 			if(pipe==NULL) {
 				cout << "Error opening pipe" << endl;
@@ -60,8 +66,12 @@ class Card_deck
 				card = atoi(buffer);
 			}
 			fscanf(pipe, "%d\n", &card);
-			cout << "card " << card2str(card) << " drawn" << endl;
+//			cout << "card " << card2str(card) << " drawn" << endl;
 			pclose(pipe);
+			
+			wclear(temp);
+			mvwprintw(temp, 0, 0, "Please press Button now");
+			wrefresh(temp);
 			return card;
 #else
 			int res = card_deck.back();  /* get the last element */

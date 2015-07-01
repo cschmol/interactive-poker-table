@@ -1,5 +1,5 @@
 #Variablen die gebraucht werden
-CXX		= g++
+CXX		= g++-4.7
 CFLAGS	= -Wall -g -std=c++11
 LDFLAGS	= -g -lncursesw
 OBJ = card_deck.o server.o poker_player.o poker_game.o socket.o FiveEval.o SevenEval.o
