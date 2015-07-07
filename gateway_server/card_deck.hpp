@@ -48,9 +48,12 @@ class Card_deck
 
 		int draw_card() {
 #ifdef NFC
-			WINDOW *temp = derwin(stdscr, 3, 25, LINES/2-2, COLS/2-10);
+			//WINDOW *temp = derwin(stdscr, 3, 25, LINES/2-2, COLS/2-10);
+
+			WINDOW *temp=derwin(stdscr,4,28,static_cast<int>(LINES/2-4/2),static_cast<int>(COLS/2)-28/2);
   			wbkgd(temp,COLOR_PAIR(2));
-			mvwprintw(temp, 0, 0, "Please scan card now");
+			box(temp,0,0);
+			mvwprintw(temp, 1, 1, "Please scan card now   ");
 			wrefresh(temp);
 
 
@@ -70,7 +73,9 @@ class Card_deck
 			pclose(pipe);
 			
 			wclear(temp);
-			mvwprintw(temp, 0, 0, "Please press Button now");
+
+			box(temp,0,0);
+			mvwprintw(temp, 1, 1, "Please press Button now");
 			wrefresh(temp);
 			return card;
 #else

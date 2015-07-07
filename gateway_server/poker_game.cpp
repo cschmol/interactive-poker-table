@@ -140,7 +140,8 @@ void Poker_game::round() {                          /* corresponds to 1 round of
 	unsigned int winner;                                 /* do that by hand now */
 
 
-	addmessage("Press ENTER to show the winner");
+	addmessage("Press Button to show the winner");
+	draw();
 #ifdef NFC
 		wait_for_press();
 		wait_for_release();
@@ -387,6 +388,7 @@ void Poker_game::river() {
 }
 
 void Poker_game::betting_round () {
+	bool just_raised;
 	Poker_action *action;
 	//bool big_blind_played = false;
 //	cout	<< "Beginning betting round" << endl;
@@ -398,8 +400,10 @@ void Poker_game::betting_round () {
 // -----------------------------------------
 	addmessage("New betting round");	
 
+	int big_blind_bet=(*big_blind).get_bet();
 
-	while ((n_players > 1 && current_player != highest_better) || (current_player==highest_better && current_player==big_blind)) {         
+	while ((n_players > 1 && current_player != highest_better) || (current_player==highest_better && big_blind_bet==(*current_player).get_bet() && current_player==big_blind)) {         
+		just_raised = false;
 		draw();
 		if(!current_player -> folded()) {       /* only when player has not folded yet */
 
@@ -421,12 +425,13 @@ void Poker_game::betting_round () {
 				high_bet = action->new_high_bet;
 				highest_better = current_player;
 				pot += action->new_player_chips;
+				just_raised=true;
 			}
 			else {
 				continue;
 			}
 		}
-		if(current_player==big_blind && current_player==highest_better) {       /* Assure that big blind can also play */
+		if(current_player==big_blind && current_player==highest_better && !just_raised) {       /* Assure that big blind can also play */
 			break;
 		}
 		if(++current_player == players.end()) {
