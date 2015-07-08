@@ -215,7 +215,7 @@ void Poker_player::print_hello() {
 }
 
 
-void Poker_player::draw(bool active){
+void Poker_player::draw(bool active, int hidden){
 
 	if (active)
 		wbkgd(wnd,COLOR_PAIR(3));
@@ -235,11 +235,15 @@ void Poker_player::draw(bool active){
 		mvwprintw(wnd,2,1,"FOLDED");
 	else{
 		mvwprintw(wnd,2,1,"Bet: %d",bet);
-		mvwprintw(wnd,3,1,"Odds: %f",winprob);
+		if(hidden==0) {
+			mvwprintw(wnd,3,1,"Odds: %f",winprob);
+		}
 		mvwprintw(wnd,4,1,"Cards:");
 		
-		waddwstr(wnd, card2unistr(hand_cards[0]).c_str());
-		waddwstr(wnd, card2unistr(hand_cards[1]).c_str());
+		if(hidden==0) {
+			waddwstr(wnd, card2unistr(hand_cards[0]).c_str());
+			waddwstr(wnd, card2unistr(hand_cards[1]).c_str());
+		}
 	}
 	wrefresh(wnd);
 

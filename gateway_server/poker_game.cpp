@@ -1,9 +1,12 @@
 #include	"poker_game.hpp"
 #include	<iterator>
 #include	<stdlib.h>
+#include	<unistd.h>
 
 #define MAX_PLAYERS 8
 
+#define HIDDEN
+//#undef HIDDEN
 
 void wait_for_press() {
 	system("x=1; while [ $x -eq 1 ] ; do x=`gpio -g read 17`; done;");
@@ -94,6 +97,7 @@ void Poker_game::round() {                          /* corresponds to 1 round of
 	
 	update_probs();
 
+	sleep(1);
 	betting_round();
 	draw();
 	current_player = big_blind;
@@ -106,6 +110,7 @@ void Poker_game::round() {                          /* corresponds to 1 round of
 	addmessage("Dealing the flop");	
 	flop();                                     /* deal the flop */
 
+	sleep(1);
 	betting_round();
 	draw();
 	current_player = big_blind;
@@ -117,6 +122,7 @@ void Poker_game::round() {                          /* corresponds to 1 round of
 
 	addmessage("Dealing the turn");
 	turn();                                     /* deal the turn */
+	sleep(1);
 	betting_round();
 	draw();
 	current_player = big_blind;
@@ -127,6 +133,7 @@ void Poker_game::round() {                          /* corresponds to 1 round of
 
 	addmessage("Dealing the river");
 	river();                                    /* deal the river */
+	sleep(1);
 	betting_round();
 	draw();
 	current_player = big_blind;
@@ -142,12 +149,9 @@ void Poker_game::round() {                          /* corresponds to 1 round of
 
 	addmessage("Press Button to show the winner");
 	draw();
-#ifdef NFC
 		wait_for_press();
 		wait_for_release();
-#endif
 	draw();
-//	getch();
 
 	std::vector<int> player_ranks;
 
@@ -249,6 +253,14 @@ void Poker_game::start() {
 
 			if ( it->get_chips() <= 0 ) {
 				addmessage(it->get_name()+" has no chips and lost the game");
+
+				if(it == dealer) {
+					dealer = it + 1;
+					if(dealer==players.end()) {
+						dealer = players.begin();
+					}
+				}
+
 				players.erase(it);
 				update_player_windows(); 
 				draw();
@@ -262,9 +274,25 @@ void Poker_game::start() {
 		if(dealer == players.end()) {
 			dealer = players.begin();
 		}
-		
 
-		if(small_blind == players.end()) {
+//////////////////////////////////////////
+
+		small_blind = dealer;
+		if(++small_blind == players.end())
+			small_blind = players.begin();
+
+		big_blind = small_blind;
+		if(++big_blind == players.end())
+			big_blind = players.begin();
+
+		current_player = big_blind;
+		if(++current_player == players.end())
+			current_player = players.begin();
+
+//////////////////////////////////////////
+
+
+		/*if(small_blind == players.end()) {
 			small_blind = players.begin();
 		}
 		if(big_blind == players.end()) {
@@ -288,16 +316,13 @@ void Poker_game::start() {
 		}
 		if(++current_player == players.end()) {
 			current_player = players.begin();
-		}
+		}*/
 	}
 //	getch();
 	addmessage(players.at(0).get_name()+" has won the game");
 	draw();
-//	getch();
-#ifdef NFC
 		wait_for_press();
 		wait_for_release();
-#endif
 	return;
 }
 
@@ -369,10 +394,13 @@ void Poker_game::turn() {
 }
 
 void Poker_game::river() {
-
-	//common_cards[4] = deck.draw_card();
-	deal_common_cards(1);
+	common_cards[4] = deck.draw_card();
+#ifdef NFC
+	wait_for_press();
+	wait_for_release();
+#endif
 	n_common_cards = 5;
+
 
 	std::array<int,2*NMAXPLAYERS> handcards;
 
@@ -385,6 +413,7 @@ void Poker_game::river() {
 	getProbability(static_cast<int>(players.size()),handcards,n_common_cards,common_cards,&winprobs[0]);
 
 	update_probs();
+
 }
 
 void Poker_game::betting_round () {
@@ -730,7 +759,11 @@ void Poker_game::draw()
 		 
 
 		bool active=it==current_player;
-		it->draw(active);
+#ifdef HIDDEN
+		it->draw(active, 1);
+#else
+		it->draw(active, 0);
+#endif
 	}
 
 	wclear(wPot);

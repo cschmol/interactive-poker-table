@@ -76,7 +76,7 @@ class Poker_player
 		Poker_action *poker_action(unsigned int new_bet);   /* player needs to chose an action */
 
 		void print_hello();
-		void draw(bool active);
+		void draw(bool active, int hidden);
 
 
 	private:
