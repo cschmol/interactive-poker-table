@@ -19,8 +19,8 @@
 //#include	<ncurses.h>
 #include 	<locale.h> 
 
-#define NFC
-//#undef NFC
+//#define NFC
+#undef NFC
 
 using namespace std;
 
